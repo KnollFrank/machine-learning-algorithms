@@ -82,23 +82,22 @@ function test_split(index, value, dataset) {
 
 function gini_index(groups, classes) {
     const n_instances = groups.map(group => group.length).sum();
-    let gini = 0;
-    for (const group of groups) {
-        const size = group.length;
-        if (size == 0) {
-            continue;
-        }
-        // console.log(group);
-        const score = classes
-            .map(class_val =>
-                group
-                .map(getClassValFromRow)
-                .filter(classVal => classVal == class_val)
-                .length / size)
-            .map(p => p * p)
-            .sum();
-        gini += (1.0 - score) * (size / n_instances);
-    }
+    const gini = groups
+        .filter(group => group.length != 0)
+        .map(group => {
+            const size = group.length;
+            const score = classes
+                .map(class_val =>
+                    group
+                    .map(getClassValFromRow)
+                    .filter(classVal => classVal == class_val)
+                    .length / size)
+                .map(p => p * p)
+                .sum();
+            return (1.0 - score) * (size / n_instances);
+        })
+        .sum();
+
     return gini;
 }
 
