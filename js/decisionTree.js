@@ -162,20 +162,17 @@ function split(node, max_depth, min_size, depth) {
         [node.left, node.right] = [to_terminal(left), to_terminal(right)];
         return;
     }
-    // process left child
-    if (left.length <= min_size) {
-        node.left = to_terminal(left);
-    } else {
-        node.left = get_split(left);
-        split(node.left, max_depth, min_size, depth + 1);
+
+    function processChild(child, childName) {
+        if (child.length <= min_size) {
+            node[childName] = to_terminal(child);
+        } else {
+            node[childName] = get_split(child);
+            split(node[childName], max_depth, min_size, depth + 1);
+        }
     }
-    // process right child
-    if (right.length <= min_size) {
-        node.right = to_terminal(right);
-    } else {
-        node.right = get_split(right);
-        split(node.right, max_depth, min_size, depth + 1);
-    }
+    processChild(left, 'left');
+    processChild(right, 'right');
 }
 
 function getClassValFromRow(row) {
