@@ -203,7 +203,6 @@ function predict(node, row) {
     const predictChild = childNode =>
         typeof childNode === 'object' ? predict(childNode, row) : childNode;
 
-
     const childNode = row[node.index] < node.value ? node.left : node.right;
     return predictChild(childNode);
 }
@@ -211,12 +210,7 @@ function predict(node, row) {
 // Classification and Regression Tree Algorithm
 function decision_tree(train, test, max_depth, min_size) {
     const tree = build_tree(train, max_depth, min_size);
-    const predictions = [];
-    for (const row of test) {
-        const prediction = predict(tree, row);
-        predictions.push(prediction);
-    }
-    return predictions;
+    return test.map(row => predict(tree, row));
 }
 
 Papa.parse("concept/data_banknote_authentication.csv", {
