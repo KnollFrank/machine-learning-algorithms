@@ -150,8 +150,7 @@ function mode(array) {
 
 // Create child splits for a node or make terminal
 function split(node, max_depth, min_size, depth) {
-    let left, right;
-    [left, right] = node.groups;
+    let [left, right] = node.groups;
     delete node.groups;
     // check for a no split
     if (left.length == 0 || right.length == 0) {
