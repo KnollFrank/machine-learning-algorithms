@@ -39,9 +39,7 @@ function accuracy_metric(actual, predicted) {
 // Evaluate an algorithm using a cross validation split
 function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
     const folds = cross_validation_split(dataset, n_folds);
-    const scores = [];
-    for (let i = 0; i < folds.length; i++) {
-        const fold = folds[i];
+    const scores = folds.map((fold, i, folds) => {
         let train_set = [...folds];
         train_set.splice(i, 1);
         train_set = train_set.flat(1);
@@ -52,8 +50,8 @@ function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
         const predicted = algorithm(train_set, test_set, max_depth, min_size);
         const actual = fold.map(getClassValFromRow);
         const accuracy = accuracy_metric(actual, predicted);
-        scores.push(accuracy);
-    }
+        return accuracy;
+    });
     return scores;
 }
 
