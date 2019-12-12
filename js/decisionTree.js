@@ -48,8 +48,8 @@ function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
         const test_set = [];
         for (const row of fold) {
             const row_copy = [...row];
+            row_copy[row_copy.length - 1] = undefined;
             test_set.push(row_copy);
-            // row_copy[-1] = None;
         }
         // console.log('train_set:', train_set);
         // console.log('test_set:', test_set);
