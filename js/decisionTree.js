@@ -200,13 +200,9 @@ function print_tree(node, depth = 0) {
 
 // Make a prediction with a decision tree
 function predict(node, row) {
-    function predictChild(childNode) {
-        if (typeof childNode === 'object') {
-            return predict(childNode, row);
-        } else {
-            return childNode;
-        }
-    }
+    const predictChild = childNode =>
+        typeof childNode === 'object' ? predict(childNode, row) : childNode;
+
 
     const childNode = row[node.index] < node.value ? node.left : node.right;
     return predictChild(childNode);
