@@ -53,12 +53,16 @@ function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
         return test_set;
     };
 
-    const scores = folds.map((fold, index) => {
-        const predicted = algorithm(createTrainSet(index), createTestSet(fold), max_depth, min_size);
-        const actual = fold.map(getClassValFromRow);
-        const accuracy = accuracy_metric(actual, predicted);
-        return accuracy;
-    });
+    const predictClassVals = (fold, index) =>
+        algorithm(
+            createTrainSet(index),
+            createTestSet(fold),
+            max_depth,
+            min_size);
+
+    const actualClassVals = fold => fold.map(getClassValFromRow);
+
+    const scores = folds.map((fold, index) => accuracy_metric(actualClassVals(fold), predictClassVals(fold, index)));
     return scores;
 }
 
