@@ -208,11 +208,8 @@ function predict(node, row) {
         }
     }
 
-    if (row[node.index] < node.value) {
-        return predictChild('left');
-    } else {
-        return predictChild('right');
-    }
+    const childName = row[node.index] < node.value ? 'left' : 'right';
+    return predictChild(childName);
 }
 
 // Classification and Regression Tree Algorithm
