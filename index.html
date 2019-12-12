@@ -9,16 +9,6 @@
     <script>
         'use strict';
 
-        /*
-        Papa.parse("concept/data_banknote_authentication.csv", {
-            download: true,
-            header: true,
-            complete: function (results) {
-                console.log(results.data);
-            }
-        });
-        */
-
         Array.prototype.sum = function() {
             return this.reduce((sum, el) => sum + el, 0);
         };
@@ -309,12 +299,22 @@
             console.log(`Expected=${getClassValFromRow(row)}, Got=${prediction}`);
         }
 
-        const n_folds = 5;
-        const max_depth = 5;
-        const min_size = 10;
-        const scores = evaluate_algorithm(dataset, decision_tree, n_folds, max_depth, min_size);
-        console.log('Scores:', scores);
-        console.log('Mean Accuracy:', scores.sum() / scores.length);
+        Papa.parse("concept/data_banknote_authentication.csv", {
+            download: true,
+            header: false,
+            complete: function(results) {
+                const dataset = results.data;
+                console.log(dataset);
+                dataset.splice(0, 1);
+                console.log(dataset);
+                const n_folds = 5;
+                const max_depth = 5;
+                const min_size = 10;
+                const scores = evaluate_algorithm(dataset, decision_tree, n_folds, max_depth, min_size);
+                console.log('Scores:', scores);
+                console.log('Mean Accuracy:', scores.sum() / scores.length);
+            }
+        });
     </script>
 </head>
 
