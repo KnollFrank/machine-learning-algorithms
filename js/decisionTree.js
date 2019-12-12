@@ -81,8 +81,6 @@ function test_split(index, value, dataset) {
 }
 
 function gini_index(groups, classes) {
-    const n_instances = groups.map(group => group.length).sum();
-
     const getScore = group =>
         classes
         .map(class_val =>
@@ -93,14 +91,12 @@ function gini_index(groups, classes) {
         .map(p => p * p)
         .sum();
 
+    const n_instances = groups.map(group => group.length).sum();
+
     const gini =
         groups
         .filter(group => group.length != 0)
-        .map(group => {
-            const size = group.length;
-            const score = getScore(group);
-            return (1.0 - score) * (size / n_instances);
-        })
+        .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
         .sum();
 
     return gini;
