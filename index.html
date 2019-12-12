@@ -61,15 +61,17 @@
             const scores = [];
             for (let i = 0; i < folds.length; i++) {
                 const fold = folds[i];
-                const train_set = [...folds];
+                let train_set = [...folds];
                 train_set.splice(i, 1);
-                train_set.push([]);
+                train_set = train_set.flat(1);
                 const test_set = [];
                 for (const row of fold) {
                     const row_copy = [...row];
                     test_set.push(row_copy);
                     // row_copy[-1] = None;
                 }
+                console.log('train_set:', train_set);
+                console.log('test_set:', test_set);
                 const predicted = algorithm(train_set, test_set, max_depth, min_size);
                 const actual = fold.map(getClassValFromRow);
                 const accuracy = accuracy_metric(actual, predicted);
