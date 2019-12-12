@@ -9,9 +9,11 @@ def load_csv(filename):
 	file = open(filename, "rt")
 	lines = reader(file)
 	dataset = list(lines)
+ 	# remove header:
+	dataset.pop(0)
 	return dataset
 
-# Convert string column to float
+# Convert string column to fdataloat
 def str_column_to_float(dataset, column):
 	for row in dataset:
 		row[column] = float(row[column].strip())
