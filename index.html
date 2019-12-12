@@ -9,6 +9,7 @@
     <script>
         'use strict';
 
+        /*
         Papa.parse("concept/data_banknote_authentication.csv", {
             download: true,
             header: true,
@@ -16,6 +17,68 @@
                 console.log(results.data);
             }
         });
+        */
+
+        Array.prototype.sum = function () {
+            return this.reduce((sum, el) => sum + el, 0);
+        };
+
+        function gini_index(groups, classes) {
+            const n_instances = groups.map(group => group.length).sum();
+            let gini = 0;
+            for (const group of groups) {
+                const size = group.length;
+                if (size == 0) {
+                    continue;
+                }
+                // console.log(group);
+                let score = 0;
+                for (const class_val in classes) {
+                    const p = group
+                        .map(row => {
+                            const classVal = row[row.length - 1];
+                            return classVal;
+                        })
+                        .filter(classVal => classVal == class_val)
+                        .length / size;
+                    score += p * p;
+                }
+                gini += (1.0 - score) * (size / n_instances);
+            }
+            return gini;
+        }
+
+        let gIndex = gini_index(
+            [   // group:
+                [
+                    [1, 1], // row
+                    [1, 0]  // row
+                ],
+                [
+                    [1, 1],
+                    [1, 0]
+                ]
+            ],
+            [0, 1]);
+        console.log(gIndex);
+        gIndex = gini_index(
+            [
+                [
+                    [1, 0],
+                    [1, 0]
+                ],
+                [
+                    [1, 1],
+                    [1, 1]
+                ]
+            ],
+            [0, 1]);
+        console.log(gIndex);
+        /*
+            # test Gini values
+            print(gini_index([[[1, 1], [1, 0]], [[1, 1], [1, 0]]], [0, 1]))
+            print(gini_index([[[1, 0], [1, 0]], [[1, 1], [1, 1]]], [0, 1]))
+        */
     </script>
 </head>
 
