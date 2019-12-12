@@ -81,13 +81,15 @@ function test_split(index, value, dataset) {
 }
 
 function gini_index(groups, classes) {
+    const getP = group => class_val =>
+        group
+        .map(getClassValFromRow)
+        .filter(classVal => classVal == class_val)
+        .length / group.length;
+
     const getScore = group =>
         classes
-        .map(class_val =>
-            group
-            .map(getClassValFromRow)
-            .filter(classVal => classVal == class_val)
-            .length / group.length)
+        .map(getP(group))
         .map(p => p * p)
         .sum();
 
