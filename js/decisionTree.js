@@ -89,14 +89,14 @@ function gini_index(groups, classes) {
             continue;
         }
         // console.log(group);
-        let score = 0;
-        for (const class_val in classes) {
-            const p = group
+        const score = classes
+            .map(class_val =>
+                group
                 .map(getClassValFromRow)
                 .filter(classVal => classVal == class_val)
-                .length / size;
-            score += p * p;
-        }
+                .length / size)
+            .map(p => p * p)
+            .sum();
         gini += (1.0 - score) * (size / n_instances);
     }
     return gini;
