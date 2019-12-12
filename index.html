@@ -4,15 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Startseite</title>
+    <title>Decision Trees</title>
     <script src="js/papaparse.min.js"></script>
     <script>
         'use strict';
 
         Papa.parse("concept/data_banknote_authentication.csv", {
             download: true,
+            header: true,
             complete: function (results) {
-                console.log(results);
+                console.log(results.data);
             }
         });
     </script>
