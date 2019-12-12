@@ -200,18 +200,18 @@ function print_tree(node, depth = 0) {
 
 // Make a prediction with a decision tree
 function predict(node, row) {
+    function predictChild(childName) {
+        if (typeof node[childName] === 'object') {
+            return predict(node[childName], row);
+        } else {
+            return node[childName];
+        }
+    }
+
     if (row[node.index] < node.value) {
-        if (typeof node.left === 'object') {
-            return predict(node.left, row);
-        } else {
-            return node.left;
-        }
+        return predictChild('left');
     } else {
-        if (typeof node.right === 'object') {
-            return predict(node.right, row);
-        } else {
-            return node.right;
-        }
+        return predictChild('right');
     }
 }
 
