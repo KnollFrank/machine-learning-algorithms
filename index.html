@@ -23,6 +23,61 @@
             return this.reduce((sum, el) => sum + el, 0);
         };
 
+        function getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // Split a dataset into k folds
+        function cross_validation_split(dataset, n_folds) {
+            const dataset_split = [];
+            const dataset_copy = [...dataset];
+            const fold_size = Math.floor(dataset.length / n_folds);
+            for (let i = 0; i < n_folds; i++) {
+                const fold = [];
+                while (fold.length < fold_size) {
+                    const index = getRndInteger(0, dataset_copy.length - 1);
+                    const [removed] = dataset_copy.splice(index, 1);
+                    fold.push(removed);
+                }
+                dataset_split.push(fold);
+            }
+            return dataset_split;
+        }
+
+        // Calculate accuracy percentage
+        function accuracy_metric(actual, predicted) {
+            let correct = 0;
+            for (let i = 0; i < actual.length; i++) {
+                if (actual[i] == predicted[i]) {
+                    correct += 1;
+                }
+            }
+            return correct / actual.length * 100.0;
+        }
+
+        // Evaluate an algorithm using a cross validation split
+        function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
+            const folds = cross_validation_split(dataset, n_folds);
+            const scores = [];
+            for (let i = 0; i < folds.length; i++) {
+                const fold = folds[i];
+                const train_set = [...folds];
+                train_set.splice(i, 1);
+                train_set.push([]);
+                const test_set = [];
+                for (const row of fold) {
+                    const row_copy = [...row];
+                    test_set.push(row_copy);
+                    // row_copy[-1] = None;
+                }
+                const predicted = algorithm(train_set, test_set, max_depth, min_size);
+                const actual = fold.map(getClassValFromRow);
+                const accuracy = accuracy_metric(actual, predicted);
+                scores.push(accuracy);
+            }
+            return scores;
+        }
+
         // Split a dataset based on an attribute and an attribute value
         function test_split(index, value, dataset) {
             const left = [];
@@ -35,6 +90,28 @@
                 }
             }
             return [left, right];
+        }
+
+        function gini_index(groups, classes) {
+            const n_instances = groups.map(group => group.length).sum();
+            let gini = 0;
+            for (const group of groups) {
+                const size = group.length;
+                if (size == 0) {
+                    continue;
+                }
+                // console.log(group);
+                let score = 0;
+                for (const class_val in classes) {
+                    const p = group
+                        .map(getClassValFromRow)
+                        .filter(classVal => classVal == class_val)
+                        .length / size;
+                    score += p * p;
+                }
+                gini += (1.0 - score) * (size / n_instances);
+            }
+            return gini;
         }
 
         // Select the best split point for a dataset
@@ -162,26 +239,15 @@
             }
         }
 
-        function gini_index(groups, classes) {
-            const n_instances = groups.map(group => group.length).sum();
-            let gini = 0;
-            for (const group of groups) {
-                const size = group.length;
-                if (size == 0) {
-                    continue;
-                }
-                // console.log(group);
-                let score = 0;
-                for (const class_val in classes) {
-                    const p = group
-                        .map(getClassValFromRow)
-                        .filter(classVal => classVal == class_val)
-                        .length / size;
-                    score += p * p;
-                }
-                gini += (1.0 - score) * (size / n_instances);
+        // Classification and Regression Tree Algorithm
+        function decision_tree(train, test, max_depth, min_size) {
+            const tree = build_tree(train, max_depth, min_size);
+            const predictions = [];
+            for (const row of test) {
+                const prediction = predict(tree, row);
+                predictions.push(prediction);
             }
-            return gini;
+            return predictions;
         }
 
         let gIndex = gini_index(
@@ -224,6 +290,8 @@
         //const split = get_split(dataset)
         //console.log(`Split: [X${split.index + 1} < ${split.value}]`);
 
+        console.log('cross_validation_split:', cross_validation_split(dataset, 5));
+
         const tree = build_tree(dataset, 3, 1);
 
         //  predict with a stump
@@ -233,10 +301,18 @@
             'value': 6.642287351,
             'left': 0
         };
+
         for (const row of dataset) {
             const prediction = predict(stump, row);
             console.log(`Expected=${getClassValFromRow(row)}, Got=${prediction}`);
         }
+
+        const n_folds = 5;
+        const max_depth = 5;
+        const min_size = 10;
+        const scores = evaluate_algorithm(dataset, decision_tree, n_folds, max_depth, min_size);
+        console.log('Scores:', scores);
+        console.log('Mean Accuracy:', scores.sum() / scores.length);
     </script>
 </head>
 
