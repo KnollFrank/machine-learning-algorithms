@@ -100,10 +100,7 @@ function gini_index(groups, classes) {
 // Select the best split point for a dataset
 function get_split(dataset) {
     const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
-    let b_index = 999;
-    let b_value = 999;
-    let b_score = 999;
-    let b_groups;
+    let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
     for (let index = 0; index < dataset[0].length - 1; index++) {
         for (const row of dataset) {
             const groups = test_split(index, row[index], dataset);
