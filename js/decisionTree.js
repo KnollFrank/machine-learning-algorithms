@@ -93,7 +93,10 @@ function gini_index(groups, classes) {
         .map(p => p * p)
         .sum();
 
-    const n_instances = groups.map(group => group.length).sum();
+    const n_instances =
+        groups
+        .map(group => group.length)
+        .sum();
 
     const gini =
         groups
