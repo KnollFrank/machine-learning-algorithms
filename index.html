@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Startseite</title>
+    <script src="js/papaparse.min.js"></script>
+    <script>
+        'use strict';
+
+        Papa.parse("concept/data_banknote_authentication.csv", {
+            download: true,
+            complete: function (results) {
+                console.log(results);
+            }
+        });
+    </script>
+</head>
+
+<body>
+</body>
+
+</html>

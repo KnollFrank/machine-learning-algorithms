@@ -6,3 +6,6 @@ Entscheidungsbäume
 - http://sigmajs.org/
 
 C:\Users\Alfa\AppData\Local\Programs\Python\Python38-32\python.exe
+
+Abhängigkeiten:
+- https://www.papaparse.com/
