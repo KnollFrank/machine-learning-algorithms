@@ -200,16 +200,16 @@ function print_tree(node, depth = 0) {
 
 // Make a prediction with a decision tree
 function predict(node, row) {
-    function predictChild(childName) {
-        if (typeof node[childName] === 'object') {
-            return predict(node[childName], row);
+    function predictChild(childNode) {
+        if (typeof childNode === 'object') {
+            return predict(childNode, row);
         } else {
-            return node[childName];
+            return childNode;
         }
     }
 
-    const childName = row[node.index] < node.value ? 'left' : 'right';
-    return predictChild(childName);
+    const childNode = row[node.index] < node.value ? node.left : node.right;
+    return predictChild(childNode);
 }
 
 // Classification and Regression Tree Algorithm
