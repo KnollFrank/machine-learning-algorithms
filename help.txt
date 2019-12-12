@@ -1,0 +1,6 @@
+Entscheidungsbäume
+==================
+
+- https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
+- https://medium.com/@penggongting/implementing-decision-tree-from-scratch-in-python-c732e7c69aea
+- http://sigmajs.org/
