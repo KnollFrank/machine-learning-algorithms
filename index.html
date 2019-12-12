@@ -19,9 +19,52 @@
         });
         */
 
-        Array.prototype.sum = function () {
+        Array.prototype.sum = function() {
             return this.reduce((sum, el) => sum + el, 0);
         };
+
+        // Split a dataset based on an attribute and an attribute value
+        function test_split(index, value, dataset) {
+            const left = [];
+            const right = [];
+            for (const row of dataset) {
+                if (row[index] < value) {
+                    left.push(row);
+                } else {
+                    right.push(row);
+                }
+            }
+            return [left, right];
+        }
+
+        // Select the best split point for a dataset
+        function get_split(dataset) {
+            const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
+            let b_index = 999;
+            let b_value = 999;
+            let b_score = 999;
+            let b_groups;
+            for (let index = 0; index < dataset[0].length - 1; index++) {
+                for (const row of dataset) {
+                    const groups = test_split(index, row[index], dataset);
+                    const gini = gini_index(groups, class_values);
+                    console.log(`X${index+1} < ${row[index]} Gini=${gini}`);
+                    if (gini < b_score) {
+                        [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
+                    }
+                }
+            }
+            return {
+                index: b_index,
+                value: b_value,
+                groups: b_groups
+            };
+        }
+
+        function getClassValFromRow(row) {
+            const classVal = row[row.length - 1];
+            return classVal;
+        }
 
         function gini_index(groups, classes) {
             const n_instances = groups.map(group => group.length).sum();
@@ -35,10 +78,7 @@
                 let score = 0;
                 for (const class_val in classes) {
                     const p = group
-                        .map(row => {
-                            const classVal = row[row.length - 1];
-                            return classVal;
-                        })
+                        .map(getClassValFromRow)
                         .filter(classVal => classVal == class_val)
                         .length / size;
                     score += p * p;
@@ -49,17 +89,16 @@
         }
 
         let gIndex = gini_index(
-            [   // group:
+            [ // group:
                 [
                     [1, 1], // row
-                    [1, 0]  // row
+                    [1, 0] // row
                 ],
                 [
                     [1, 1],
                     [1, 0]
                 ]
-            ],
-            [0, 1]);
+            ], [0, 1]);
         console.log(gIndex);
         gIndex = gini_index(
             [
@@ -71,14 +110,23 @@
                     [1, 1],
                     [1, 1]
                 ]
-            ],
-            [0, 1]);
+            ], [0, 1]);
         console.log(gIndex);
-        /*
-            # test Gini values
-            print(gini_index([[[1, 1], [1, 0]], [[1, 1], [1, 0]]], [0, 1]))
-            print(gini_index([[[1, 0], [1, 0]], [[1, 1], [1, 1]]], [0, 1]))
-        */
+
+        const dataset = [
+            [2.771244718, 1.784783929, 0],
+            [1.728571309, 1.169761413, 0],
+            [3.678319846, 2.81281357, 0],
+            [3.961043357, 2.61995032, 0],
+            [2.999208922, 2.209014212, 0],
+            [7.497545867, 3.162953546, 1],
+            [9.00220326, 3.339047188, 1],
+            [7.444542326, 0.476683375, 1],
+            [10.12493903, 3.234550982, 1],
+            [6.642287351, 3.319983761, 1]
+        ];
+        const split = get_split(dataset)
+        console.log(`Split: [X${split.index + 1} < ${split.value}]`);
     </script>
 </head>
 
