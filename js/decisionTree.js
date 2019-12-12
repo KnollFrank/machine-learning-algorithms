@@ -45,12 +45,8 @@ function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
         let train_set = [...folds];
         train_set.splice(i, 1);
         train_set = train_set.flat(1);
-        const test_set = [];
-        for (const row of fold) {
-            const row_copy = [...row];
-            row_copy[row_copy.length - 1] = undefined;
-            test_set.push(row_copy);
-        }
+        const test_set = fold.map(row => [...row]);
+        test_set.forEach(row => row[row.length - 1] = undefined);
         // console.log('train_set:', train_set);
         // console.log('test_set:', test_set);
         const predicted = algorithm(train_set, test_set, max_depth, min_size);
