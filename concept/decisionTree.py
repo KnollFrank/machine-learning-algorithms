@@ -132,7 +132,17 @@ def split(node, max_depth, min_size, depth):
 def build_tree(train, max_depth, min_size):
 	root = get_split(train)
 	split(root, max_depth, min_size, 1)
+	print_tree(root)
 	return root
+
+# Print a decision tree
+def print_tree(node, depth=0):
+	if isinstance(node, dict):
+		print('%s[X%d < %.3f]' % ((depth*' ', (node['index']+1), node['value'])))
+		print_tree(node['left'], depth+1)
+		print_tree(node['right'], depth+1)
+	else:
+		print('%s[%s]' % ((depth*' ', node)))
 
 # Make a prediction with a decision tree
 def predict(node, row):
@@ -165,6 +175,7 @@ dataset = load_csv(filename)
 for i in range(len(dataset[0])):
 	str_column_to_float(dataset, i)
 # evaluate algorithm
+
 n_folds = 5
 max_depth = 5
 min_size = 10
