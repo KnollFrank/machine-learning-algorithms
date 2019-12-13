@@ -1,6 +1,8 @@
 'use strict';
 
-Array.prototype.sum = function() {
+// adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
+
+Array.prototype.sum = function () {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -83,26 +85,26 @@ function test_split(index, value, dataset) {
 function gini_index(groups, classes) {
     const getP = group => class_val =>
         group
-        .map(getClassValFromRow)
-        .filter(classVal => classVal == class_val)
-        .length / group.length;
+            .map(getClassValFromRow)
+            .filter(classVal => classVal == class_val)
+            .length / group.length;
 
     const getScore = group =>
         classes
-        .map(getP(group))
-        .map(p => p * p)
-        .sum();
+            .map(getP(group))
+            .map(p => p * p)
+            .sum();
 
     const n_instances =
         groups
-        .map(group => group.length)
-        .sum();
+            .map(group => group.length)
+            .sum();
 
     const gini =
         groups
-        .filter(group => group.length != 0)
-        .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-        .sum();
+            .filter(group => group.length != 0)
+            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+            .sum();
 
     return gini;
 }
@@ -226,7 +228,7 @@ function decision_tree(train, test, max_depth, min_size) {
 Papa.parse("data/data_banknote_authentication.csv", {
     download: true,
     header: false,
-    complete: function(results) {
+    complete: function (results) {
         const dataset = results.data;
         // console.log(dataset);
         dataset.splice(0, 1);
