@@ -223,7 +223,7 @@ function decision_tree(train, test, max_depth, min_size) {
     return test.map(row => predict(tree, row));
 }
 
-Papa.parse("concept/data_banknote_authentication.csv", {
+Papa.parse("data/data_banknote_authentication.csv", {
     download: true,
     header: false,
     complete: function(results) {

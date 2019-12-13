@@ -171,7 +171,7 @@ def decision_tree(train, test, max_depth, min_size):
 # Test CART on Bank Note dataset
 seed(1)
 # load and prepare data
-filename = 'data_banknote_authentication.csv'
+filename = '../data/data_banknote_authentication.csv'
 dataset = load_csv(filename)
 #dataset = [[2.771244718,1.784783929,0],
 #	[1.728571309,1.169761413,0],
