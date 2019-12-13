@@ -9,3 +9,6 @@ C:\Users\Alfa\AppData\Local\Programs\Python\Python38-32\python.exe
 
 Abhängigkeiten:
 - https://www.papaparse.com/
+
+TODO:
+- Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
