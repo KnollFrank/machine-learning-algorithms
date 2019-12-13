@@ -4,6 +4,8 @@ Entscheidungsbäume
 - https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 - https://medium.com/@penggongting/implementing-decision-tree-from-scratch-in-python-c732e7c69aea
 - http://sigmajs.org/
+- https://lamastex.github.io/scalable-data-science/sds/2/2/db/016_SupervisedClustering_DecisionTrees_HandWrittenDigitRecognition/
+- https://transcranial.github.io/keras-js/#/mnist-cnn
 
 C:\Users\Alfa\AppData\Local\Programs\Python\Python38-32\python.exe
 
@@ -12,3 +14,4 @@ Abhängigkeiten:
 
 TODO:
 - Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
+- Laden/Speichern eines Modells für Entscheidungsbäume (= Graph)
