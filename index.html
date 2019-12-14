@@ -72,12 +72,16 @@
                     level: depth
                 };
                 let newLeftEdges =
-                    nodesLeft.map(nodeLeft => ({
+                    nodesLeft
+                    .filter(nodeLeft => nodeLeft.level == depth + 1)
+                    .map(nodeLeft => ({
                         from: newNode.id,
                         to: nodeLeft.id
                     }));
                 let newRightEdges =
-                    nodesRight.map(nodeRight => ({
+                    nodesRight
+                    .filter(nodeRight => nodeRight.level == depth + 1)
+                    .map(nodeRight => ({
                         from: newNode.id,
                         to: nodeRight.id
                     }));
