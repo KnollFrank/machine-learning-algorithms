@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Decision Trees</title>
     <script src="js/papaparse.min.js"></script>
-    <script src="js/decisionTree.js" defer></script>
+    <script src="js/idGenerator.js"></script>
+    <script src="js/decisionTree.js"></script>
     <style type="text/css">
         body {
             font: 10pt sans;
@@ -54,6 +55,49 @@
             });
         }
 
+        function createNetwork(node, depth = 0) {
+            if (typeof node === 'object') {
+                let {
+                    nodes: nodesLeft,
+                    edges: edgesLeft
+                } = createNetwork(node.left, depth + 1);
+                let {
+                    nodes: nodesRight,
+                    edges: edgesRight
+                } = createNetwork(node.right, depth + 1);
+                let id = newId();
+                let newNode = {
+                    id: id,
+                    label: String(id),
+                    level: depth
+                };
+                let newLeftEdges =
+                    nodesLeft.map(nodeLeft => ({
+                        from: newNode.id,
+                        to: nodeLeft.id
+                    }));
+                let newRightEdges =
+                    nodesRight.map(nodeRight => ({
+                        from: newNode.id,
+                        to: nodeRight.id
+                    }));
+                return {
+                    nodes: nodesLeft.concat(nodesRight, [newNode]),
+                    edges: edgesLeft.concat(edgesRight, newLeftEdges, newRightEdges)
+                };
+            } else {
+                let id = newId();
+                return {
+                    nodes: [{
+                        id: id,
+                        label: String(id),
+                        level: depth
+                    }],
+                    edges: []
+                };
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             Papa.parse("data/data_banknote_authentication.csv", {
                 download: true,
@@ -66,7 +110,7 @@
                     const min_size = 10;
                     const tree = build_tree(dataset, max_depth, min_size);
                     console.log('tree:');
-                    draw(getScaleFreeNetwork(25));
+                    draw(createNetwork(tree));
                     print_tree(tree);
                     const predicted = dataset.map(row => predict(tree, row));
                     console.log('Accuracy:', accuracy_metric(actualClassVals(dataset), predicted));
