@@ -77,15 +77,15 @@
 
             let newNode = createNode(depth);
 
-            const createNewEdges = nodes =>
-                nodes
-                .filter(node => node.level == depth + 1)
-                .map(node => ({
-                    from: newNode.id,
-                    to: node.id
+            const createOneLevelEdges = (fromNode, toNodes) =>
+                toNodes
+                .filter(toNode => toNode.level == fromNode.level + 1)
+                .map(toNode => ({
+                    from: fromNode.id,
+                    to: toNode.id
                 }));
 
-            let newEdges = createNewEdges(leftNetwork.nodes).concat(createNewEdges(rightNetwork.nodes));
+            let newEdges = createOneLevelEdges(newNode, leftNetwork.nodes).concat(createOneLevelEdges(newNode, rightNetwork.nodes));
 
             return {
                 nodes: [newNode].concat(leftNetwork.nodes, rightNetwork.nodes),
