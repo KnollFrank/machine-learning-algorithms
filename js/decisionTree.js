@@ -235,6 +235,7 @@ Papa.parse("data/data_banknote_authentication.csv", {
     complete: function(results) {
         const dataset = results.data;
         // console.log(dataset);
+        // remove header (= column names) of dataset
         dataset.splice(0, 1);
         // console.log(dataset);
         const n_folds = 5;
