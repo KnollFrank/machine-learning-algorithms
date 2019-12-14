@@ -34,10 +34,8 @@
             }
         }
 
-        function draw() {
+        function draw(data) {
             destroy();
-            // randomly create some nodes and edges
-            let data = getScaleFreeNetwork(25);
 
             // create a network
             let container = document.getElementById('mynetwork');
@@ -57,8 +55,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            draw();
-
             Papa.parse("data/data_banknote_authentication.csv", {
                 download: true,
                 header: false,
@@ -70,6 +66,7 @@
                     const min_size = 10;
                     const tree = build_tree(dataset, max_depth, min_size);
                     console.log('tree:');
+                    draw(getScaleFreeNetwork(25));
                     print_tree(tree);
                     const predicted = dataset.map(row => predict(tree, row));
                     console.log('Accuracy:', accuracy_metric(actualClassVals(dataset), predicted));
