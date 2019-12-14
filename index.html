@@ -68,15 +68,8 @@
         }
 
         function createNetworkNodesFromLeftAndRight(node, depth) {
-            let {
-                nodes: nodesLeft,
-                edges: edgesLeft
-            } = createNetwork(node.left, depth + 1);
-
-            let {
-                nodes: nodesRight,
-                edges: edgesRight
-            } = createNetwork(node.right, depth + 1);
+            let leftNetwork = createNetwork(node.left, depth + 1);
+            let rightNetwork = createNetwork(node.right, depth + 1);
 
             let id = newId();
             let newNode = {
@@ -93,9 +86,11 @@
                     to: node.id
                 }));
 
+            let newEdges = createNewEdges(leftNetwork.nodes).concat(createNewEdges(rightNetwork.nodes));
+
             return {
-                nodes: nodesLeft.concat(nodesRight, [newNode]),
-                edges: edgesLeft.concat(edgesRight, createNewEdges(nodesLeft), createNewEdges(nodesRight))
+                nodes: [newNode].concat(leftNetwork.nodes, rightNetwork.nodes),
+                edges: newEdges.concat(leftNetwork.edges, rightNetwork.edges)
             };
         }
 
