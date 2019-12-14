@@ -55,14 +55,18 @@
             });
         }
 
-        function createNetworkNode(depth) {
+        function createNode(depth) {
             let id = newId();
             return {
-                nodes: [{
-                    id: id,
-                    label: String(id),
-                    level: depth
-                }],
+                id: id,
+                label: String(id),
+                level: depth
+            };
+        }
+
+        function createNetworkNode(depth) {
+            return {
+                nodes: [createNode(depth)],
                 edges: []
             };
         }
@@ -71,12 +75,7 @@
             let leftNetwork = createNetwork(node.left, depth + 1);
             let rightNetwork = createNetwork(node.right, depth + 1);
 
-            let id = newId();
-            let newNode = {
-                id: id,
-                label: String(id),
-                level: depth
-            };
+            let newNode = createNode(depth);
 
             const createNewEdges = nodes =>
                 nodes
