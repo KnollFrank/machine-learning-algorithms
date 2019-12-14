@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function () {
+Array.prototype.sum = function() {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -82,29 +82,30 @@ function test_split(index, value, dataset) {
     return [left, right];
 }
 
+// Calculate the Gini index for a split dataset
 function gini_index(groups, classes) {
     const getP = group => class_val =>
         group
-            .map(getClassValFromRow)
-            .filter(classVal => classVal == class_val)
-            .length / group.length;
+        .map(getClassValFromRow)
+        .filter(classVal => classVal == class_val)
+        .length / group.length;
 
     const getScore = group =>
         classes
-            .map(getP(group))
-            .map(p => p * p)
-            .sum();
+        .map(getP(group))
+        .map(p => p * p)
+        .sum();
 
     const n_instances =
         groups
-            .map(group => group.length)
-            .sum();
+        .map(group => group.length)
+        .sum();
 
     const gini =
         groups
-            .filter(group => group.length != 0)
-            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-            .sum();
+        .filter(group => group.length != 0)
+        .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+        .sum();
 
     return gini;
 }
@@ -193,9 +194,12 @@ function getClassValFromRow(row) {
 
 // Build a decision tree
 function build_tree(train, max_depth, min_size) {
+    console.log('train:', train);
     const root = get_split(train);
-    split(root, max_depth, min_size, 1)
+    split(root, max_depth, min_size, 1);
+    console.log('BEGIN: tree');
     print_tree(root)
+    console.log('END: tree');
     return root;
 }
 
@@ -228,7 +232,7 @@ function decision_tree(train, test, max_depth, min_size) {
 Papa.parse("data/data_banknote_authentication.csv", {
     download: true,
     header: false,
-    complete: function (results) {
+    complete: function(results) {
         const dataset = results.data;
         // console.log(dataset);
         dataset.splice(0, 1);
