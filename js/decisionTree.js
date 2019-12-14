@@ -246,23 +246,6 @@ Papa.parse("data/data_banknote_authentication.csv", {
 });
 */
 
-Papa.parse("data/data_banknote_authentication.csv", {
-    download: true,
-    header: false,
-    complete: function(results) {
-        const dataset = results.data;
-        // remove header (= column names) of dataset
-        dataset.splice(0, 1);
-        const max_depth = 5;
-        const min_size = 10;
-        const tree = build_tree(dataset, max_depth, min_size);
-        console.log('tree:');
-        print_tree(tree);
-        const predicted = dataset.map(row => predict(tree, row));
-        console.log('Accuracy:', accuracy_metric(actualClassVals(dataset), predicted));
-    }
-});
-
 /*
         let gIndex = gini_index(
             [ // group:
