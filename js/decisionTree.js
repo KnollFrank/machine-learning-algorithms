@@ -3,7 +3,7 @@
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
 Array.prototype.sum = function() {
-    return this.reduce((sum, el) => sum + el, 0);
+    return this.reduce((sum, el) => sum + el, 0 + 0);
 };
 
 function getRndInteger(min, max) {
