@@ -55,50 +55,55 @@
             });
         }
 
-        function createNetwork(node, depth = 0) {
-            if (typeof node === 'object') {
-                let {
-                    nodes: nodesLeft,
-                    edges: edgesLeft
-                } = createNetwork(node.left, depth + 1);
-                let {
-                    nodes: nodesRight,
-                    edges: edgesRight
-                } = createNetwork(node.right, depth + 1);
-                let id = newId();
-                let newNode = {
+        function createNetworkNode(depth) {
+            let id = newId();
+            return {
+                nodes: [{
                     id: id,
                     label: String(id),
                     level: depth
-                };
-                let newLeftEdges =
-                    nodesLeft
-                    .filter(nodeLeft => nodeLeft.level == depth + 1)
-                    .map(nodeLeft => ({
-                        from: newNode.id,
-                        to: nodeLeft.id
-                    }));
-                let newRightEdges =
-                    nodesRight
-                    .filter(nodeRight => nodeRight.level == depth + 1)
-                    .map(nodeRight => ({
-                        from: newNode.id,
-                        to: nodeRight.id
-                    }));
-                return {
-                    nodes: nodesLeft.concat(nodesRight, [newNode]),
-                    edges: edgesLeft.concat(edgesRight, newLeftEdges, newRightEdges)
-                };
+                }],
+                edges: []
+            };
+        }
+
+        function createNetworkNodesFromLeftAndRight(node, depth) {
+            let {
+                nodes: nodesLeft,
+                edges: edgesLeft
+            } = createNetwork(node.left, depth + 1);
+
+            let {
+                nodes: nodesRight,
+                edges: edgesRight
+            } = createNetwork(node.right, depth + 1);
+
+            let id = newId();
+            let newNode = {
+                id: id,
+                label: String(id),
+                level: depth
+            };
+
+            const createNewEdges = nodes =>
+                nodes
+                .filter(node => node.level == depth + 1)
+                .map(node => ({
+                    from: newNode.id,
+                    to: node.id
+                }));
+
+            return {
+                nodes: nodesLeft.concat(nodesRight, [newNode]),
+                edges: edgesLeft.concat(edgesRight, createNewEdges(nodesLeft), createNewEdges(nodesRight))
+            };
+        }
+
+        function createNetwork(node, depth = 0) {
+            if (typeof node === 'object') {
+                return createNetworkNodesFromLeftAndRight(node, depth);
             } else {
-                let id = newId();
-                return {
-                    nodes: [{
-                        id: id,
-                        label: String(id),
-                        level: depth
-                    }],
-                    edges: []
-                };
+                return createNetworkNode(depth);
             }
         }
 
