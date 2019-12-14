@@ -38,6 +38,8 @@ function accuracy_metric(actual, predicted) {
     return correct / actual.length * 100.0;
 }
 
+const actualClassVals = fold => fold.map(getClassValFromRow);
+
 // Evaluate an algorithm using a cross validation split
 function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
     const folds = cross_validation_split(dataset, n_folds);
@@ -62,7 +64,6 @@ function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
             max_depth,
             min_size);
 
-    const actualClassVals = fold => fold.map(getClassValFromRow);
 
     const scores = folds.map((fold, index) => accuracy_metric(actualClassVals(fold), predictClassVals(fold, index)));
     return scores;
@@ -194,12 +195,8 @@ function getClassValFromRow(row) {
 
 // Build a decision tree
 function build_tree(train, max_depth, min_size) {
-    console.log('train:', train);
     const root = get_split(train);
     split(root, max_depth, min_size, 1);
-    console.log('BEGIN: tree');
-    print_tree(root)
-    console.log('END: tree');
     return root;
 }
 
@@ -229,6 +226,7 @@ function decision_tree(train, test, max_depth, min_size) {
     return test.map(row => predict(tree, row));
 }
 
+/*
 Papa.parse("data/data_banknote_authentication.csv", {
     download: true,
     header: false,
@@ -244,6 +242,25 @@ Papa.parse("data/data_banknote_authentication.csv", {
         const scores = evaluate_algorithm(dataset, decision_tree, n_folds, max_depth, min_size);
         console.log('Scores:', scores);
         console.log('Mean Accuracy:', scores.sum() / scores.length);
+    }
+});
+*/
+
+Papa.parse("data/data_banknote_authentication.csv", {
+    download: true,
+    header: false,
+    complete: function(results) {
+        const dataset = results.data;
+        // remove header (= column names) of dataset
+        dataset.splice(0, 1);
+        const max_depth = 5;
+        const min_size = 10;
+        const tree = build_tree(dataset, max_depth, min_size);
+        console.log('BEGIN: tree');
+        print_tree(tree);
+        console.log('END: tree');
+        const predicted = dataset.map(row => predict(tree, row));
+        console.log('Accuracy:', accuracy_metric(actualClassVals(dataset), predicted));
     }
 });
 
