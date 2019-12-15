@@ -117,7 +117,7 @@
                     const tree = build_tree(dataset, max_depth, min_size);
                     console.log('tree:');
                     draw(createNetwork(tree, attributeNames));
-                    print_tree(tree);
+                    print_tree(tree, attributeNames);
                     const predicted = dataset.map(row => predict(tree, row));
                     console.log('Accuracy:', accuracy_metric(actualClassVals(dataset), predicted));
                 }

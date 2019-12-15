@@ -201,11 +201,11 @@ function build_tree(train, max_depth, min_size) {
 }
 
 // Print a decision tree
-function print_tree(node, depth = 0) {
+function print_tree(node, attributeNames, depth = 0) {
     if (typeof node === 'object') {
-        console.log(`${' '.repeat(depth)}[X${node.index + 1} < ${node.value}]`);
-        print_tree(node.left, depth + 1);
-        print_tree(node.right, depth + 1);
+        console.log(`${' '.repeat(depth)}[${attributeNames[node.index]} < ${node.value}]`);
+        print_tree(node.left, attributeNames, depth + 1);
+        print_tree(node.right, attributeNames, depth + 1);
     } else {
         console.log(`${' '.repeat(depth)}[${node}]`);
     }
