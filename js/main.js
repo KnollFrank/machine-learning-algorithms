@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         download: true,
         header: false,
         complete: function(results) {
-            updatePage(getDatasetDescription(results.data));
+            onDatasetChanged(getDatasetDescription(results.data));
         }
     });
 });
@@ -26,7 +26,7 @@ function getDatasetDescription(dataset) {
     };
 }
 
-function updatePage(datasetDescription) {
+function onDatasetChanged(datasetDescription) {
     displayDatasetAsTable($('#datasetTable'), datasetDescription);
 
     let decisionTreeForm = document.querySelector('#decisionTreeForm');
@@ -34,25 +34,29 @@ function updatePage(datasetDescription) {
         "submit",
         e => {
             e.preventDefault();
-            const tree =
+
+            onDecisionTreeChanged(
+                datasetDescription,
                 build_tree(
                     datasetDescription.dataset,
                     getInputNumberById('max_depth'),
-                    getInputNumberById('min_size'));
-
-            displayNetwork(
-                document.querySelector('#decisionTreeNetwork'),
-                createNetwork(tree, datasetDescription.attributeNames.X));
-
-            displayAccuracy(tree, datasetDescription.dataset);
-
-            displayDataInput(
-                document.querySelector('#dataInputForm'),
-                datasetDescription.attributeNames.X,
-                tree);
+                    getInputNumberById('min_size')));
 
             return false;
         });
+}
+
+function onDecisionTreeChanged(datasetDescription, tree) {
+    displayNetwork(
+        document.querySelector('#decisionTreeNetwork'),
+        createNetwork(tree, datasetDescription.attributeNames.X));
+
+    displayAccuracy(tree, datasetDescription.dataset);
+
+    displayDataInput(
+        document.querySelector('#dataInputForm'),
+        datasetDescription.attributeNames.X,
+        tree);
 }
 
 function getInputNumberById(id) {
