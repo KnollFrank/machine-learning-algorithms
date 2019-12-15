@@ -12,6 +12,7 @@ C:\Users\Alfa\AppData\Local\Programs\Python\Python38-32\python.exe
 Abhängigkeiten:
 - https://www.papaparse.com/
 - https://visjs.org/ oder https://almende.github.io/vis/
+- https://datatables.net/
 
 TODO:
 - Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
