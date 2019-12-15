@@ -42,6 +42,11 @@
             return Number(document.querySelector('#' + id).value);
         }
 
+        function computeAccuracy(tree, dataset) {
+            const predicted = dataset.map(row => predict(tree, row));
+            return accuracy_percentage(actualClassVals(dataset), predicted);
+        }
+
         function updatePage(datasetDescription) {
             displayDatasetAsTable($('#datasetTable'), datasetDescription);
 
@@ -60,14 +65,14 @@
                         document.querySelector('#decisionTreeNetwork'),
                         createNetwork(tree, datasetDescription.attributeNames.X));
 
+                    const accuracy = computeAccuracy(tree, datasetDescription.dataset);
+                    document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
+
                     displayDataInput(
                         document.querySelector('#dataInputForm'),
                         datasetDescription.attributeNames.X,
                         tree);
 
-                    const predicted = datasetDescription.dataset.map(row => predict(tree, row));
-                    const accuracy = accuracy_percentage(actualClassVals(datasetDescription.dataset), predicted);
-                    document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
                     return false;
                 });
         }
