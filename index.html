@@ -73,24 +73,29 @@
             });
         }
 
-        function configureDataInput(attributeNames, tree) {
-            let dataInput = document.querySelector('#dataInput');
-
+        function appendInputElements(parent, attributeNames) {
             attributeNames
                 .slice(0, -1)
                 .map(createInputElement)
-                .forEach(inputElement => dataInput.appendChild(inputElement));
+                .forEach(inputElement => parent.appendChild(inputElement));
+        }
+
+        function getValuesFromInputElements(attributeNames) {
+            return attributeNames
+                .slice(0, -1)
+                .map(attributeName => document.querySelector(`#${attributeName}`).value);
+        }
+
+        function configureDataInput(attributeNames, tree) {
+            let dataInput = document.querySelector('#dataInput');
+
+            appendInputElements(dataInput, attributeNames);
 
             dataInput.addEventListener(
                 "submit",
                 e => {
                     e.preventDefault();
-                    const variance = document.querySelector('#variance').value;
-                    const skewness = document.querySelector('#skewness').value;
-                    const curtosis = document.querySelector('#curtosis').value;
-                    const entropy = document.querySelector('#entropy').value;
-                    const row = [variance, skewness, curtosis, entropy];
-                    const predicted = predict(tree, row);
+                    const predicted = predict(tree, getValuesFromInputElements(attributeNames));
                     document.querySelector('#predicted').innerHTML = predicted;
                     return false;
                 });
@@ -167,4 +172,4 @@
     </section>
 </body>
 
-</html>
+</htm
