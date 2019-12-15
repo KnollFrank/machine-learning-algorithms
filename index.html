@@ -9,6 +9,7 @@
     <script src="js/jquery.dataTables.js"></script>
     <script src="js/papaparse.min.js"></script>
     <script src="js/idGenerator.js"></script>
+    <script src="js/inputTemplate.js"></script>
     <script src="js/decisionTree.js"></script>
     <script src="js/network.js"></script>
     <link rel="stylesheet" href="styles/jquery.dataTables.css">
@@ -72,22 +73,27 @@
             });
         }
 
-        function configureDataInput(tree) {
-            document
-                .querySelector('#dataInput')
-                .addEventListener(
-                    "submit",
-                    e => {
-                        e.preventDefault();
-                        const variance = document.querySelector('#variance').value;
-                        const skewness = document.querySelector('#skewness').value;
-                        const curtosis = document.querySelector('#curtosis').value;
-                        const entropy = document.querySelector('#entropy').value;
-                        const row = [variance, skewness, curtosis, entropy];
-                        const predicted = predict(tree, row);
-                        document.querySelector('#predicted').innerHTML = predicted;
-                        return false;
-                    });
+        function configureDataInput(attributeNames, tree) {
+            let dataInput = document.querySelector('#dataInput');
+
+            attributeNames
+                .slice(0, -1)
+                .map(createInputElement)
+                .forEach(inputElement => dataInput.appendChild(inputElement));
+
+            dataInput.addEventListener(
+                "submit",
+                e => {
+                    e.preventDefault();
+                    const variance = document.querySelector('#variance').value;
+                    const skewness = document.querySelector('#skewness').value;
+                    const curtosis = document.querySelector('#curtosis').value;
+                    const entropy = document.querySelector('#entropy').value;
+                    const row = [variance, skewness, curtosis, entropy];
+                    const predicted = predict(tree, row);
+                    document.querySelector('#predicted').innerHTML = predicted;
+                    return false;
+                });
         }
 
         function displayDatasetAsTable(datasetDescription) {
@@ -126,7 +132,7 @@
                     const min_size = 10;
                     const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
 
-                    configureDataInput(tree);
+                    configureDataInput(datasetDescription.attributeNames, tree);
 
                     displayNetwork(createNetwork(tree, datasetDescription.attributeNames));
 
@@ -153,23 +159,6 @@
     <section>
         <h2>Dateneingabe</h2>
         <form id="dataInput">
-            <div>
-                <label for="variance">variance:</label>
-                <input type="text" id="variance" name="variance">
-            </div>
-            <div>
-                <label for="skewness">skewness:</label>
-                <input type="text" id="skewness" name="skewness">
-            </div>
-            <div>
-                <label for="curtosis">curtosis:</label>
-                <input type="text" id="curtosis" name="curtosis">
-            </div>
-            <div>
-                <label for="entropy">entropy:</label>
-                <input type="text" id="entropy" name="entropy">
-            </div>
-
             <input type="submit" value="vorhersagen">
         </form>
         <p>
