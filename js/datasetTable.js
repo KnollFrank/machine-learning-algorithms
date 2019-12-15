@@ -1,12 +1,22 @@
-function displayDatasetAsTable(datasetTable, datasetDescription) {
+function displayDatasetAsTable(datasetTableContainer, datasetDescription) {
+    // <table id="datasetTable" class="display" style="width:100%">
+    const table = document.createElement('table');
+    const newID = 'datasetTable' + newId();
+    table.setAttribute('id', newID);
+    table.classList.add('display');
+    table.setAttribute("style", "width:100%;");
+
+    datasetTableContainer.empty();
+    datasetTableContainer.append(table);
+
     let columns =
         datasetDescription.attributeNames.all.map(
             attributeName => ({
                 title: attributeName
             }));
 
-    datasetTable.DataTable({
+    $('#' + newID).DataTable({
         data: datasetDescription.dataset,
-        columns: columns
+        columns: columns,
     });
 }

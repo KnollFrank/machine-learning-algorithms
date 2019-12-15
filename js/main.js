@@ -1,14 +1,20 @@
 'use strict';
 
+// see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
+
 document.addEventListener('DOMContentLoaded', () => {
-    // const dataFile = 'data/data_banknote_authentication.csv';
-    const dataFile = 'data/processed.cleveland.csv';
-    Papa.parse(dataFile, {
-        download: true,
-        header: false,
-        complete: function(results) {
-            onDatasetChanged(getDatasetDescription(results.data));
-        }
+    document.querySelector('#csv-file').addEventListener('change', evt => {
+        // const dataFile = 'data/data_banknote_authentication.csv';
+        // const dataFile = 'data/processed.cleveland.csv';
+        const dataFile = evt.target.files[0];
+
+        Papa.parse(dataFile, {
+            download: true,
+            header: false,
+            complete: function(results) {
+                onDatasetChanged(getDatasetDescription(results.data));
+            }
+        });
     });
 });
 
@@ -29,7 +35,7 @@ function getDatasetDescription(dataset) {
 }
 
 function onDatasetChanged(datasetDescription) {
-    displayDatasetAsTable($('#datasetTable'), datasetDescription);
+    displayDatasetAsTable($('#datasetTableContainer'), datasetDescription);
 
     let decisionTreeForm = document.querySelector('#decisionTreeForm');
     decisionTreeForm.addEventListener(
