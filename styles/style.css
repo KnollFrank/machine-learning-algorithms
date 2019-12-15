@@ -1,0 +1,24 @@
+@charset "UTF-8";
+body {
+    font: 10pt sans;
+}
+
+#mynetwork {
+    width: 1000px;
+    height: 600px;
+    border: 1px solid lightgray;
+}
+
+#dataInputFields {
+    display: table;
+    border-spacing: 0.5em;
+}
+
+#dataInputFields>div {
+    display: table-row;
+}
+
+#dataInputFields>div>label,
+#dataInputFields>div>input {
+    display: table-cell;
+}
