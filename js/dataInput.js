@@ -8,7 +8,7 @@ function displayDataInput(dataInputForm, attributeNames, tree) {
         "submit",
         e => {
             e.preventDefault();
-            const predicted = predict(tree, getValuesFromInputElements(attributeNames));
+            const predicted = predict(tree, getInputNumbersById(attributeNames));
             document.querySelector('#predicted').innerHTML = predicted;
             return false;
         });
@@ -20,7 +20,6 @@ function appendInputElements(parent, attributeNames) {
         .forEach(inputElement => parent.appendChild(inputElement));
 }
 
-function getValuesFromInputElements(attributeNames) {
-    return attributeNames.map(attributeName =>
-        Number(document.querySelector(`#${attributeName}`).value));
+function getInputNumbersById(attributeNames) {
+    return attributeNames.map(getInputNumberById);
 }

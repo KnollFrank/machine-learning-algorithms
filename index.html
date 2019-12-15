@@ -38,6 +38,10 @@
             };
         }
 
+        function getInputNumberById(id) {
+            return Number(document.querySelector('#' + id).value);
+        }
+
         function updatePage(datasetDescription) {
             displayDatasetAsTable($('#datasetTable'), datasetDescription);
 
@@ -46,9 +50,11 @@
                 "submit",
                 e => {
                     e.preventDefault();
-                    const max_depth = Number(decisionTreeForm.querySelector('#max_depth').value);
-                    const min_size = Number(decisionTreeForm.querySelector('#min_size').value);
-                    const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
+                    const tree =
+                        build_tree(
+                            datasetDescription.dataset,
+                            getInputNumberById('max_depth'),
+                            getInputNumberById('min_size'));
 
                     displayNetwork(
                         document.querySelector('#decisionTreeNetwork'),
