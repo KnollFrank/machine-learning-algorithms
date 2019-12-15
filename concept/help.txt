@@ -61,3 +61,5 @@ def test_split_categorical(index, value, dataset):
 I ran the program on another dataset (Loan Prediction) and it worked fine with about 79% accuracy.
 - Bei "Dateneingabe -> vorhersagen" sollte der Pfad, der zu einer Vorhersage aufgrund
   der eingegebenen Werte führt, im Entscheidungsbaum farblich hervorgehoben werden.
+- Eingabe eines neuen Datensatzes
+- Aufteilung des Datensatzes in 80% Trainingsdaten und 20% Testdaten

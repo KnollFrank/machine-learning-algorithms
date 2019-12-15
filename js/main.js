@@ -1,7 +1,9 @@
 'use strict';
 
 document.addEventListener('DOMContentLoaded', () => {
-    Papa.parse("data/data_banknote_authentication.csv", {
+    // const dataFile = 'data/data_banknote_authentication.csv';
+    const dataFile = 'data/processed.cleveland.csv';
+    Papa.parse(dataFile, {
         download: true,
         header: false,
         complete: function(results) {
