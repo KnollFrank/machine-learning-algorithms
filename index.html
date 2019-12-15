@@ -110,14 +110,24 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            function getDatasetDescription(dataset) {
+                let attributeNames = dataset[0];
+                // remove header (= column names) of dataset
+                dataset.splice(0, 1);
+                return {
+                    attributeNames: attributeNames,
+                    dataset: dataset
+                };
+            }
+
             Papa.parse("data/data_banknote_authentication.csv", {
                 download: true,
                 header: false,
                 complete: function(results) {
-                    const dataset = results.data;
-                    let attributeNames = dataset[0];
-                    // remove header (= column names) of dataset
-                    dataset.splice(0, 1)
+                    const {
+                        attributeNames,
+                        dataset
+                    } = getDatasetDescription(results.data);
 
                     console.log('dataset:', dataset);
                     showTable(dataset);
