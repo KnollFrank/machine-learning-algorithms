@@ -1,6 +1,7 @@
 function displayDataInput(dataInputForm, attributeNames, tree) {
     let dataInputFields = document.querySelector('.dataInputFields');
 
+    dataInputFields.innerHTML = '';
     appendInputElements(dataInputFields, attributeNames);
 
     dataInputForm.addEventListener(

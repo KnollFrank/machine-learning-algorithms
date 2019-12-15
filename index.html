@@ -39,15 +39,9 @@
             };
         }
 
-        function updatePage(datasetDescription) {
-            displayDatasetAsTable($('#datasetTable'), datasetDescription);
-
-            const max_depth = 5;
-            const min_size = 10;
-            const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
-
+        function treeChanged(tree, datasetDescription) {
             displayNetwork(
-                document.querySelector('#mynetwork'),
+                document.querySelector('#decisionTreeNetwork'),
                 createNetwork(tree, datasetDescription.attributeNames.X));
 
             displayDataInput(
@@ -57,6 +51,28 @@
 
             const predicted = datasetDescription.dataset.map(row => predict(tree, row));
             console.log('Accuracy:', accuracy_metric(actualClassVals(datasetDescription.dataset), predicted));
+        }
+
+        function updatePage(datasetDescription) {
+            displayDatasetAsTable($('#datasetTable'), datasetDescription);
+
+            const max_depth = 5;
+            const min_size = 10;
+            let decisionTreeForm = document.querySelector('#decisionTreeForm');
+
+            decisionTreeForm.addEventListener(
+                "submit",
+                e => {
+                    e.preventDefault();
+                    const max_depth = Number(decisionTreeForm.querySelector('#max_depth').value);
+                    const min_size = Number(decisionTreeForm.querySelector('#min_size').value);
+                    const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
+                    treeChanged(tree, datasetDescription);
+                    return false;
+                });
+
+            const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
+            treeChanged(tree, datasetDescription);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -80,7 +96,18 @@
     </section>
     <section>
         <h2>Entscheidungsbaum</h2>
-        <div id="mynetwork"></div>
+        <form id="decisionTreeForm">
+            <div>
+                <label for="max_depth">max_depth:</label>
+                <input id="max_depth" type="text" value="5">
+            </div>
+            <div>
+                <label for="min_size">min_size:</label>
+                <input id="min_size" type="text" value="10">
+            </div>
+            <input type="submit" value="Go">
+        </form>
+        <div id="decisionTreeNetwork"></div>
         <p id="selection"></p>
     </section>
     <section>
