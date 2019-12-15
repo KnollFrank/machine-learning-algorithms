@@ -120,7 +120,6 @@
                 complete: function(results) {
                     const datasetDescription = getDatasetDescription(results.data);
 
-                    console.log('dataset:', datasetDescription.dataset);
                     displayDatasetAsTable(datasetDescription);
 
                     const max_depth = 5;
@@ -128,9 +127,6 @@
                     const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
 
                     configureDataInput(tree);
-
-                    console.log('tree:');
-                    print_tree(tree, datasetDescription.attributeNames);
 
                     displayNetwork(createNetwork(tree, datasetDescription.attributeNames));
 
