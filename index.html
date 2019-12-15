@@ -66,7 +66,8 @@
                         tree);
 
                     const predicted = datasetDescription.dataset.map(row => predict(tree, row));
-                    console.log('Accuracy:', accuracy_metric(actualClassVals(datasetDescription.dataset), predicted));
+                    const accuracy = accuracy_percentage(actualClassVals(datasetDescription.dataset), predicted);
+                    document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
                     return false;
                 });
         }
@@ -107,6 +108,9 @@
         </form>
         <div id="decisionTreeNetwork"></div>
         <p id="selection"></p>
+        <p>
+            Accuracy: <span id="accuracy"></span>
+        </p>
     </section>
     <section>
         <h2>Dateneingabe</h2>

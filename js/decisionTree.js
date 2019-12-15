@@ -28,7 +28,7 @@ function cross_validation_split(dataset, n_folds) {
 }
 
 // Calculate accuracy percentage
-function accuracy_metric(actual, predicted) {
+function accuracy_percentage(actual, predicted) {
     let correct = 0;
     for (let i = 0; i < actual.length; i++) {
         if (actual[i] == predicted[i]) {
@@ -65,7 +65,7 @@ function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
             min_size);
 
 
-    const scores = folds.map((fold, index) => accuracy_metric(actualClassVals(fold), predictClassVals(fold, index)));
+    const scores = folds.map((fold, index) => accuracy_percentage(actualClassVals(fold), predictClassVals(fold, index)));
     return scores;
 }
 
