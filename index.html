@@ -109,17 +109,17 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            function getDatasetDescription(dataset) {
-                let attributeNames = dataset[0];
-                // remove header (= column names) of dataset
-                dataset.splice(0, 1);
-                return {
-                    attributeNames: attributeNames,
-                    dataset: dataset
-                };
-            }
+        function getDatasetDescription(dataset) {
+            let attributeNames = dataset[0];
+            // remove header (= column names) of dataset
+            dataset.splice(0, 1);
+            return {
+                attributeNames: attributeNames,
+                dataset: dataset
+            };
+        }
 
+        document.addEventListener('DOMContentLoaded', () => {
             Papa.parse("data/data_banknote_authentication.csv", {
                 download: true,
                 header: false,
