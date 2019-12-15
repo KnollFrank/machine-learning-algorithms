@@ -55,18 +55,18 @@
             });
         }
 
-        function createNode(depth) {
+        function createNode(label, depth) {
             let id = newId();
             return {
                 id: id,
-                label: String(id),
+                label: label,
                 level: depth
             };
         }
 
-        function createNetworkNode(depth) {
+        function createNetworkNode(label, depth) {
             return {
-                nodes: [createNode(depth)],
+                nodes: [createNode(label, depth)],
                 edges: []
             };
         }
@@ -75,7 +75,7 @@
             let leftNetwork = createNetwork(node.left, depth + 1);
             let rightNetwork = createNetwork(node.right, depth + 1);
 
-            let newNode = createNode(depth);
+            let newNode = createNode(`[X${node.index + 1} < ${node.value}]`, depth);
 
             const createOneLevelEdges = (fromNode, toNodes) =>
                 toNodes
@@ -97,7 +97,7 @@
             if (typeof node === 'object') {
                 return createNetworkNodesFromLeftAndRight(node, depth);
             } else {
-                return createNetworkNode(depth);
+                return createNetworkNode(node, depth);
             }
         }
 
