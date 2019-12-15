@@ -22,6 +22,16 @@
     <script type="text/javascript">
         'use strict';
 
+        document.addEventListener('DOMContentLoaded', () => {
+            Papa.parse("data/data_banknote_authentication.csv", {
+                download: true,
+                header: false,
+                complete: function(results) {
+                    updatePage(getDatasetDescription(results.data));
+                }
+            });
+        });
+
         function getDatasetDescription(dataset) {
             let attributeNames = dataset[0];
             // remove header (= column names) of dataset
@@ -36,15 +46,6 @@
                 },
                 dataset: dataset
             };
-        }
-
-        function getInputNumberById(id) {
-            return Number(document.querySelector('#' + id).value);
-        }
-
-        function computeAccuracy(tree, dataset) {
-            const predicted = dataset.map(row => predict(tree, row));
-            return accuracy_percentage(actualClassVals(dataset), predicted);
         }
 
         function updatePage(datasetDescription) {
@@ -65,8 +66,7 @@
                         document.querySelector('#decisionTreeNetwork'),
                         createNetwork(tree, datasetDescription.attributeNames.X));
 
-                    const accuracy = computeAccuracy(tree, datasetDescription.dataset);
-                    document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
+                    displayAccuracy(tree, datasetDescription.dataset);
 
                     displayDataInput(
                         document.querySelector('#dataInputForm'),
@@ -77,15 +77,19 @@
                 });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            Papa.parse("data/data_banknote_authentication.csv", {
-                download: true,
-                header: false,
-                complete: function(results) {
-                    updatePage(getDatasetDescription(results.data));
-                }
-            });
-        });
+        function getInputNumberById(id) {
+            return Number(document.querySelector('#' + id).value);
+        }
+
+        function displayAccuracy(tree, dataset) {
+            const accuracy = computeAccuracy(tree, dataset);
+            document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
+        }
+
+        function computeAccuracy(tree, dataset) {
+            const predicted = dataset.map(row => predict(tree, row));
+            return accuracy_percentage(actualClassVals(dataset), predicted);
+        }
     </script>
 </head>
 
