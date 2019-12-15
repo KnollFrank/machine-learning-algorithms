@@ -19,6 +19,20 @@
             height: 600px;
             border: 1px solid lightgray;
         }
+        
+        #dataInput {
+            display: table;
+            border-spacing: 0.5em;
+        }
+        
+        #dataInput>div {
+            display: table-row;
+        }
+        
+        #dataInput>div>label,
+        #dataInput>div>input {
+            display: table-cell;
+        }
     </style>
 
     <script type="text/javascript" src="js/vis-4.21.0/examples/network/exampleUtil.js"></script>
@@ -109,17 +123,22 @@
     <section>
         <h2>Dateneingabe</h2>
         <form id="dataInput">
-            <label for="variance">variance:</label>
-            <input type="text" id="variance" name="variance">
-
-            <label for="skewness">skewness:</label>
-            <input type="text" id="skewness" name="skewness">
-
-            <label for="curtosis">curtosis:</label>
-            <input type="text" id="curtosis" name="curtosis">
-
-            <label for="entropy">entropy:</label>
-            <input type="text" id="entropy" name="entropy">
+            <div>
+                <label for="variance">variance:</label>
+                <input type="text" id="variance" name="variance">
+            </div>
+            <div>
+                <label for="skewness">skewness:</label>
+                <input type="text" id="skewness" name="skewness">
+            </div>
+            <div>
+                <label for="curtosis">curtosis:</label>
+                <input type="text" id="curtosis" name="curtosis">
+            </div>
+            <div>
+                <label for="entropy">entropy:</label>
+                <input type="text" id="entropy" name="entropy">
+            </div>
 
             <input type="submit" value="predict">
         </form>
