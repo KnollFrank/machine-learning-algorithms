@@ -60,7 +60,8 @@
             return {
                 id: id,
                 label: label,
-                level: depth
+                level: depth,
+                shape: 'box'
             };
         }
 
@@ -77,15 +78,16 @@
 
             let newNode = createNode(`[X${node.index + 1} < ${node.value}]`, depth);
 
-            const createOneLevelEdges = (fromNode, toNodes) =>
+            const createOneLevelEdges = (fromNode, toNodes, label) =>
                 toNodes
                 .filter(toNode => toNode.level == fromNode.level + 1)
                 .map(toNode => ({
                     from: fromNode.id,
-                    to: toNode.id
+                    to: toNode.id,
+                    label: label
                 }));
 
-            let newEdges = createOneLevelEdges(newNode, leftNetwork.nodes).concat(createOneLevelEdges(newNode, rightNetwork.nodes));
+            let newEdges = createOneLevelEdges(newNode, leftNetwork.nodes, "true").concat(createOneLevelEdges(newNode, rightNetwork.nodes, "false"));
 
             return {
                 nodes: [newNode].concat(leftNetwork.nodes, rightNetwork.nodes),
