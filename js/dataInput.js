@@ -15,13 +15,11 @@ function configureDataInput(dataInputForm, attributeNames, tree) {
 
 function appendInputElements(parent, attributeNames) {
     attributeNames
-        .slice(0, -1)
         .map(createInputElement)
         .forEach(inputElement => parent.appendChild(inputElement));
 }
 
 function getValuesFromInputElements(attributeNames) {
-    return attributeNames
-        .slice(0, -1)
-        .map(attributeName => Number(document.querySelector(`#${attributeName}`).value));
+    return attributeNames.map(attributeName =>
+        Number(document.querySelector(`#${attributeName}`).value));
 }

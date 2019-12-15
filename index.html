@@ -28,7 +28,11 @@
             // remove header (= column names) of dataset
             dataset.splice(0, 1);
             return {
-                attributeNames: attributeNames,
+                attributeNames: {
+                    X: attributeNames.slice(0, -1),
+                    y: attributeNames[attributeNames.length - 1],
+                    all: attributeNames
+                },
                 dataset: dataset
             };
         }
@@ -48,11 +52,11 @@
 
                     displayNetwork(
                         document.querySelector('#mynetwork'),
-                        createNetwork(tree, datasetDescription.attributeNames));
+                        createNetwork(tree, datasetDescription.attributeNames.X));
 
                     configureDataInput(
                         document.querySelector('#dataInputForm'),
-                        datasetDescription.attributeNames,
+                        datasetDescription.attributeNames.X,
                         tree);
 
                     const predicted = datasetDescription.dataset.map(row => predict(tree, row));

@@ -1,6 +1,6 @@
 function displayDatasetAsTable(datasetTable, datasetDescription) {
     let columns =
-        datasetDescription.attributeNames.map(
+        datasetDescription.attributeNames.all.map(
             attributeName => ({
                 title: attributeName
             }));
