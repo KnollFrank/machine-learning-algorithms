@@ -24,17 +24,17 @@
             border: 1px solid lightgray;
         }
         
-        #dataInput {
+        #dataInputFields {
             display: table;
             border-spacing: 0.5em;
         }
         
-        #dataInput>div {
+        #dataInputFields>div {
             display: table-row;
         }
         
-        #dataInput>div>label,
-        #dataInput>div>input {
+        #dataInputFields>div>label,
+        #dataInputFields>div>input {
             display: table-cell;
         }
     </style>
@@ -87,11 +87,12 @@
         }
 
         function configureDataInput(attributeNames, tree) {
-            let dataInput = document.querySelector('#dataInput');
+            let dataInputForm = document.querySelector('#dataInputForm');
+            let dataInputFields = document.querySelector('#dataInputFields');
 
-            appendInputElements(dataInput, attributeNames);
+            appendInputElements(dataInputFields, attributeNames);
 
-            dataInput.addEventListener(
+            dataInputForm.addEventListener(
                 "submit",
                 e => {
                     e.preventDefault();
@@ -163,7 +164,8 @@
     </section>
     <section>
         <h2>Dateneingabe</h2>
-        <form id="dataInput">
+        <form id="dataInputForm">
+            <div id="dataInputFields"></div>
             <input type="submit" value="vorhersagen">
         </form>
         <p>
