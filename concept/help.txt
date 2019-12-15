@@ -59,3 +59,5 @@ def test_split_categorical(index, value, dataset):
 		split_condition = (row[node['index']] == node['value'])
 
 I ran the program on another dataset (Loan Prediction) and it worked fine with about 79% accuracy.
+- Bei "Dateneingabe -> vorhersagen" sollte der Pfad, der zu einer Vorhersage aufgrund
+  der eingegebenen Werte führt, im Entscheidungsbaum farblich hervorgehoben werden.
