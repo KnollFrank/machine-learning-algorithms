@@ -12,7 +12,7 @@ function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth
     let leftNetwork = createNetwork(node.left, attributeNames, depth + 1);
     let rightNetwork = createNetwork(node.right, attributeNames, depth + 1);
 
-    let newNode = createNode(`[${attributeNames[node.index]} < ${node.value}]`, depth);
+    let newNode = createNode(`${attributeNames[node.index]} < ${node.value}`, depth);
 
     const createOneLevelEdges = (fromNode, toNodes, label) =>
         toNodes
