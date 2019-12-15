@@ -1,6 +1,5 @@
-function configureDataInput(attributeNames, tree) {
-    let dataInputForm = document.querySelector('#dataInputForm');
-    let dataInputFields = document.querySelector('#dataInputFields');
+function configureDataInput(dataInputForm, attributeNames, tree) {
+    let dataInputFields = document.querySelector('.dataInputFields');
 
     appendInputElements(dataInputFields, attributeNames);
 
@@ -24,5 +23,5 @@ function appendInputElements(parent, attributeNames) {
 function getValuesFromInputElements(attributeNames) {
     return attributeNames
         .slice(0, -1)
-        .map(attributeName => document.querySelector(`#${attributeName}`).value);
+        .map(attributeName => Number(document.querySelector(`#${attributeName}`).value));
 }

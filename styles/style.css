@@ -9,16 +9,16 @@ body {
     border: 1px solid lightgray;
 }
 
-#dataInputFields {
+.dataInputFields {
     display: table;
     border-spacing: 0.5em;
 }
 
-#dataInputFields>div {
+.dataInputFields>div {
     display: table-row;
 }
 
-#dataInputFields>div>label,
-#dataInputFields>div>input {
+.dataInputFields>div>label,
+.dataInputFields>div>input {
     display: table-cell;
 }

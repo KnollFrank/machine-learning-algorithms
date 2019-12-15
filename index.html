@@ -58,7 +58,10 @@
                     const min_size = 10;
                     const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
 
-                    configureDataInput(datasetDescription.attributeNames, tree);
+                    configureDataInput(
+                        document.querySelector('#dataInputForm'),
+                        datasetDescription.attributeNames,
+                        tree);
 
                     displayNetwork(
                         document.querySelector('#mynetwork'),
@@ -87,7 +90,7 @@
     <section>
         <h2>Dateneingabe</h2>
         <form id="dataInputForm">
-            <div id="dataInputFields"></div>
+            <div class="dataInputFields"></div>
             <input type="submit" value="vorhersagen">
         </form>
         <p>
