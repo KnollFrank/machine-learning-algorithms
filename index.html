@@ -31,7 +31,9 @@
                 attributeNames: {
                     X: attributeNames.slice(0, -1),
                     y: attributeNames[attributeNames.length - 1],
-                    all: attributeNames
+                    get all() {
+                        return this.X.concat(this.y);
+                    }
                 },
                 dataset: dataset
             };
