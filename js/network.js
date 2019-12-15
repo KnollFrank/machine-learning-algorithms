@@ -50,3 +50,31 @@ function createNode(label, depth) {
         shape: 'box'
     };
 }
+
+let network = null;
+
+function destroyNetwork() {
+    if (network !== null) {
+        network.destroy();
+        network = null;
+    }
+}
+
+function displayNetwork(container, data) {
+    destroyNetwork();
+
+    // create a network
+    const options = {
+        layout: {
+            hierarchical: {
+                direction: "UD"
+            }
+        }
+    };
+    network = new vis.Network(container, data, options);
+
+    // add event listeners
+    network.on('select', function(params) {
+        document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
+    });
+}

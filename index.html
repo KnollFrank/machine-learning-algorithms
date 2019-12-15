@@ -20,34 +20,7 @@
 
     <script type="text/javascript">
         'use strict';
-        let network = null;
 
-        function destroyNetwork() {
-            if (network !== null) {
-                network.destroy();
-                network = null;
-            }
-        }
-
-        function displayNetwork(data) {
-            destroyNetwork();
-
-            // create a network
-            let container = document.querySelector('#mynetwork');
-            let options = {
-                layout: {
-                    hierarchical: {
-                        direction: "UD"
-                    }
-                }
-            };
-            network = new vis.Network(container, data, options);
-
-            // add event listeners
-            network.on('select', function(params) {
-                document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
-            });
-        }
 
         function appendInputElements(parent, attributeNames) {
             attributeNames
@@ -116,7 +89,9 @@
 
                     configureDataInput(datasetDescription.attributeNames, tree);
 
-                    displayNetwork(createNetwork(tree, datasetDescription.attributeNames));
+                    displayNetwork(
+                        document.querySelector('#mynetwork'),
+                        createNetwork(tree, datasetDescription.attributeNames));
 
                     const predicted = datasetDescription.dataset.map(row => predict(tree, row));
                     console.log('Accuracy:', accuracy_metric(actualClassVals(datasetDescription.dataset), predicted));
