@@ -14,10 +14,9 @@
     <script src="js/decisionTree.js"></script>
     <script src="js/datasetTable.js"></script>
     <script src="js/network.js"></script>
+    <script type="text/javascript" src="js/vis-4.21.0/dist/vis.js"></script>
     <link rel="stylesheet" href="styles/jquery.dataTables.css">
     <link rel="stylesheet" href="styles/style.css">
-
-    <script type="text/javascript" src="js/vis-4.21.0/dist/vis.js"></script>
     <link href="js/vis-4.21.0/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
 
     <script type="text/javascript">
@@ -39,27 +38,10 @@
             };
         }
 
-        function treeChanged(tree, datasetDescription) {
-            displayNetwork(
-                document.querySelector('#decisionTreeNetwork'),
-                createNetwork(tree, datasetDescription.attributeNames.X));
-
-            displayDataInput(
-                document.querySelector('#dataInputForm'),
-                datasetDescription.attributeNames.X,
-                tree);
-
-            const predicted = datasetDescription.dataset.map(row => predict(tree, row));
-            console.log('Accuracy:', accuracy_metric(actualClassVals(datasetDescription.dataset), predicted));
-        }
-
         function updatePage(datasetDescription) {
             displayDatasetAsTable($('#datasetTable'), datasetDescription);
 
-            const max_depth = 5;
-            const min_size = 10;
             let decisionTreeForm = document.querySelector('#decisionTreeForm');
-
             decisionTreeForm.addEventListener(
                 "submit",
                 e => {
@@ -67,12 +49,20 @@
                     const max_depth = Number(decisionTreeForm.querySelector('#max_depth').value);
                     const min_size = Number(decisionTreeForm.querySelector('#min_size').value);
                     const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
-                    treeChanged(tree, datasetDescription);
+
+                    displayNetwork(
+                        document.querySelector('#decisionTreeNetwork'),
+                        createNetwork(tree, datasetDescription.attributeNames.X));
+
+                    displayDataInput(
+                        document.querySelector('#dataInputForm'),
+                        datasetDescription.attributeNames.X,
+                        tree);
+
+                    const predicted = datasetDescription.dataset.map(row => predict(tree, row));
+                    console.log('Accuracy:', accuracy_metric(actualClassVals(datasetDescription.dataset), predicted));
                     return false;
                 });
-
-            const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
-            treeChanged(tree, datasetDescription);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
