@@ -55,24 +55,15 @@
             });
         }
 
-        function createNode(label, depth) {
-            let id = newId();
-            return {
-                id: id,
-                label: label,
-                level: depth,
-                shape: 'box'
-            };
+        function createNetwork(node, attributeNames, depth = 0) {
+            if (typeof node === 'object') {
+                return createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth);
+            } else {
+                return createNetworkNode(node, depth);
+            }
         }
 
-        function createNetworkNode(label, depth) {
-            return {
-                nodes: [createNode(label, depth)],
-                edges: []
-            };
-        }
-
-        function createNetworkNodesFromLeftAndRight(node, attributeNames, depth) {
+        function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth) {
             let leftNetwork = createNetwork(node.left, attributeNames, depth + 1);
             let rightNetwork = createNetwork(node.right, attributeNames, depth + 1);
 
@@ -87,7 +78,10 @@
                     label: label
                 }));
 
-            let newEdges = createOneLevelEdges(newNode, leftNetwork.nodes, "true").concat(createOneLevelEdges(newNode, rightNetwork.nodes, "false"));
+            let newEdges =
+                createOneLevelEdges(newNode, leftNetwork.nodes, "true")
+                .concat(
+                    createOneLevelEdges(newNode, rightNetwork.nodes, "false"));
 
             return {
                 nodes: [newNode].concat(leftNetwork.nodes, rightNetwork.nodes),
@@ -95,12 +89,21 @@
             };
         }
 
-        function createNetwork(node, attributeNames, depth = 0) {
-            if (typeof node === 'object') {
-                return createNetworkNodesFromLeftAndRight(node, attributeNames, depth);
-            } else {
-                return createNetworkNode(node, depth);
-            }
+        function createNetworkNode(label, depth) {
+            return {
+                nodes: [createNode(label, depth)],
+                edges: []
+            };
+        }
+
+        function createNode(label, depth) {
+            let id = newId();
+            return {
+                id: id,
+                label: label,
+                level: depth,
+                shape: 'box'
+            };
         }
 
         document.addEventListener('DOMContentLoaded', () => {
