@@ -12,6 +12,7 @@
     <script src="js/inputTemplate.js"></script>
     <script src="js/dataInput.js"></script>
     <script src="js/decisionTree.js"></script>
+    <script src="js/datasetTable.js"></script>
     <script src="js/network.js"></script>
     <link rel="stylesheet" href="styles/jquery.dataTables.css">
     <link rel="stylesheet" href="styles/style.css">
@@ -21,19 +22,6 @@
 
     <script type="text/javascript">
         'use strict';
-
-        function displayDatasetAsTable(datasetDescription) {
-            let columns =
-                datasetDescription.attributeNames.map(
-                    attributeName => ({
-                        title: attributeName
-                    }));
-
-            $('#example').DataTable({
-                data: datasetDescription.dataset,
-                columns: columns
-            });
-        }
 
         function getDatasetDescription(dataset) {
             let attributeNames = dataset[0];
@@ -79,7 +67,7 @@
     <h1>Entscheidungsbäume</h1>
     <section>
         <h2>Eingabedaten</h2>
-        <table id="example" class="display" style="width:100%">
+        <table id="datasetTable" class="display" style="width:100%">
         </table>
     </section>
     <section>
