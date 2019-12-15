@@ -45,15 +45,15 @@
         'use strict';
         let network = null;
 
-        function destroy() {
+        function destroyNetwork() {
             if (network !== null) {
                 network.destroy();
                 network = null;
             }
         }
 
-        function draw(data) {
-            destroy();
+        function displayNetwork(data) {
+            destroyNetwork();
 
             // create a network
             let container = document.getElementById('mynetwork');
@@ -132,7 +132,7 @@
                     console.log('tree:');
                     print_tree(tree, datasetDescription.attributeNames);
 
-                    draw(createNetwork(tree, datasetDescription.attributeNames));
+                    displayNetwork(createNetwork(tree, datasetDescription.attributeNames));
 
                     const predicted = datasetDescription.dataset.map(row => predict(tree, row));
                     console.log('Accuracy:', accuracy_metric(actualClassVals(datasetDescription.dataset), predicted));
