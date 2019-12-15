@@ -1,4 +1,4 @@
-function configureDataInput(dataInputForm, attributeNames, tree) {
+function displayDataInput(dataInputForm, attributeNames, tree) {
     let dataInputFields = document.querySelector('.dataInputFields');
 
     appendInputElements(dataInputFields, attributeNames);
