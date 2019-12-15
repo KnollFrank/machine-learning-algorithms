@@ -1,11 +1,11 @@
-function displayDatasetAsTable(datasetDescription) {
+function displayDatasetAsTable(datasetTable, datasetDescription) {
     let columns =
         datasetDescription.attributeNames.map(
             attributeName => ({
                 title: attributeName
             }));
 
-    $('#datasetTable').DataTable({
+    datasetTable.DataTable({
         data: datasetDescription.dataset,
         columns: columns
     });

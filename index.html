@@ -40,20 +40,20 @@
                 complete: function(results) {
                     const datasetDescription = getDatasetDescription(results.data);
 
-                    displayDatasetAsTable(datasetDescription);
+                    displayDatasetAsTable($('#datasetTable'), datasetDescription);
 
                     const max_depth = 5;
                     const min_size = 10;
                     const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
 
+                    displayNetwork(
+                        document.querySelector('#mynetwork'),
+                        createNetwork(tree, datasetDescription.attributeNames));
+
                     configureDataInput(
                         document.querySelector('#dataInputForm'),
                         datasetDescription.attributeNames,
                         tree);
-
-                    displayNetwork(
-                        document.querySelector('#mynetwork'),
-                        createNetwork(tree, datasetDescription.attributeNames));
 
                     const predicted = datasetDescription.dataset.map(row => predict(tree, row));
                     console.log('Accuracy:', accuracy_metric(actualClassVals(datasetDescription.dataset), predicted));
