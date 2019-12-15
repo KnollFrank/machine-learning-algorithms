@@ -92,20 +92,16 @@
                     });
         }
 
-        function showTable(data) {
+        function displayDatasetAsTable(datasetDescription) {
+            let columns =
+                datasetDescription.attributeNames.map(
+                    attributeName => ({
+                        title: attributeName
+                    }));
+
             $('#example').DataTable({
-                data: data,
-                columns: [{
-                    title: 'variance'
-                }, {
-                    title: 'skewness'
-                }, {
-                    title: 'curtosis'
-                }, {
-                    title: 'entropy'
-                }, {
-                    title: 'class'
-                }]
+                data: datasetDescription.dataset,
+                columns: columns
             });
         }
 
@@ -124,27 +120,24 @@
                 download: true,
                 header: false,
                 complete: function(results) {
-                    const {
-                        attributeNames,
-                        dataset
-                    } = getDatasetDescription(results.data);
+                    const datasetDescription = getDatasetDescription(results.data);
 
-                    console.log('dataset:', dataset);
-                    showTable(dataset);
+                    console.log('dataset:', datasetDescription.dataset);
+                    displayDatasetAsTable(datasetDescription);
 
                     const max_depth = 5;
                     const min_size = 10;
-                    const tree = build_tree(dataset, max_depth, min_size);
+                    const tree = build_tree(datasetDescription.dataset, max_depth, min_size);
 
                     configureDataInput(tree);
 
                     console.log('tree:');
-                    print_tree(tree, attributeNames);
+                    print_tree(tree, datasetDescription.attributeNames);
 
-                    draw(createNetwork(tree, attributeNames));
+                    draw(createNetwork(tree, datasetDescription.attributeNames));
 
-                    const predicted = dataset.map(row => predict(tree, row));
-                    console.log('Accuracy:', accuracy_metric(actualClassVals(dataset), predicted));
+                    const predicted = datasetDescription.dataset.map(row => predict(tree, row));
+                    console.log('Accuracy:', accuracy_metric(actualClassVals(datasetDescription.dataset), predicted));
                 }
             });
         });
