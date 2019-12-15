@@ -10,6 +10,7 @@
     <script src="js/papaparse.min.js"></script>
     <script src="js/idGenerator.js"></script>
     <script src="js/inputTemplate.js"></script>
+    <script src="js/dataInput.js"></script>
     <script src="js/decisionTree.js"></script>
     <script src="js/network.js"></script>
     <link rel="stylesheet" href="styles/jquery.dataTables.css">
@@ -20,36 +21,6 @@
 
     <script type="text/javascript">
         'use strict';
-
-
-        function appendInputElements(parent, attributeNames) {
-            attributeNames
-                .slice(0, -1)
-                .map(createInputElement)
-                .forEach(inputElement => parent.appendChild(inputElement));
-        }
-
-        function getValuesFromInputElements(attributeNames) {
-            return attributeNames
-                .slice(0, -1)
-                .map(attributeName => document.querySelector(`#${attributeName}`).value);
-        }
-
-        function configureDataInput(attributeNames, tree) {
-            let dataInputForm = document.querySelector('#dataInputForm');
-            let dataInputFields = document.querySelector('#dataInputFields');
-
-            appendInputElements(dataInputFields, attributeNames);
-
-            dataInputForm.addEventListener(
-                "submit",
-                e => {
-                    e.preventDefault();
-                    const predicted = predict(tree, getValuesFromInputElements(attributeNames));
-                    document.querySelector('#predicted').innerHTML = predicted;
-                    return false;
-                });
-        }
 
         function displayDatasetAsTable(datasetDescription) {
             let columns =
