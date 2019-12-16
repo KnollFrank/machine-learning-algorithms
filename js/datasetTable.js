@@ -5,12 +5,15 @@ function displayDatasetAsTable(datasetTableContainer, datasetDescription) {
 
     $('#' + table.id).DataTable({
         data: datasetDescription.dataset,
-        columns:
-            datasetDescription.attributeNames.all.map(
-                attributeName => ({
-                    title: attributeName
-                })),
+        columns: getColumns(datasetDescription)
     });
+}
+
+function getColumns(datasetDescription) {
+    return datasetDescription.attributeNames.all.map(
+        attributeName => ({
+            title: attributeName
+        }));
 }
 
 // <table id="datasetTable" class="display" style="width:100%">
