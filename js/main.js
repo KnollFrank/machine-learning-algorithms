@@ -59,7 +59,7 @@ function onDecisionTreeChanged(datasetDescription, tree) {
         document.querySelector('#decisionTreeNetwork'),
         createNetwork(tree, datasetDescription.attributeNames.X));
 
-    // print_tree(tree, datasetDescription.attributeNames.all);
+    print_tree(tree, datasetDescription.attributeNames.all);
 
     displayAccuracy(tree, datasetDescription.dataset);
 
@@ -79,6 +79,6 @@ function displayAccuracy(tree, dataset) {
 }
 
 function computeAccuracy(tree, dataset) {
-    const predicted = dataset.map(row => predict(tree, row));
+    const predicted = dataset.map(row => predict(tree, row).value);
     return accuracy_percentage(actualClassVals(dataset), predicted);
 }

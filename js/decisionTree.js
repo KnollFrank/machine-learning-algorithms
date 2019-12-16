@@ -134,7 +134,7 @@ function get_split(dataset) {
 // Create a terminal node value
 function to_terminal(group) {
     const outcomes = group.map(getClassValFromRow);
-    return { type: 'terminalNode', value: mode(outcomes) };
+    return { type: 'terminalNode', id: newId(), value: mode(outcomes) };
 }
 
 // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
@@ -164,6 +164,7 @@ function mode(array) {
 // Create child splits for a node or make terminal
 function split(node, max_depth, min_size, depth) {
     node.type = 'innerNode';
+    node.id = newId();
     let [left, right] = node.groups;
     delete node.groups;
     // check for a no split
@@ -214,14 +215,15 @@ function print_tree(node, attributeNames, depth = 0) {
 // Make a prediction with a decision tree
 function predict(node, row) {
     const predictChild = childNode =>
-        childNode.type == 'innerNode' ? predict(childNode, row) : childNode.value;
+        childNode.type == 'innerNode' ? predict(childNode, row) : { value: childNode.value, nodes: [childNode] };
 
     const childNode = row[node.index] < node.value ? node.left : node.right;
-    return predictChild(childNode);
+    let { value, nodes } = predictChild(childNode);
+    return { value: value, nodes: [node].concat(nodes) };
 }
 
 // Classification and Regression Tree Algorithm
 function decision_tree(train, test, max_depth, min_size) {
     const tree = build_tree(train, max_depth, min_size);
-    return test.map(row => predict(tree, row));
+    return test.map(row => predict(tree, row).value);
 }

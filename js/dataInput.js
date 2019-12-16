@@ -8,8 +8,9 @@ function displayDataInput(dataInputForm, attributeNames, tree) {
         "submit",
         e => {
             e.preventDefault();
-            const predicted = predict(tree, getInputNumbersById(attributeNames));
-            document.querySelector('#predicted').innerHTML = predicted;
+            const prediction = predict(tree, getInputNumbersById(attributeNames));
+            const nodes = prediction.nodes.map(node => node.id).join(', ')
+            document.querySelector('#predicted').innerHTML = `${prediction.value}, Nodes: ${nodes}`;
             return false;
         });
 }
