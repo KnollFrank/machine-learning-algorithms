@@ -1,6 +1,14 @@
 'use strict';
 
 function createNetwork(node, attributeNames, depth = 0) {
+    const { nodes, edges } = _createNetwork(node, attributeNames, depth);
+    return {
+        nodes: new vis.DataSet(nodes),
+        edges: new vis.DataSet(edges)
+    };
+}
+
+function _createNetwork(node, attributeNames, depth) {
     if (typeof node === 'object') {
         return createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth);
     } else {
@@ -9,8 +17,8 @@ function createNetwork(node, attributeNames, depth = 0) {
 }
 
 function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth) {
-    let leftNetwork = createNetwork(node.left, attributeNames, depth + 1);
-    let rightNetwork = createNetwork(node.right, attributeNames, depth + 1);
+    let leftNetwork = _createNetwork(node.left, attributeNames, depth + 1);
+    let rightNetwork = _createNetwork(node.right, attributeNames, depth + 1);
 
     let newNode = createNode(`${attributeNames[node.index]} < ${node.value}`, depth);
 
@@ -76,10 +84,9 @@ function displayNetwork(container, data) {
         }
     };
 
-    const nodes = new vis.DataSet(data.nodes);
-
-    network = new vis.Network(container, { nodes: nodes, edges: data.edges }, options);
-    highlightNodes(nodes);
+    network = new vis.Network(container, data, options);
+    highlightNodes(data.nodes);
+    highlightEdges(data.edges);
 
     // add event listeners
     network.on('select', function (params) {
@@ -91,13 +98,20 @@ function displayNetwork(container, data) {
 function highlightNodes(nodes) {
     nodes.forEach(node => {
         node.color = {
-            border: '#0000FF',
-            background: '#00FF00',
-            highlight: {
-                border: '#2B7CE9',
-                background: '#D2E5FF'
-            }
+            border: 'red'
         };
         nodes.update(node);
+    });
+}
+
+function highlightEdges(edges) {
+    edges.forEach(edge => {
+        // edge.dashes = true;
+        edge.color = {
+            color: 'red'
+        };
+        edge.arrows = 'to';
+        edge.width = 2;
+        edges.update(edge);
     });
 }
