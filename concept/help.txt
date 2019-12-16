@@ -15,9 +15,10 @@ Abhängigkeiten:
 - https://datatables.net/
 
 TODO:
-- Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
+- Bei "Dateneingabe -> vorhersagen" sollte der Pfad, der zu einer Vorhersage aufgrund
+  der eingegebenen Werte führt, im Entscheidungsbaum farblich hervorgehoben werden.
 - Laden/Speichern eines Modells für Entscheidungsbäume (= Graph)
-- folgendes Umsetzen:
+- avoiding some of the unnecessary splits:
   Thanks for the post, code, and all the follow ups! I also was wondering about avoiding some of the unnecessary splits at the bottom of the tree. In case others are curious, one short addition to the code would be to add
   if len(class_values) == 1: return to_terminal(dataset)
   as the second line of get_split, and then
@@ -25,40 +26,50 @@ TODO:
   at the beginning of split.
   It looks like this avoids unnecessary splitting in the example given and in some other datasets.
   Thanks again!
-- I did some modification to deal with categorical variables,
-in get_split()
+- categorical variables:
+	I did some modification to deal with categorical variables,
+	in get_split()
 
-	if isinstance(row[index], Number):
-		groups = test_split_numeric(index, row[index], dataset)
-	else:
-		groups = test_split_categorical(index, row[index], dataset)
-
-where
-def test_split_categorical(index, value, dataset):
-	left, right = list(), list()
-	for row in dataset:
-		if row[index] == value:
-			left.append(row)
+		if isinstance(row[index], Number):
+			groups = test_split_numeric(index, row[index], dataset)
 		else:
-			right.append(row)
-	return left, right
+			groups = test_split_categorical(index, row[index], dataset)
+
+	where
+	def test_split_categorical(index, value, dataset):
+		left, right = list(), list()
+		for row in dataset:
+			if row[index] == value:
+				left.append(row)
+			else:
+				right.append(row)
+		return left, right
 
 
-, in print_tree()
+	, in print_tree()
 
-	if isinstance(node['value'], Number):
-		print('%s[X%d < %.3f]' % ((depth*' ', (node['index']+1), node['value'])))
-	else:
-		print('%s[X%d = %s]' % ((depth*' ', (node['index']+1), node['value'])))
+		if isinstance(node['value'], Number):
+			print('%s[X%d < %.3f]' % ((depth*' ', (node['index']+1), node['value'])))
+		else:
+			print('%s[X%d = %s]' % ((depth*' ', (node['index']+1), node['value'])))
 
-, and in predict()
+	, and in predict()
 
-	if isinstance(node['value'], Number):
-		split_condition = (row[node['index']] < node['value'])
-	else:
-		split_condition = (row[node['index']] == node['value'])
+		if isinstance(node['value'], Number):
+			split_condition = (row[node['index']] < node['value'])
+		else:
+			split_condition = (row[node['index']] == node['value'])
 
-I ran the program on another dataset (Loan Prediction) and it worked fine with about 79% accuracy.
-- Bei "Dateneingabe -> vorhersagen" sollte der Pfad, der zu einer Vorhersage aufgrund
-  der eingegebenen Werte führt, im Entscheidungsbaum farblich hervorgehoben werden.
+	I ran the program on another dataset (Loan Prediction) and it worked fine with about 79% accuracy.
+- Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
 - Aufteilung des Datensatzes in 80% Trainingsdaten und 20% Testdaten
+- FIXME: Beim Neuladen eines Datensatzes sollen alle anderen "Felder" (Baum, Accuracy, Dateneingabe, ...) geleert bzw. neu berechnet werden.
+  Bisheriger Fehler:
+  TypeError: document.querySelector(...) is null2 main.js:71:28
+    getInputNumberById http://127.0.0.1:5500/part2/project/js/main.js:71
+    map self-hosted:291
+    getInputNumbersById http://127.0.0.1:5500/part2/project/js/dataInput.js:24
+    displayDataInput http://127.0.0.1:5500/part2/project/js/dataInput.js:11
+- Togglebutton einbauen, um die Berechnung des Entscheidungsbaums
+  1. lokal im Browser durchzuführen oder
+  2. mit node.js auf dem Server durchzuführen
