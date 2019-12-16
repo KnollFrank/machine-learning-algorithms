@@ -1,8 +1,8 @@
 function displayDatasetAsTable(datasetTableContainer, datasetDescription) {
     // <table id="datasetTable" class="display" style="width:100%">
     const table = document.createElement('table');
-    const newID = 'datasetTable' + newId();
-    table.setAttribute('id', newID);
+    const id = 'datasetTable';
+    table.setAttribute('id', id);
     table.classList.add('display');
     table.setAttribute("style", "width:100%;");
 
@@ -15,7 +15,7 @@ function displayDatasetAsTable(datasetTableContainer, datasetDescription) {
                 title: attributeName
             }));
 
-    $('#' + newID).DataTable({
+    $('#' + id).DataTable({
         data: datasetDescription.dataset,
         columns: columns,
     });
