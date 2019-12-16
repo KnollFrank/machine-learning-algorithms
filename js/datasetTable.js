@@ -9,13 +9,6 @@ function displayDatasetAsTable(datasetTableContainer, datasetDescription) {
     });
 }
 
-function getColumns(datasetDescription) {
-    return datasetDescription.attributeNames.all.map(
-        attributeName => ({
-            title: attributeName
-        }));
-}
-
 // <table id="datasetTable" class="display" style="width:100%">
 function createTableElement() {
     const table = document.createElement('table');
@@ -24,4 +17,11 @@ function createTableElement() {
     table.classList.add('display');
     table.setAttribute("style", "width:100%;");
     return table;
+}
+
+function getColumns(datasetDescription) {
+    return datasetDescription.attributeNames.all.map(
+        attributeName => ({
+            title: attributeName
+        }));
 }
