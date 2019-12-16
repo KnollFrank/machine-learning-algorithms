@@ -59,6 +59,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
         document.querySelector('#decisionTreeNetwork'),
         createNetwork(tree, datasetDescription.attributeNames.X));
 
+    // print_tree(tree, datasetDescription.attributeNames.all);
+
     displayAccuracy(tree, datasetDescription.dataset);
 
     displayDataInput(

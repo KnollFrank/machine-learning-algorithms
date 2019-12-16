@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function () {
+Array.prototype.sum = function() {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -64,7 +64,6 @@ function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
             max_depth,
             min_size);
 
-
     const scores = folds.map((fold, index) => accuracy_percentage(actualClassVals(fold), predictClassVals(fold, index)));
     return scores;
 }
@@ -87,26 +86,26 @@ function test_split(index, value, dataset) {
 function gini_index(groups, classes) {
     const getP = group => class_val =>
         group
-            .map(getClassValFromRow)
-            .filter(classVal => classVal == class_val)
-            .length / group.length;
+        .map(getClassValFromRow)
+        .filter(classVal => classVal == class_val)
+        .length / group.length;
 
     const getScore = group =>
         classes
-            .map(getP(group))
-            .map(p => p * p)
-            .sum();
+        .map(getP(group))
+        .map(p => p * p)
+        .sum();
 
     const n_instances =
         groups
-            .map(group => group.length)
-            .sum();
+        .map(group => group.length)
+        .sum();
 
     const gini =
         groups
-            .filter(group => group.length != 0)
-            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-            .sum();
+        .filter(group => group.length != 0)
+        .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+        .sum();
 
     return gini;
 }
@@ -135,7 +134,7 @@ function get_split(dataset) {
 // Create a terminal node value
 function to_terminal(group) {
     const outcomes = group.map(getClassValFromRow);
-    return mode(outcomes)
+    return { type: 'terminalNode', value: mode(outcomes) };
 }
 
 // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
@@ -164,6 +163,7 @@ function mode(array) {
 
 // Create child splits for a node or make terminal
 function split(node, max_depth, min_size, depth) {
+    node.type = 'innerNode';
     let [left, right] = node.groups;
     delete node.groups;
     // check for a no split
@@ -202,19 +202,19 @@ function build_tree(train, max_depth, min_size) {
 
 // Print a decision tree
 function print_tree(node, attributeNames, depth = 0) {
-    if (typeof node === 'object') {
+    if (node.type == 'innerNode') {
         console.log(`${' '.repeat(depth)}[${attributeNames[node.index]} < ${node.value}]`);
         print_tree(node.left, attributeNames, depth + 1);
         print_tree(node.right, attributeNames, depth + 1);
     } else {
-        console.log(`${' '.repeat(depth)}[${node}]`);
+        console.log(`${' '.repeat(depth)}[${node.value}]`);
     }
 }
 
 // Make a prediction with a decision tree
 function predict(node, row) {
     const predictChild = childNode =>
-        typeof childNode === 'object' ? predict(childNode, row) : childNode;
+        childNode.type == 'innerNode' ? predict(childNode, row) : childNode.value;
 
     const childNode = row[node.index] < node.value ? node.left : node.right;
     return predictChild(childNode);
