@@ -79,26 +79,25 @@ function displayNetwork(container, data) {
     const nodes = new vis.DataSet(data.nodes);
 
     network = new vis.Network(container, { nodes: nodes, edges: data.edges }, options);
+    highlightNodes(nodes);
 
     // add event listeners
     network.on('select', function (params) {
         document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
     });
+}
 
-    // see https://stackoverflow.com/questions/38768598/vis-js-setoptions-to-change-color-on-network-node and http://jsfiddle.net/9knw26nc/1/
-    network.on("select", function (params) {
-        const nodeID = params['nodes']['0'];
-        if (nodeID) {
-            const clickedNode = nodes.get(nodeID);
-            clickedNode.color = {
-                border: '#000000',
-                background: '#000000',
-                highlight: {
-                    border: '#2B7CE9',
-                    background: '#D2E5FF'
-                }
-            };
-            nodes.update(clickedNode);
-        }
+// see https://stackoverflow.com/questions/38768598/vis-js-setoptions-to-change-color-on-network-node and http://jsfiddle.net/9knw26nc/1/
+function highlightNodes(nodes) {
+    nodes.forEach(node => {
+        node.color = {
+            border: '#0000FF',
+            background: '#00FF00',
+            highlight: {
+                border: '#2B7CE9',
+                background: '#D2E5FF'
+            }
+        };
+        nodes.update(node);
     });
 }
