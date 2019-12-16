@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function() {
+Array.prototype.sum = function () {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -87,26 +87,26 @@ function test_split(index, value, dataset) {
 function gini_index(groups, classes) {
     const getP = group => class_val =>
         group
-        .map(getClassValFromRow)
-        .filter(classVal => classVal == class_val)
-        .length / group.length;
+            .map(getClassValFromRow)
+            .filter(classVal => classVal == class_val)
+            .length / group.length;
 
     const getScore = group =>
         classes
-        .map(getP(group))
-        .map(p => p * p)
-        .sum();
+            .map(getP(group))
+            .map(p => p * p)
+            .sum();
 
     const n_instances =
         groups
-        .map(group => group.length)
-        .sum();
+            .map(group => group.length)
+            .sum();
 
     const gini =
         groups
-        .filter(group => group.length != 0)
-        .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-        .sum();
+            .filter(group => group.length != 0)
+            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+            .sum();
 
     return gini;
 }
@@ -225,82 +225,3 @@ function decision_tree(train, test, max_depth, min_size) {
     const tree = build_tree(train, max_depth, min_size);
     return test.map(row => predict(tree, row));
 }
-
-/*
-Papa.parse("data/data_banknote_authentication.csv", {
-    download: true,
-    header: false,
-    complete: function(results) {
-        const dataset = results.data;
-        // console.log(dataset);
-        // remove header (= column names) of dataset
-        dataset.splice(0, 1);
-        // console.log(dataset);
-        const n_folds = 5;
-        const max_depth = 5;
-        const min_size = 10;
-        const scores = evaluate_algorithm(dataset, decision_tree, n_folds, max_depth, min_size);
-        console.log('Scores:', scores);
-        console.log('Mean Accuracy:', scores.sum() / scores.length);
-    }
-});
-*/
-
-/*
-        let gIndex = gini_index(
-            [ // group:
-                [
-                    [1, 1], // row
-                    [1, 0] // row
-                ],
-                [
-                    [1, 1],
-                    [1, 0]
-                ]
-            ], [0, 1]);
-        console.log(gIndex);
-        gIndex = gini_index(
-            [
-                [
-                    [1, 0],
-                    [1, 0]
-                ],
-                [
-                    [1, 1],
-                    [1, 1]
-                ]
-            ], [0, 1]);
-        console.log(gIndex);
-
-        const dataset = [
-            [2.771244718, 1.784783929, 0],
-            [1.728571309, 1.169761413, 0],
-            [3.678319846, 2.81281357, 0],
-            [3.961043357, 2.61995032, 0],
-            [2.999208922, 2.209014212, 0],
-            [7.497545867, 3.162953546, 1],
-            [9.00220326, 3.339047188, 1],
-            [7.444542326, 0.476683375, 1],
-            [10.12493903, 3.234550982, 1],
-            [6.642287351, 3.319983761, 1]
-        ];
-        //const split = get_split(dataset)
-        //console.log(`Split: [X${split.index + 1} < ${split.value}]`);
-
-        console.log('cross_validation_split:', cross_validation_split(dataset, 5));
-
-        const tree = build_tree(dataset, 3, 1);
-
-        //  predict with a stump
-        const stump = {
-            'index': 0,
-            'right': 1,
-            'value': 6.642287351,
-            'left': 0
-        };
-
-        for (const row of dataset) {
-            const prediction = predict(stump, row);
-            console.log(`Expected=${getClassValFromRow(row)}, Got=${prediction}`);
-        }
-*/

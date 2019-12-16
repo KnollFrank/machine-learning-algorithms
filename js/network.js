@@ -85,8 +85,8 @@ function displayNetwork(container, data) {
     };
 
     network = new vis.Network(container, data, options);
-    highlightNodes(data.nodes);
-    highlightEdges(data.edges);
+    // highlightNodes(data.nodes);
+    // highlightEdges(data.edges);
 
     // add event listeners
     network.on('select', function (params) {
