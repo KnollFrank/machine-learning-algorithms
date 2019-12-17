@@ -125,20 +125,35 @@ function setNodeColor(node, color) {
 }
 
 function highlightEdges(allEdges, edges) {
-    allEdges.forEach(edge => {
-        edge.color = {
-            color: options.edges.color.color
-        };
-        delete edge.arrows;
-        edge.width = options.edges.width;
-        allEdges.update(edge);
-    });
-    edges.forEach(edge => {
-        edge.color = {
-            color: 'red'
-        };
+    resetEdgeOptionsToDefault(allEdges);
+    updateEdges(edges, allEdges, edge => {
+        setEdgeColor(edge, 'red');
         edge.arrows = 'to';
-        edge.width = 2;
+        setEdgeWidth(edge, 2);
+    });
+}
+
+function resetEdgeOptionsToDefault(allEdges) {
+    updateEdges(allEdges, allEdges, edge => {
+        setEdgeColor(edge, options.edges.color.color);
+        delete edge.arrows;
+        setEdgeWidth(edge, options.edges.width);
+    });
+}
+
+function updateEdges(edges, allEdges, updateEdge) {
+    edges.forEach(edge => {
+        updateEdge(edge);
         allEdges.update(edge);
     });
+}
+
+function setEdgeColor(edge, color) {
+    edge.color = {
+        color: color
+    };
+}
+
+function setEdgeWidth(edge, width) {
+    edge.width = width;
 }
