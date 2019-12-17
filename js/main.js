@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function(results) {
+            complete: function (results) {
                 onDatasetChanged(getDatasetDescription(results.data));
             }
         });
@@ -55,9 +55,8 @@ function onDatasetChanged(datasetDescription) {
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
-    displayNetwork(
-        document.querySelector('#decisionTreeNetwork'),
-        createNetwork(tree, datasetDescription.attributeNames.X));
+    const network = createNetwork(tree, datasetDescription.attributeNames.X);
+    displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
 
     print_tree(tree, datasetDescription.attributeNames.all);
 
@@ -66,7 +65,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
     displayDataInput(
         document.querySelector('#dataInputForm'),
         datasetDescription.attributeNames.X,
-        tree);
+        tree,
+        network);
 }
 
 function getInputNumberById(id) {

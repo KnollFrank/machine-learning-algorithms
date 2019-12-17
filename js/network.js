@@ -94,12 +94,12 @@ function displayNetwork(container, data) {
 }
 
 // see https://stackoverflow.com/questions/38768598/vis-js-setoptions-to-change-color-on-network-node and http://jsfiddle.net/9knw26nc/1/
-function highlightNodes(nodes) {
+function highlightNodes(allNodes, nodes) {
     nodes.forEach(node => {
         node.color = {
             border: 'red'
         };
-        nodes.update(node);
+        allNodes.update(node);
     });
 }
 
