@@ -169,7 +169,8 @@ function split(node, max_depth, min_size, depth) {
     delete node.groups;
     // check for a no split
     if (left.length == 0 || right.length == 0) {
-        node.left = node.right = to_terminal(left.concat(right));
+        node.left = to_terminal(left.concat(right));
+        node.right = to_terminal(left.concat(right));
         return;
     }
     // check for max depth
