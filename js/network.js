@@ -109,7 +109,7 @@ function highlightNodes(allNodes, nodes) {
     });
 }
 
-function highlightEdges(edges) {
+function highlightEdges(allEdges, edges) {
     edges.forEach(edge => {
         // edge.dashes = true;
         edge.color = {
@@ -117,6 +117,6 @@ function highlightEdges(edges) {
         };
         edge.arrows = 'to';
         edge.width = 2;
-        edges.update(edge);
+        allEdges.update(edge);
     });
 }

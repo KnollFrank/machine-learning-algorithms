@@ -9,15 +9,16 @@ function displayDataInput(dataInputForm, attributeNames, tree, network) {
         e => {
             e.preventDefault();
             const prediction = predict(tree, getInputNumbersById(attributeNames));
-            const nodes = prediction.nodes.map(node => node.id);
-            document.querySelector('#predicted').innerHTML = `${prediction.value}, Nodes: ${nodes.join(', ')}`;
-            const networkNodes2Highlight = network.nodes.get(
-                {
-                    filter: node => nodes.includes(node.id)
-                });
-            highlightNodes(network.nodes, networkNodes2Highlight);
+            const nodeIdsOfPrediction = prediction.nodes.map(node => node.id);
+            highlightTreeNodes(network.nodes, nodeIdsOfPrediction);
+            document.querySelector('#predicted').innerHTML = `${prediction.value}, Nodes: ${nodeIdsOfPrediction.join(', ')}`;
             return false;
         });
+}
+
+function highlightTreeNodes(networkNodes, nodeIds2Highlight) {
+    const networkNodes2Highlight = networkNodes.get({ filter: networkNode => nodeIds2Highlight.includes(networkNode.id) });
+    highlightNodes(networkNodes, networkNodes2Highlight);
 }
 
 function appendInputElements(parent, attributeNames) {
