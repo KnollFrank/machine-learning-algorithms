@@ -22,26 +22,25 @@ function highlightTreeNodes(networkNodes, nodeIds2Highlight) {
     highlightNodes(networkNodes, networkNodes2Highlight);
 }
 
-// TODO: refactor
 function highlightTreeEdges(networkEdges, nodeIds2Highlight) {
     const networkEdges2Highlight = [];
-    for (let i = 0; i < nodeIds2Highlight.length - 1; i++) {
-        const networkEdge = getNetworkEdge(networkEdges, nodeIds2Highlight[i], nodeIds2Highlight[i + 1]);
-        networkEdges2Highlight.push(networkEdge);
+    for (const [fromId, toId] of getConsecutiveNodes(nodeIds2Highlight)) {
+        networkEdges2Highlight.push(getNetworkEdge(networkEdges, fromId, toId));
     }
+
     highlightEdges(networkEdges, networkEdges2Highlight);
 }
 
-function getNetworkEdge(networkEdges, id1, id2) {
-    return networkEdges.get({
-        filter: networkEdge => isNetworkEdgeBetweenNodeIds(networkEdge, id1, id2)
-    })[0];
+function* getConsecutiveNodes(nodes) {
+    for (let i = 0; i < nodes.length - 1; i++) {
+        yield [nodes[i], nodes[i + 1]];
+    }
 }
 
-function isNetworkEdgeBetweenNodeIds(networkEdge, nodeId1, nodeId2) {
-    const isNetworkEdgeFromTo = (fromId, toId) => networkEdge.from == fromId && networkEdge.to == toId;
-
-    return isNetworkEdgeFromTo(nodeId1, nodeId2) || isNetworkEdgeFromTo(nodeId2, nodeId1);
+function getNetworkEdge(networkEdges, fromId, toId) {
+    return networkEdges.get({
+        filter: networkEdge => networkEdge.from == fromId && networkEdge.to == toId
+    })[0];
 }
 
 function appendInputElements(parent, attributeNames) {
