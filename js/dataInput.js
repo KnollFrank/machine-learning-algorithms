@@ -13,9 +13,7 @@ function displayDataInput(dataInputForm, attributeNames, tree, network) {
             document.querySelector('#predicted').innerHTML = `${prediction.value}, Nodes: ${nodes.join(', ')}`;
             const networkNodes2Highlight = network.nodes.get(
                 {
-                    filter: function (node) {
-                        return nodes.includes(node.id);
-                    }
+                    filter: node => nodes.includes(node.id)
                 });
             highlightNodes(network.nodes, networkNodes2Highlight);
             return false;
