@@ -2,6 +2,7 @@
 
 function createNetwork(node, attributeNames, depth = 0) {
     const { nodes, edges } = _createNetwork(node, attributeNames, depth);
+    console.log('nodes:', nodes);
     return {
         nodes: new vis.DataSet(nodes),
         edges: new vis.DataSet(edges)
@@ -80,6 +81,11 @@ function displayNetwork(container, data) {
         interaction: {
             hover: true,
             navigationButtons: true
+        },
+        edges: {
+            color: {
+                inherit: false
+            }
         }
     };
 
