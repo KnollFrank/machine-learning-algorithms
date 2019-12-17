@@ -2,7 +2,6 @@
 
 function createNetwork(node, attributeNames, depth = 0) {
     const { nodes, edges } = _createNetwork(node, attributeNames, depth);
-    console.log('nodes:', nodes);
     return {
         nodes: new vis.DataSet(nodes),
         edges: new vis.DataSet(edges)
@@ -68,39 +67,35 @@ function destroyNetwork() {
     }
 }
 
+const options = {
+    layout: {
+        hierarchical: {
+            direction: "UD"
+        }
+    },
+    interaction: {
+        hover: true,
+        navigationButtons: true
+    },
+    nodes: {
+        color: {
+            border: '#2B7CE9'
+        }
+    },
+    edges: {
+        color: {
+            inherit: false,
+            color: '#2B7CE9'
+        },
+        width: 1
+    }
+};
+
 function displayNetwork(container, data) {
     destroyNetwork();
 
-    // create a network
-    const options = {
-        layout: {
-            hierarchical: {
-                direction: "UD"
-            }
-        },
-        interaction: {
-            hover: true,
-            navigationButtons: true
-        },
-        nodes: {
-            color: {
-                border: '#2B7CE9'
-            }
-        },
-        edges: {
-            color: {
-                inherit: false,
-                color: '#2B7CE9'
-            },
-            width: 1
-        }
-    };
-
     network = new vis.Network(container, data, options);
-    // highlightNodes(data.nodes);
-    // highlightEdges(data.edges);
 
-    // add event listeners
     network.on('select', function(params) {
         document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
     });
@@ -110,7 +105,7 @@ function displayNetwork(container, data) {
 function highlightNodes(allNodes, nodes) {
     allNodes.forEach(node => {
         node.color = {
-            border: '#2B7CE9'
+            border: options.nodes.color.border
         };
         allNodes.update(node);
     });
@@ -125,10 +120,10 @@ function highlightNodes(allNodes, nodes) {
 function highlightEdges(allEdges, edges) {
     allEdges.forEach(edge => {
         edge.color = {
-            color: '#2B7CE9'
+            color: options.edges.color.color
         };
         delete edge.arrows;
-        edge.width = 1;
+        edge.width = options.edges.width;
         allEdges.update(edge);
     });
     edges.forEach(edge => {
