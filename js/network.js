@@ -103,12 +103,16 @@ function displayNetwork(container, data) {
 
 // see https://stackoverflow.com/questions/38768598/vis-js-setoptions-to-change-color-on-network-node and http://jsfiddle.net/9knw26nc/1/
 function highlightNodes(allNodes, nodes) {
-    resetNodeOptionsToDefault(allNodes);
-    updateNodes(nodes, allNodes, node => setNodeColor(node, 'red'));
+    resetAllNodeOptionsToDefault(allNodes);
+    _highlightNodes(allNodes, nodes);
 }
 
-function resetNodeOptionsToDefault(allNodes) {
+function resetAllNodeOptionsToDefault(allNodes) {
     updateNodes(allNodes, allNodes, node => setNodeColor(node, options.nodes.color.border));
+}
+
+function _highlightNodes(allNodes, nodes) {
+    updateNodes(nodes, allNodes, node => setNodeColor(node, 'red'));
 }
 
 function updateNodes(nodes, allNodes, updateNode) {
@@ -125,19 +129,23 @@ function setNodeColor(node, color) {
 }
 
 function highlightEdges(allEdges, edges) {
-    resetEdgeOptionsToDefault(allEdges);
-    updateEdges(edges, allEdges, edge => {
-        setEdgeColor(edge, 'red');
-        edge.arrows = 'to';
-        setEdgeWidth(edge, 2);
-    });
+    resetAllEdgeOptionsToDefault(allEdges);
+    _highlightEdges(allEdges, edges);
 }
 
-function resetEdgeOptionsToDefault(allEdges) {
+function resetAllEdgeOptionsToDefault(allEdges) {
     updateEdges(allEdges, allEdges, edge => {
         setEdgeColor(edge, options.edges.color.color);
         delete edge.arrows;
         setEdgeWidth(edge, options.edges.width);
+    });
+}
+
+function _highlightEdges(allEdges, edges) {
+    updateEdges(edges, allEdges, edge => {
+        setEdgeColor(edge, 'red');
+        edge.arrows = 'to';
+        setEdgeWidth(edge, 2);
     });
 }
 
