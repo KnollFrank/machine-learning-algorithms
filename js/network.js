@@ -78,6 +78,7 @@ const options = {
         navigationButtons: true
     },
     nodes: {
+        borderWidth: 1,
         color: {
             border: '#2B7CE9'
         }
@@ -108,11 +109,23 @@ function highlightNodes(allNodes, nodes) {
 }
 
 function resetAllNodeOptionsToDefault(allNodes) {
-    updateNodes(allNodes, allNodes, node => setNodeColor(node, options.nodes.color.border));
+    updateNodes(
+        allNodes,
+        allNodes,
+        node => {
+            setNodeColor(node, options.nodes.color.border);
+            setNodeBorderWidth(node, options.nodes.borderWidth);
+        });
 }
 
 function _highlightNodes(allNodes, nodes) {
-    updateNodes(nodes, allNodes, node => setNodeColor(node, 'red'));
+    updateNodes(
+        nodes,
+        allNodes,
+        node => {
+            setNodeColor(node, 'red');
+            setNodeBorderWidth(node, 3);
+        });
 }
 
 function updateNodes(nodes, allNodes, updateNode) {
@@ -126,6 +139,10 @@ function setNodeColor(node, color) {
     node.color = {
         border: color
     };
+}
+
+function setNodeBorderWidth(node, width) {
+    node.borderWidth = width;
 }
 
 function highlightEdges(allEdges, edges) {
@@ -145,7 +162,7 @@ function _highlightEdges(allEdges, edges) {
     updateEdges(edges, allEdges, edge => {
         setEdgeColor(edge, 'red');
         edge.arrows = 'to';
-        setEdgeWidth(edge, 2);
+        setEdgeWidth(edge, 3);
     });
 }
 
