@@ -12,7 +12,7 @@ function _createNetwork(node, attributeNames, depth) {
     if (node.type === 'innerNode') {
         return createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth);
     } else {
-        return createNetworkNode(node.value, depth);
+        return createNetworkNode(node.value, depth, node.id);
     }
 }
 
@@ -20,21 +20,21 @@ function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth
     let leftNetwork = _createNetwork(node.left, attributeNames, depth + 1);
     let rightNetwork = _createNetwork(node.right, attributeNames, depth + 1);
 
-    let newNode = createNode(`${attributeNames[node.index]} < ${node.value}`, depth);
+    let newNode = createNode(`${attributeNames[node.index]} < ${node.value}`, depth, node.id);
 
     const createOneLevelEdges = (fromNode, toNodes, label) =>
         toNodes
-        .filter(toNode => toNode.level == fromNode.level + 1)
-        .map(toNode => ({
-            from: fromNode.id,
-            to: toNode.id,
-            label: label
-        }));
+            .filter(toNode => toNode.level == fromNode.level + 1)
+            .map(toNode => ({
+                from: fromNode.id,
+                to: toNode.id,
+                label: label
+            }));
 
     let newEdges =
         createOneLevelEdges(newNode, leftNetwork.nodes, "true")
-        .concat(
-            createOneLevelEdges(newNode, rightNetwork.nodes, "false"));
+            .concat(
+                createOneLevelEdges(newNode, rightNetwork.nodes, "false"));
 
     return {
         nodes: [newNode].concat(leftNetwork.nodes, rightNetwork.nodes),
@@ -42,15 +42,14 @@ function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth
     };
 }
 
-function createNetworkNode(label, depth) {
+function createNetworkNode(label, depth, id) {
     return {
-        nodes: [createNode(label, depth)],
+        nodes: [createNode(label, depth, id)],
         edges: []
     };
 }
 
-function createNode(label, depth) {
-    let id = newId();
+function createNode(label, depth, id) {
     return {
         id: id,
         label: label,
@@ -89,7 +88,7 @@ function displayNetwork(container, data) {
     // highlightEdges(data.edges);
 
     // add event listeners
-    network.on('select', function(params) {
+    network.on('select', function (params) {
         document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
     });
 }
