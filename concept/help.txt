@@ -84,3 +84,6 @@ TODO:
 - Togglebutton einbauen, um die Berechnung des Entscheidungsbaums
   1. lokal im Browser durchzuführen oder
   2. mit node.js auf dem Server durchzuführen. Progressbar für den aktuellen Stand des Algorithmus dann mit Websockets auf dem Client anzeigen.
+     - Datei für die Eingabedaten auf den server hochladen
+	 - build_tree auf dem Server ausführen
+	 - Ergebnis von build_tree an den Client zurücksenden
