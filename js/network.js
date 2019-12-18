@@ -124,7 +124,7 @@ function _highlightNodes(allNodes, nodes) {
         allNodes,
         node => {
             setNodeColor(node, 'red');
-            setNodeBorderWidth(node, 3);
+            setNodeBorderWidth(node, 2);
         });
 }
 
@@ -162,7 +162,7 @@ function _highlightEdges(allEdges, edges) {
     updateEdges(edges, allEdges, edge => {
         setEdgeColor(edge, 'red');
         edge.arrows = 'to';
-        setEdgeWidth(edge, 3);
+        setEdgeWidth(edge, 2);
     });
 }
 
