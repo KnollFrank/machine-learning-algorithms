@@ -22,4 +22,4 @@ server.post('/multipliziere', (req, res) => {
     res.send(String(Number(req.body.x) * Number(req.body.y)));
 });
 
-server.listen(80, err => console.group(err || 'Server läuft'));
+server.listen(8080, err => console.group(err || 'Server läuft'));
