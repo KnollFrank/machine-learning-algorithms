@@ -67,9 +67,9 @@ TODO:
     map self-hosted:291
     getInputNumbersById http://127.0.0.1:5500/part2/project/js/dataInput.js:24
     displayDataInput http://127.0.0.1:5500/part2/project/js/dataInput.js:11
-- Togglebutton einbauen, um die Berechnung des Entscheidungsbaums
-  1. lokal im Browser durchzuführen oder
-  2. mit node.js auf dem Server durchzuführen. Progressbar für den aktuellen Stand des Algorithmus dann mit Websockets auf dem Client anzeigen.
 - UI verschönern
 - Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
   - Schon während des Trainings die dazugefügten Knoten und Kanten grafisch anzeigen in einem Einzelschrittmodus.
+- Togglebutton einbauen, um die Berechnung des Entscheidungsbaums
+  1. lokal im Browser durchzuführen oder
+  2. mit node.js auf dem Server durchzuführen. Progressbar für den aktuellen Stand des Algorithmus dann mit Websockets auf dem Client anzeigen.
