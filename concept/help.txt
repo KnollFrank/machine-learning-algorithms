@@ -52,3 +52,4 @@ TODO:
      - Datei für die Eingabedaten auf den server hochladen
 	 - build_tree auf dem Server ausführen
 	 - Ergebnis von build_tree an den Client zurücksenden
+- build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
