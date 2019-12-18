@@ -53,3 +53,10 @@ TODO:
 - build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
 - Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
   - Schon während des Trainings die dazugefügten Knoten und Kanten grafisch anzeigen in einem Einzelschrittmodus.
+- unnötige Knoten und Kanten entfernen, z.B.:
+  node ---true----> 0
+    |-----false---> 0
+  wird zu:
+  0
+  weil unabhängig vom Wahrheitswert der Auswertung von node das Ergebnis immer 0 ist.
+  Diese Operation so oft wiederholen, bis sie sich nicht mehr anwenden läßt.
