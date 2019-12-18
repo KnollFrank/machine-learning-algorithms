@@ -6,21 +6,32 @@ Array.prototype.sum = function() {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
-// Calculate accuracy percentage
-function accuracy_percentage(actual, predicted) {
-    let correct = 0;
-    for (let i = 0; i < actual.length; i++) {
-        if (actual[i] == predicted[i]) {
-            correct += 1;
-        }
-    }
-    return correct / actual.length * 100.0;
+// Build a decision tree
+function build_tree(train, max_depth, min_size) {
+    const root = get_split(train);
+    split(root, max_depth, min_size, 1);
+    return root;
 }
 
-const actualClassVals = fold => fold.map(getClassValFromRow);
-
-function isNumber(n) {
-    return !isNaN(n);
+// Select the best split point for a dataset
+function get_split(dataset) {
+    const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
+    let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
+    for (let index = 0; index < dataset[0].length - 1; index++) {
+        for (const row of dataset) {
+            const groups = test_split(index, row[index], dataset);
+            const gini = gini_index(groups, class_values);
+            // console.log(`X${index+1} < ${row[index]} Gini=${gini}`);
+            if (gini < b_score) {
+                [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
+            }
+        }
+    }
+    return {
+        index: b_index,
+        value: b_value,
+        groups: b_groups
+    };
 }
 
 // Split a dataset based on an attribute and an attribute value
@@ -39,6 +50,10 @@ function test_split(index, value, dataset) {
         }
     }
     return [left, right];
+}
+
+function isNumber(n) {
+    return !isNaN(n);
 }
 
 // Calculate the Gini index for a split dataset
@@ -67,57 +82,6 @@ function gini_index(groups, classes) {
         .sum();
 
     return gini;
-}
-
-// Select the best split point for a dataset
-function get_split(dataset) {
-    const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
-    let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
-    for (let index = 0; index < dataset[0].length - 1; index++) {
-        for (const row of dataset) {
-            const groups = test_split(index, row[index], dataset);
-            const gini = gini_index(groups, class_values);
-            // console.log(`X${index+1} < ${row[index]} Gini=${gini}`);
-            if (gini < b_score) {
-                [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
-            }
-        }
-    }
-    return {
-        index: b_index,
-        value: b_value,
-        groups: b_groups
-    };
-}
-
-// Create a terminal node value
-function to_terminal(group) {
-    const outcomes = group.map(getClassValFromRow);
-    return { type: 'terminalNode', id: newId(), value: mode(outcomes) };
-}
-
-// https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
-function mode(array) {
-    if (array.length == 0) {
-        return null;
-    }
-    let modeMap = {};
-    let maxEl = array[0],
-        maxCount = 1;
-    for (let i = 0; i < array.length; i++) {
-        let el = array[i];
-        if (modeMap[el] == null) {
-            modeMap[el] = 1;
-        } else {
-            modeMap[el]++;
-        }
-        if (modeMap[el] > maxCount) {
-            maxEl = el;
-            maxCount = modeMap[el];
-        }
-    }
-
-    return maxEl;
 }
 
 // Create child splits for a node or make terminal
@@ -150,15 +114,49 @@ function split(node, max_depth, min_size, depth) {
     processChild(right, 'right');
 }
 
-function getClassValFromRow(row) {
-    return row[row.length - 1];
+// Create a terminal node value
+function to_terminal(group) {
+    const outcomes = group.map(getClassValFromRow);
+    return { type: 'terminalNode', id: newId(), value: mode(outcomes) };
 }
 
-// Build a decision tree
-function build_tree(train, max_depth, min_size) {
-    const root = get_split(train);
-    split(root, max_depth, min_size, 1);
-    return root;
+// https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
+function mode(array) {
+    if (array.length == 0) {
+        return null;
+    }
+    let modeMap = {};
+    let maxEl = array[0],
+        maxCount = 1;
+    for (let i = 0; i < array.length; i++) {
+        let el = array[i];
+        if (modeMap[el] == null) {
+            modeMap[el] = 1;
+        } else {
+            modeMap[el]++;
+        }
+        if (modeMap[el] > maxCount) {
+            maxEl = el;
+            maxCount = modeMap[el];
+        }
+    }
+
+    return maxEl;
+}
+
+// Calculate accuracy percentage
+function accuracy_percentage(actual, predicted) {
+    let correct = 0;
+    for (let i = 0; i < actual.length; i++) {
+        if (actual[i] == predicted[i]) {
+            correct += 1;
+        }
+    }
+    return correct / actual.length * 100.0;
+}
+
+function getClassValFromRow(row) {
+    return row[row.length - 1];
 }
 
 // Print a decision tree
@@ -187,3 +185,5 @@ function predict(node, row) {
     let { value, nodes } = predictChildNode(childNode);
     return { value: value, nodes: [node].concat(nodes) };
 }
+
+const actualClassVals = fold => fold.map(getClassValFromRow);
