@@ -21,7 +21,7 @@ npm install formidable
 
 Um Dateiänderungen im laufenden Node.js-Betrieb aufzunehmen:
 npm install -g nodemon
-nodemon index.js
+nodemon webserver.js
 
 node webserver.js
 
