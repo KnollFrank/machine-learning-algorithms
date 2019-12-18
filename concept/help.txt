@@ -15,8 +15,6 @@ Abhängigkeiten:
 - https://datatables.net/
 
 TODO:
-- Bei "Dateneingabe -> vorhersagen" sollte der Pfad, der zu einer Vorhersage aufgrund
-  der eingegebenen Werte führt, im Entscheidungsbaum farblich hervorgehoben werden.
 - Laden/Speichern eines Modells für Entscheidungsbäume (= Graph)
 - avoiding some of the unnecessary splits:
   Thanks for the post, code, and all the follow ups! I also was wondering about avoiding some of the unnecessary splits at the bottom of the tree. In case others are curious, one short addition to the code would be to add
