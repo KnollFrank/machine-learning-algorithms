@@ -20,7 +20,8 @@ function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth
     let leftNetwork = _createNetwork(node.left, attributeNames, depth + 1);
     let rightNetwork = _createNetwork(node.right, attributeNames, depth + 1);
 
-    let newNode = createNode(`${attributeNames[node.index]} < ${node.value}`, depth, node.id);
+    // TODO: "isNumber(node.value) ? '<' : '='" DRY with decisionTree.print_tree()
+    let newNode = createNode(`${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}`, depth, node.id);
 
     const createOneLevelEdges = (fromNode, toNodes, label) =>
         toNodes

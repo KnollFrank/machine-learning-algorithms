@@ -68,12 +68,20 @@ function evaluate_algorithm(dataset, algorithm, n_folds, max_depth, min_size) {
     return scores;
 }
 
+function isNumber(n) {
+    return !isNaN(n);
+}
+
 // Split a dataset based on an attribute and an attribute value
 function test_split(index, value, dataset) {
     const left = [];
     const right = [];
     for (const row of dataset) {
-        if (row[index] < value) {
+        const splitCondition =
+            isNumber(value) ?
+            row[index] < value :
+            row[index] == value;
+        if (splitCondition) {
             left.push(row);
         } else {
             right.push(row);
@@ -205,7 +213,7 @@ function build_tree(train, max_depth, min_size) {
 // Print a decision tree
 function print_tree(node, attributeNames, depth = 0) {
     if (node.type == 'innerNode') {
-        console.log(`${' '.repeat(depth)}[${attributeNames[node.index]} < ${node.value}]`);
+        console.log(`${' '.repeat(depth)}[${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}]`);
         print_tree(node.left, attributeNames, depth + 1);
         print_tree(node.right, attributeNames, depth + 1);
     } else {
@@ -215,11 +223,17 @@ function print_tree(node, attributeNames, depth = 0) {
 
 // Make a prediction with a decision tree
 function predict(node, row) {
-    const predictChild = childNode =>
+    const predictChildNode = childNode =>
         childNode.type == 'innerNode' ? predict(childNode, row) : { value: childNode.value, nodes: [childNode] };
 
-    const childNode = row[node.index] < node.value ? node.left : node.right;
-    let { value, nodes } = predictChild(childNode);
+    const splitCondition =
+        isNumber(node.value) ?
+        row[node.index] < node.value :
+        row[node.index] == node.value;
+
+    const childNode = splitCondition ? node.left : node.right;
+
+    let { value, nodes } = predictChildNode(childNode);
     return { value: value, nodes: [node].concat(nodes) };
 }
 

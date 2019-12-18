@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function (results) {
+            complete: function(results) {
                 onDatasetChanged(getDatasetDescription(results.data));
             }
         });
@@ -47,8 +47,8 @@ function onDatasetChanged(datasetDescription) {
                 datasetDescription,
                 build_tree(
                     datasetDescription.dataset,
-                    getInputNumberById('max_depth'),
-                    getInputNumberById('min_size')));
+                    getInputById('max_depth'),
+                    getInputById('min_size')));
 
             return false;
         });
@@ -69,8 +69,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
         network);
 }
 
-function getInputNumberById(id) {
-    return Number(document.querySelector('#' + id).value);
+function getInputById(id) {
+    return document.querySelector('#' + id).value;
 }
 
 function displayAccuracy(tree, dataset) {

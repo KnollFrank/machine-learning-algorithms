@@ -8,7 +8,7 @@ function displayDataInput(dataInputForm, attributeNames, tree, network) {
         "submit",
         e => {
             e.preventDefault();
-            const prediction = predict(tree, getInputNumbersById(attributeNames));
+            const prediction = predict(tree, getInputsById(attributeNames));
             const nodeIdsOfPrediction = prediction.nodes.map(node => node.id);
             highlightTreeNodes(network.nodes, nodeIdsOfPrediction);
             highlightTreeEdges(network.edges, nodeIdsOfPrediction);
@@ -49,6 +49,6 @@ function appendInputElements(parent, attributeNames) {
         .forEach(inputElement => parent.appendChild(inputElement));
 }
 
-function getInputNumbersById(attributeNames) {
-    return attributeNames.map(getInputNumberById);
+function getInputsById(attributeNames) {
+    return attributeNames.map(getInputById);
 }
