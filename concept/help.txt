@@ -14,6 +14,17 @@ Abhängigkeiten:
 - https://visjs.org/ oder https://almende.github.io/vis/
 - https://datatables.net/
 
+Install:
+npm init
+npm install express
+npm install formidable
+
+Um Dateiänderungen im laufenden Node.js-Betrieb aufzunehmen:
+npm install -g nodemon
+nodemon index.js
+
+node webserver.js
+
 TODO:
 - Laden/Speichern eines Modells für Entscheidungsbäume (= Graph)
 - avoiding some of the unnecessary splits:

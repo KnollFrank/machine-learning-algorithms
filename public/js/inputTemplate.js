@@ -12,6 +12,7 @@ function createInputElement(attributeName) {
 function getHtml(url) {
     let capturedHtml;
 
+    // TODO: mit fetch-API umsetzen
     $.ajax({
         url: url,
         dataType: 'html',
