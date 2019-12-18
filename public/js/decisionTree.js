@@ -98,7 +98,8 @@ function split(node, max_depth, min_size, depth) {
     }
     // check for max depth
     if (depth >= max_depth) {
-        [node.left, node.right] = [to_terminal(left), to_terminal(right)];
+        node.left = to_terminal(left);
+        node.right = to_terminal(right);
         return;
     }
 
@@ -162,12 +163,16 @@ function getClassValFromRow(row) {
 // Print a decision tree
 function print_tree(node, attributeNames, depth = 0) {
     if (node.type == 'innerNode') {
-        console.log(`${' '.repeat(depth)}[${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}]`);
+        console.log(`${' '.repeat(depth)}[${getNodeContent(node, attributeNames)}]`);
         print_tree(node.left, attributeNames, depth + 1);
         print_tree(node.right, attributeNames, depth + 1);
     } else {
         console.log(`${' '.repeat(depth)}[${node.value}]`);
     }
+}
+
+function getNodeContent(node, attributeNames) {
+    return `${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}`;
 }
 
 // Make a prediction with a decision tree
