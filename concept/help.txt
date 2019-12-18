@@ -59,7 +59,6 @@ TODO:
 			split_condition = (row[node['index']] == node['value'])
 
 	I ran the program on another dataset (Loan Prediction) and it worked fine with about 79% accuracy.
-- Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
 - Aufteilung des Datensatzes in 80% Trainingsdaten und 20% Testdaten
 - FIXME: Beim Neuladen eines Datensatzes sollen alle anderen "Felder" (Baum, Accuracy, Dateneingabe, ...) geleert bzw. neu berechnet werden.
   Bisheriger Fehler:
@@ -70,4 +69,7 @@ TODO:
     displayDataInput http://127.0.0.1:5500/part2/project/js/dataInput.js:11
 - Togglebutton einbauen, um die Berechnung des Entscheidungsbaums
   1. lokal im Browser durchzuführen oder
-  2. mit node.js auf dem Server durchzuführen
+  2. mit node.js auf dem Server durchzuführen. Progressbar für den aktuellen Stand des Algorithmus dann mit Websockets auf dem Client anzeigen.
+- UI verschönern
+- Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
+  - Schon während des Trainings die dazugefügten Knoten und Kanten grafisch anzeigen in einem Einzelschrittmodus.
