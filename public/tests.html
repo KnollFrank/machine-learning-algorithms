@@ -1534,6 +1534,8 @@
             const attributeNames = ['variance', 'skewness', 'curtosis', 'entropy', 'class'];
             print_tree(tree, attributeNames);
             console.log('tree:', tree);
+            const prediction = predict(tree, [0, 1, 2, 3, 0]);
+            console.log('prediction:', prediction);
             assert.ok(1 == "1", "Passed!");
         });
     </script>

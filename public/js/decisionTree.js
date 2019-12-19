@@ -163,11 +163,11 @@ function getClassValFromRow(row) {
 // Print a decision tree
 function print_tree(node, attributeNames, depth = 0) {
     if (node.type == 'innerNode') {
-        console.log(`${' '.repeat(depth)}[${getNodeContent(node, attributeNames)}]`);
+        console.log(`${' '.repeat(depth)}[${node.id}: ${getNodeContent(node, attributeNames)}]`);
         print_tree(node.left, attributeNames, depth + 1);
         print_tree(node.right, attributeNames, depth + 1);
     } else {
-        console.log(`${' '.repeat(depth)}[${node.value}]`);
+        console.log(`${' '.repeat(depth)}[${node.id}: ${node.value}]`);
     }
 }
 
