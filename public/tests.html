@@ -1534,9 +1534,10 @@
             const attributeNames = ['variance', 'skewness', 'curtosis', 'entropy', 'class'];
             print_tree(tree, attributeNames);
             console.log('tree:', tree);
-            const prediction = predict(tree, [0, 1, 2, 3, 0]);
-            console.log('prediction:', prediction);
-            assert.ok(1 == "1", "Passed!");
+            // const prediction = predict(tree, [0, 1, 2, 3, 0]);
+            // console.log('prediction:', prediction);
+            const prunedTree = prune(tree);
+            assert.deepEqual( prunedTree, { foo: "bar" }, "Two objects can be the same in value" );
         });
     </script>
 </body>
