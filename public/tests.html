@@ -1530,14 +1530,44 @@
         }
     }
 }`;
+
+            const jsonTreeExpected = `{
+    "index": 0,
+    "value": "0.3223",
+    "type": "innerNode",
+    "id": 1,
+    "left": {
+        "index": 1,
+        "value": "5.8974",
+        "type": "innerNode",
+        "id": 2,
+        "left": {
+            "type": "terminalNode",
+            "id": 3,
+            "value": "1"
+        },
+        "right": {
+            "type": "terminalNode",
+            "id": 4,
+            "value": "0"
+        }
+    },
+    "right": {
+        "index": 0,
+        "value": "0",
+        "type": "terminalNode",
+        "id": 5
+    }
+}`;
             const tree = JSON.parse(jsonTree);
+            const treeExpected = JSON.parse(jsonTreeExpected);
             const attributeNames = ['variance', 'skewness', 'curtosis', 'entropy', 'class'];
             print_tree(tree, attributeNames);
             console.log('tree:', tree);
             // const prediction = predict(tree, [0, 1, 2, 3, 0]);
             // console.log('prediction:', prediction);
             const prunedTree = prune(tree);
-            assert.deepEqual( prunedTree, { foo: "bar" }, "Two objects can be the same in value" );
+            assert.deepEqual(prunedTree, treeExpected, "Two objects can be the same in value");
         });
     </script>
 </body>
