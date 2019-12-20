@@ -193,6 +193,6 @@ function predict(node, row) {
 
 const actualClassVals = fold => fold.map(getClassValFromRow);
 
-function prune(tree) {
-    return tree;
+function prune(node) {
+    return node;
 }

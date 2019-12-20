@@ -1491,6 +1491,16 @@
             assert.ok(1 == "1", "Passed!");
         });
 
+        QUnit.test("should not prune terminal node", function (assert) {
+            const jsonTree = `{
+            "type": "terminalNode",
+            "id": 6,
+            "value": "0"
+}`;
+            const tree = JSON.parse(jsonTree);
+            assert.deepEqual(prune(tree), tree);
+        });
+
         QUnit.test("should prune", function (assert) {
             const jsonTree = `{
     "index": 0,
@@ -1561,11 +1571,8 @@
 }`;
             const tree = JSON.parse(jsonTree);
             const treeExpected = JSON.parse(jsonTreeExpected);
-            const attributeNames = ['variance', 'skewness', 'curtosis', 'entropy', 'class'];
-            print_tree(tree, attributeNames);
+            print_tree(tree, ['variance', 'skewness', 'curtosis', 'entropy', 'class']);
             console.log('tree:', tree);
-            // const prediction = predict(tree, [0, 1, 2, 3, 0]);
-            // console.log('prediction:', prediction);
             const prunedTree = prune(tree);
             assert.deepEqual(prunedTree, treeExpected, "Two objects can be the same in value");
         });
