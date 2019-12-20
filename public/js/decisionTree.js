@@ -203,7 +203,7 @@ function prune(node) {
     let pruneDescr = { node: node, hasChange: false };
     do {
         pruneDescr = _prune(pruneDescr.node);
-    } while (pruneDescr.hasChange == true);
+    } while (pruneDescr.hasChange);
 
     return pruneDescr.node;
 }
