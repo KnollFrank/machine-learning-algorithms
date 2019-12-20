@@ -196,16 +196,16 @@ const actualClassVals = fold => fold.map(getClassValFromRow);
 function prune(node) {
     let pruneDescr = { node: node, hasChange: false };
     do {
-        pruneDescr = prune2(pruneDescr.node);
+        pruneDescr = _prune(pruneDescr.node);
     } while (pruneDescr.hasChange == true);
 
     return pruneDescr.node;
 }
 
-function prune2(node) {
+function _prune(node) {
     let hasChange = false;
 
-    function _prune(node) {
+    function prune(node) {
         if (node.type == 'terminalNode') {
             return node;
         }
@@ -215,10 +215,10 @@ function prune2(node) {
             return node.left;
         }
 
-        node.left = _prune(node.left);
-        node.right = _prune(node.right);
+        node.left = prune(node.left);
+        node.right = prune(node.right);
         return node;
     }
 
-    return { node: _prune(node), hasChange: hasChange };
+    return { node: prune(node), hasChange: hasChange };
 }
