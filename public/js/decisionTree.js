@@ -194,19 +194,31 @@ function predict(node, row) {
 const actualClassVals = fold => fold.map(getClassValFromRow);
 
 function prune(node) {
-    return _prune(node);
+    let pruneDescr = { node: node, hasChange: false };
+    do {
+        pruneDescr = prune2(pruneDescr.node);
+    } while (pruneDescr.hasChange == true);
+
+    return pruneDescr.node;
 }
 
-function _prune(node) {
-    if (node.type == 'terminalNode') {
+function prune2(node) {
+    let hasChange = false;
+
+    function _prune(node) {
+        if (node.type == 'terminalNode') {
+            return node;
+        }
+
+        if (node.left.type == 'terminalNode' && node.right.type == 'terminalNode' && node.left.value == node.right.value) {
+            hasChange = true;
+            return node.left;
+        }
+
+        node.left = _prune(node.left);
+        node.right = _prune(node.right);
         return node;
     }
 
-    if (node.left.type == 'terminalNode' && node.right.type == 'terminalNode' && node.left.value == node.right.value) {
-        return node.left;
-    }
-
-    node.left = _prune(node.left);
-    node.right = _prune(node.right);
-    return node;
+    return { node: _prune(node), hasChange: hasChange };
 }
