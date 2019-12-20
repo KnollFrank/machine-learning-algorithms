@@ -10,7 +10,7 @@ Array.prototype.sum = function () {
 function build_tree(train, max_depth, min_size) {
     const root = get_split(train);
     split(root, max_depth, min_size, 1);
-    return root;
+    return prune(root);
 }
 
 // Select the best split point for a dataset
