@@ -1443,44 +1443,45 @@
             const datasetDescription = getDatasetDescription(results.data);
             const tree = build_tree(datasetDescription.dataset, 2, 10);
             //const jsonTree = JSON.stringify(tree);
-            const jsonTree = `{
-    "index": 0,
-    "value": "0.3223",
-    "type": "innerNode",
-    "id": 1,
-    "left": {
-        "index": 1,
-        "value": "5.8974",
-        "type": "innerNode",
-        "id": 2,
-        "left": {
-            "type": "terminalNode",
-            "id": 3,
-            "value": "1"
-        },
-        "right": {
-            "type": "terminalNode",
-            "id": 4,
-            "value": "0"
-        }
-    },
-    "right": {
-        "index": 0,
-        "value": "1.7452",
-        "type": "innerNode",
-        "id": 5,
-        "left": {
-            "type": "terminalNode",
-            "id": 6,
-            "value": "0"
-        },
-        "right": {
-            "type": "terminalNode",
-            "id": 7,
-            "value": "0"
-        }
-    }
-}`;
+            const jsonTree = `
+            {
+                "index": 0,
+                "value": "0.3223",
+                "type": "innerNode",
+                "id": 1,
+                "left": {
+                    "index": 1,
+                    "value": "5.8974",
+                    "type": "innerNode",
+                    "id": 2,
+                    "left": {
+                        "type": "terminalNode",
+                        "id": 3,
+                        "value": "1"
+                    },
+                    "right": {
+                        "type": "terminalNode",
+                        "id": 4,
+                        "value": "0"
+                    }
+                },
+                "right": {
+                    "index": 0,
+                    "value": "1.7452",
+                    "type": "innerNode",
+                    "id": 5,
+                    "left": {
+                        "type": "terminalNode",
+                        "id": 6,
+                        "value": "0"
+                    },
+                    "right": {
+                        "type": "terminalNode",
+                        "id": 7,
+                        "value": "0"
+                    }
+                }
+            }`;
             console.log('jsonTree:', jsonTree);
             const treeFromJson = JSON.parse(jsonTree);
             console.log('treeFromJson:', treeFromJson);
@@ -1501,80 +1502,85 @@
             assert.deepEqual(prune(tree), tree);
         });
 
-        QUnit.test("should prune", function (assert) {
-            const jsonTree = `{
-    "index": 0,
-    "value": "0.3223",
-    "type": "innerNode",
-    "id": 1,
-    "left": {
-        "index": 1,
-        "value": "5.8974",
-        "type": "innerNode",
-        "id": 2,
-        "left": {
-            "type": "terminalNode",
-            "id": 3,
-            "value": "1"
-        },
-        "right": {
-            "type": "terminalNode",
-            "id": 4,
-            "value": "0"
-        }
-    },
-    "right": {
-        "index": 0,
-        "value": "1.7452",
-        "type": "innerNode",
-        "id": 5,
-        "left": {
-            "type": "terminalNode",
-            "id": 6,
-            "value": "0"
-        },
-        "right": {
-            "type": "terminalNode",
-            "id": 7,
-            "value": "0"
-        }
-    }
-}`;
+        QUnit.test("should prune small tree", function (assert) {
+            const jsonTree = `
+            {
+                "index": 0,
+                "value": "0.3223",
+                "type": "innerNode",
+                "id": 1,
+                "left": {
+                    "index": 1,
+                    "value": "5.8974",
+                    "type": "innerNode",
+                    "id": 2,
+                    "left": {
+                        "type": "terminalNode",
+                        "id": 3,
+                        "value": "1"
+                    },
+                    "right": {
+                        "type": "terminalNode",
+                        "id": 4,
+                        "value": "0"
+                    }
+                },
+                "right": {
+                    "index": 0,
+                    "value": "1.7452",
+                    "type": "innerNode",
+                    "id": 5,
+                    "left": {
+                        "type": "terminalNode",
+                        "id": 6,
+                        "value": "0"
+                    },
+                    "right": {
+                        "type": "terminalNode",
+                        "id": 7,
+                        "value": "0"
+                    }
+                }
+            }`;
 
-            const jsonTreeExpected = `{
-    "index": 0,
-    "value": "0.3223",
-    "type": "innerNode",
-    "id": 1,
-    "left": {
-        "index": 1,
-        "value": "5.8974",
-        "type": "innerNode",
-        "id": 2,
-        "left": {
-            "type": "terminalNode",
-            "id": 3,
-            "value": "1"
-        },
-        "right": {
-            "type": "terminalNode",
-            "id": 4,
-            "value": "0"
-        }
-    },
-    "right": {
-        "index": 0,
-        "value": "0",
-        "type": "terminalNode",
-        "id": 5
-    }
-}`;
+            const jsonTreeExpected = `
+            {
+                "index": 0,
+                "value": "0.3223",
+                "type": "innerNode",
+                "id": 1,
+                "left": {
+                    "index": 1,
+                    "value": "5.8974",
+                    "type": "innerNode",
+                    "id": 2,
+                    "left": {
+                        "type": "terminalNode",
+                        "id": 3,
+                        "value": "1"
+                    },
+                    "right": {
+                        "type": "terminalNode",
+                        "id": 4,
+                        "value": "0"
+                    }
+                },
+                "right":{
+                        "type": "terminalNode",
+                        "id": 6,
+                        "value": "0"
+                    }
+            }`;
+
             const tree = JSON.parse(jsonTree);
-            const treeExpected = JSON.parse(jsonTreeExpected);
+            console.log('tree');
             print_tree(tree, ['variance', 'skewness', 'curtosis', 'entropy', 'class']);
-            console.log('tree:', tree);
             const prunedTree = prune(tree);
-            assert.deepEqual(prunedTree, treeExpected, "Two objects can be the same in value");
+            console.log('prunedTree');
+            print_tree(prunedTree, ['variance', 'skewness', 'curtosis', 'entropy', 'class']);
+            const prediction = predict(prunedTree, [0, 1, 2, 3, 0]);
+            console.log('prediction:', prediction);
+            assert.deepEqual(prunedTree, JSON.parse(jsonTreeExpected));
         });
     </script>
 </body>

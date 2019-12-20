@@ -194,5 +194,15 @@ function predict(node, row) {
 const actualClassVals = fold => fold.map(getClassValFromRow);
 
 function prune(node) {
+    if (node.type == 'terminalNode') {
+        return node;
+    }
+
+    if (node.left.type == 'terminalNode' && node.right.type == 'terminalNode' && node.left.value == node.right.value) {
+        return node.left;
+    }
+
+    node.left = prune(node.left);
+    node.right = prune(node.right);
     return node;
 }
