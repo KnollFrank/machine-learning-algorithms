@@ -84,9 +84,16 @@ function gini_index(groups, classes) {
     return gini;
 }
 
+function isInnerNode(node) {
+    return 'left' in node && 'right' in node;
+}
+
+function isTerminalNode(node) {
+    return !isInnerNode(node);
+}
+
 // Create child splits for a node or make terminal
 function split(node, max_depth, min_size, depth) {
-    node.type = 'innerNode';
     node.id = newId();
     let [left, right] = node.groups;
     delete node.groups;
@@ -118,7 +125,7 @@ function split(node, max_depth, min_size, depth) {
 // Create a terminal node value
 function to_terminal(group) {
     const outcomes = group.map(getClassValFromRow);
-    return { type: 'terminalNode', id: newId(), value: mode(outcomes) };
+    return { id: newId(), value: mode(outcomes) };
 }
 
 // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
@@ -162,7 +169,7 @@ function getClassValFromRow(row) {
 
 // Print a decision tree
 function print_tree(node, attributeNames, depth = 0) {
-    if (node.type == 'innerNode') {
+    if (isInnerNode(node)) {
         console.log(`${' '.repeat(depth)}[${node.id}: ${getNodeContent(node, attributeNames)}]`);
         print_tree(node.left, attributeNames, depth + 1);
         print_tree(node.right, attributeNames, depth + 1);
@@ -178,7 +185,7 @@ function getNodeContent(node, attributeNames) {
 // Make a prediction with a decision tree
 function predict(node, row) {
     const predictChildNode = childNode =>
-        childNode.type == 'innerNode' ? predict(childNode, row) : { value: childNode.value, nodes: [childNode] };
+        isInnerNode(childNode) ? predict(childNode, row) : { value: childNode.value, nodes: [childNode] };
 
     const splitCondition =
         isNumber(node.value) ?
@@ -206,11 +213,11 @@ function _prune(node) {
     let hasChange = false;
 
     function prune(node) {
-        if (node.type == 'terminalNode') {
+        if (isTerminalNode(node)) {
             return node;
         }
 
-        if (node.left.type == 'terminalNode' && node.right.type == 'terminalNode' && node.left.value == node.right.value) {
+        if (isTerminalNode(node.left) && isTerminalNode(node.right) && node.left.value == node.right.value) {
             hasChange = true;
             return node.left;
         }

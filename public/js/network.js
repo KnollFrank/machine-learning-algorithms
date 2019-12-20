@@ -9,7 +9,7 @@ function createNetwork(node, attributeNames, depth = 0) {
 }
 
 function _createNetwork(node, attributeNames, depth) {
-    if (node.type === 'innerNode') {
+    if (isInnerNode(node)) {
         return createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth);
     } else {
         return createNetworkNode(node.value, depth, node.id);
@@ -24,17 +24,17 @@ function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth
 
     const createOneLevelEdges = (fromNode, toNodes, label) =>
         toNodes
-        .filter(toNode => toNode.level == fromNode.level + 1)
-        .map(toNode => ({
-            from: fromNode.id,
-            to: toNode.id,
-            label: label
-        }));
+            .filter(toNode => toNode.level == fromNode.level + 1)
+            .map(toNode => ({
+                from: fromNode.id,
+                to: toNode.id,
+                label: label
+            }));
 
     let newEdges =
         createOneLevelEdges(newNode, leftNetwork.nodes, "true")
-        .concat(
-            createOneLevelEdges(newNode, rightNetwork.nodes, "false"));
+            .concat(
+                createOneLevelEdges(newNode, rightNetwork.nodes, "false"));
 
     return {
         nodes: [newNode].concat(leftNetwork.nodes, rightNetwork.nodes),
@@ -97,7 +97,7 @@ function displayNetwork(container, data) {
 
     network = new vis.Network(container, data, options);
 
-    network.on('select', function(params) {
+    network.on('select', function (params) {
         document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
     });
 }
