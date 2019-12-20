@@ -25,7 +25,7 @@ nodemon webserver.js
 
 node webserver.js
 
-TODO:
+FK-TODO:
 - Laden/Speichern eines Modells für Entscheidungsbäume (= Graph)
 - avoiding some of the unnecessary splits:
   Thanks for the post, code, and all the follow ups! I also was wondering about avoiding some of the unnecessary splits at the bottom of the tree. In case others are curious, one short addition to the code would be to add
