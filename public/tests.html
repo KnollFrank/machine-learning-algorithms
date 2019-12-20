@@ -1441,47 +1441,47 @@
 -2.5419,-0.65804,2.6842,1.1952,1`;
             const results = Papa.parse(csv, { header: false });
             const datasetDescription = getDatasetDescription(results.data);
-            const tree = build_tree(datasetDescription.dataset, 2, 10);
-            //const jsonTree = JSON.stringify(tree);
-            const jsonTree = `
-            {
-                "index": 0,
-                "value": "0.3223",
-                "type": "innerNode",
-                "id": 1,
-                "left": {
-                    "index": 1,
-                    "value": "5.8974",
-                    "type": "innerNode",
-                    "id": 2,
-                    "left": {
-                        "type": "terminalNode",
-                        "id": 3,
-                        "value": "1"
-                    },
-                    "right": {
-                        "type": "terminalNode",
-                        "id": 4,
-                        "value": "0"
-                    }
-                },
-                "right": {
-                    "index": 0,
-                    "value": "1.7452",
-                    "type": "innerNode",
-                    "id": 5,
-                    "left": {
-                        "type": "terminalNode",
-                        "id": 6,
-                        "value": "0"
-                    },
-                    "right": {
-                        "type": "terminalNode",
-                        "id": 7,
-                        "value": "0"
-                    }
-                }
-            }`;
+            const tree = build_tree(datasetDescription.dataset, 4, 10);
+            const jsonTree = JSON.stringify(tree);
+            /*            const jsonTree = `
+                        {
+                            "index": 0,
+                            "value": "0.3223",
+                            "type": "innerNode",
+                            "id": 1,
+                            "left": {
+                                "index": 1,
+                                "value": "5.8974",
+                                "type": "innerNode",
+                                "id": 2,
+                                "left": {
+                                    "type": "terminalNode",
+                                    "id": 3,
+                                    "value": "1"
+                                },
+                                "right": {
+                                    "type": "terminalNode",
+                                    "id": 4,
+                                    "value": "0"
+                                }
+                            },
+                            "right": {
+                                "index": 0,
+                                "value": "1.7452",
+                                "type": "innerNode",
+                                "id": 5,
+                                "left": {
+                                    "type": "terminalNode",
+                                    "id": 6,
+                                    "value": "0"
+                                },
+                                "right": {
+                                    "type": "terminalNode",
+                                    "id": 7,
+                                    "value": "0"
+                                }
+                            }
+                        }`;*/
             console.log('jsonTree:', jsonTree);
             const treeFromJson = JSON.parse(jsonTree);
             console.log('treeFromJson:', treeFromJson);
@@ -1570,6 +1570,57 @@
                         "id": 6,
                         "value": "0"
                     }
+            }`;
+
+            shouldPruneTree(assert, jsonTree, jsonTreeExpected);
+        });
+
+        QUnit.test("should prune twice", function (assert) {
+            const jsonTree = `
+            {
+                "index": 0,
+                "value": "2.3925",
+                "type": "innerNode",
+                "id": 25,
+                "left": {
+                    "index": 2,
+                    "value": "0.0099913",
+                    "type": "innerNode",
+                    "id": 26,
+                    "left": {
+                        "type": "terminalNode",
+                        "id": 27,
+                        "value": "0"
+                    },
+                    "right": {
+                        "type": "terminalNode",
+                        "id": 28,
+                        "value": "0"
+                    }
+                },
+                "right": {
+                    "index": 0,
+                    "value": "3.6216",
+                    "type": "innerNode",
+                    "id": 29,
+                    "left": {
+                        "type": "terminalNode",
+                        "id": 30,
+                        "value": "0"
+                    },
+                    "right": {
+                        "type": "terminalNode",
+                        "id": 31,
+                        "value": "0"
+                    }
+                }
+            }`;
+
+            const jsonTreeExpected = `
+            {
+                "type": "terminalNode",
+                "id": 27,
+                "value": "0"
             }`;
 
             shouldPruneTree(assert, jsonTree, jsonTreeExpected);
