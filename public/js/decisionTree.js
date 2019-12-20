@@ -184,17 +184,16 @@ function getNodeContent(node, attributeNames) {
 
 // Make a prediction with a decision tree
 function predict(node, row) {
-    const predictChildNode = childNode =>
-        isInnerNode(childNode) ? predict(childNode, row) : { value: childNode.value, nodes: [childNode] };
+    if (isTerminalNode(node)) {
+        return { value: node.value, nodes: [node] };
+    }
 
     const splitCondition =
         isNumber(node.value) ?
             row[node.index] < node.value :
             row[node.index] == node.value;
 
-    const childNode = splitCondition ? node.left : node.right;
-
-    let { value, nodes } = predictChildNode(childNode);
+    let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
     return { value: value, nodes: [node].concat(nodes) };
 }
 

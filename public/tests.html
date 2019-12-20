@@ -1657,8 +1657,8 @@
             const prunedTree = prune(tree);
             console.log('prunedTree');
             print_tree(prunedTree, ['variance', 'skewness', 'curtosis', 'entropy', 'class']);
-            // const prediction = predict(prunedTree, [0, 1, 2, 3, 0]);
-            // console.log('prediction:', prediction);
+            const prediction = predict(prunedTree, [0, 1, 2, 3, 0]);
+            console.log('prediction:', prediction);
             assert.deepEqual(prunedTree, JSON.parse(jsonTreeExpected));
         }
     </script>
