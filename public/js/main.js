@@ -1,5 +1,6 @@
 'use strict';
 
+// TODO: verwende import export
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
 document.addEventListener('DOMContentLoaded', () => {
