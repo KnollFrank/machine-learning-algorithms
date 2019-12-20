@@ -1493,13 +1493,13 @@
         });
 
         QUnit.test("should not prune terminal node", function (assert) {
-            const jsonTree = `{
-            "type": "terminalNode",
-            "id": 6,
-            "value": "0"
-}`;
-            const tree = JSON.parse(jsonTree);
-            assert.deepEqual(prune(tree), tree);
+            const jsonTree = `
+            {
+                "type": "terminalNode",
+                "id": 6,
+                "value": "0"
+            }`;
+            shouldPruneTree(assert, jsonTree, jsonTree);
         });
 
         QUnit.test("should prune small tree", function (assert) {
@@ -1572,16 +1572,20 @@
                     }
             }`;
 
+            shouldPruneTree(assert, jsonTree, jsonTreeExpected);
+        });
+
+        function shouldPruneTree(assert, jsonTree, jsonTreeExpected) {
             const tree = JSON.parse(jsonTree);
             console.log('tree');
             print_tree(tree, ['variance', 'skewness', 'curtosis', 'entropy', 'class']);
             const prunedTree = prune(tree);
             console.log('prunedTree');
             print_tree(prunedTree, ['variance', 'skewness', 'curtosis', 'entropy', 'class']);
-            const prediction = predict(prunedTree, [0, 1, 2, 3, 0]);
-            console.log('prediction:', prediction);
+            // const prediction = predict(prunedTree, [0, 1, 2, 3, 0]);
+            // console.log('prediction:', prediction);
             assert.deepEqual(prunedTree, JSON.parse(jsonTreeExpected));
-        });
+        }
     </script>
 </body>
 
