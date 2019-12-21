@@ -192,7 +192,7 @@ function predict(node, row) {
 
     const splitCondition =
         isNumber(node.value) ?
-        row[node.index] < node.value :
+        Number(row[node.index]) < Number(node.value) :
         row[node.index] == node.value;
 
     let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
