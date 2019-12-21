@@ -46,7 +46,7 @@ function onDatasetChanged(datasetDescription) {
 
             onDecisionTreeChanged(
                 datasetDescription,
-                build_tree(
+                new DecisionTreeBuilder().build_tree(
                     datasetDescription.dataset,
                     getInputValueById('max_depth'),
                     getInputValueById('min_size')));

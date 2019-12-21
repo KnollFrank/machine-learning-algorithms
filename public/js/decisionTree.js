@@ -6,82 +6,150 @@ Array.prototype.sum = function() {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
-// Build a decision tree
-function build_tree(train, max_depth, min_size) {
-    const root = get_split(train);
-    split(root, max_depth, min_size, 1);
-    return prune(root);
-}
-
-// Select the best split point for a dataset
-function get_split(dataset) {
-    const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
-    let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
-    for (let index = 0; index < dataset[0].length - 1; index++) {
-        for (const row of dataset) {
-            const groups = test_split(index, row[index], dataset);
-            const gini = gini_index(groups, class_values);
-            // console.log(`X${index+1} < ${row[index]} Gini=${gini}`);
-            if (gini < b_score) {
-                [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
-            }
-        }
-    }
-    return {
-        index: b_index,
-        value: b_value,
-        groups: b_groups
-    };
-}
-
-// Split a dataset based on an attribute and an attribute value
-function test_split(index, value, dataset) {
-    const left = [];
-    const right = [];
-    for (const row of dataset) {
-        const splitCondition =
-            isNumber(value) ?
-            row[index] < value :
-            row[index] == value;
-        if (splitCondition) {
-            left.push(row);
-        } else {
-            right.push(row);
-        }
-    }
-    return [left, right];
-}
-
 function isNumber(n) {
     return !isNaN(n);
 }
 
-// Calculate the Gini index for a split dataset
-function gini_index(groups, classes) {
-    const getP = group => class_val =>
-        group
-        .map(getClassValFromRow)
-        .filter(classVal => classVal == class_val)
-        .length / group.length;
+class DecisionTreeBuilder {
+    constructor() {
 
-    const getScore = group =>
-        classes
-        .map(getP(group))
-        .map(p => p * p)
-        .sum();
+    }
 
-    const n_instances =
-        groups
-        .map(group => group.length)
-        .sum();
+    // Build a decision tree
+    build_tree(train, max_depth, min_size) {
+        const root = this.get_split(train);
+        this.split(root, max_depth, min_size, 1);
+        return prune(root);
+    }
 
-    const gini =
-        groups
-        .filter(group => group.length != 0)
-        .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-        .sum();
+    // Select the best split point for a dataset
+    get_split(dataset) {
+        const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
+        let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
+        for (let index = 0; index < dataset[0].length - 1; index++) {
+            for (const row of dataset) {
+                const groups = this.test_split(index, row[index], dataset);
+                const gini = this.gini_index(groups, class_values);
+                // console.log(`X${index+1} < ${row[index]} Gini=${gini}`);
+                if (gini < b_score) {
+                    [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
+                }
+            }
+        }
+        return {
+            index: b_index,
+            value: b_value,
+            groups: b_groups
+        };
+    }
 
-    return gini;
+    // Split a dataset based on an attribute and an attribute value
+    test_split(index, value, dataset) {
+        const left = [];
+        const right = [];
+        for (const row of dataset) {
+            const splitCondition =
+                isNumber(value) ?
+                row[index] < value :
+                row[index] == value;
+            if (splitCondition) {
+                left.push(row);
+            } else {
+                right.push(row);
+            }
+        }
+        return [left, right];
+    }
+
+    // Calculate the Gini index for a split dataset
+    gini_index(groups, classes) {
+        const getP = group => class_val =>
+            group
+            .map(getClassValFromRow)
+            .filter(classVal => classVal == class_val)
+            .length / group.length;
+
+        const getScore = group =>
+            classes
+            .map(getP(group))
+            .map(p => p * p)
+            .sum();
+
+        const n_instances =
+            groups
+            .map(group => group.length)
+            .sum();
+
+        const gini =
+            groups
+            .filter(group => group.length != 0)
+            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+            .sum();
+
+        return gini;
+    }
+
+    // Create child splits for a node or make terminal
+    split(node, max_depth, min_size, depth) {
+        node.id = newId();
+        let [left, right] = node.groups;
+        delete node.groups;
+        // check for a no split
+        if (left.length == 0 || right.length == 0) {
+            node.left = this.to_terminal(left.concat(right));
+            node.right = this.to_terminal(left.concat(right));
+            return;
+        }
+        // check for max depth
+        if (depth >= max_depth) {
+            node.left = this.to_terminal(left);
+            node.right = this.to_terminal(right);
+            return;
+        }
+
+        const processChild = (child, childName) => {
+                if (child.length <= min_size) {
+                    node[childName] = this.to_terminal(child);
+                } else {
+                    node[childName] = this.get_split(child);
+                    this.split(node[childName], max_depth, min_size, depth + 1);
+                }
+            }
+            // FK-TODO: an dieser Stelle könnte man parallelisieren, also
+            //          gleichzeitig auf verschiedenen Clients folgende beiden Zeilen ausführen:
+        processChild(left, 'left');
+        processChild(right, 'right');
+    }
+
+    // Create a terminal node value
+    to_terminal(group) {
+        const outcomes = group.map(getClassValFromRow);
+        return { id: newId(), value: this.mode(outcomes) };
+    }
+
+    // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
+    mode(array) {
+        if (array.length == 0) {
+            return null;
+        }
+        let modeMap = {};
+        let maxEl = array[0],
+            maxCount = 1;
+        for (let i = 0; i < array.length; i++) {
+            let el = array[i];
+            if (modeMap[el] == null) {
+                modeMap[el] = 1;
+            } else {
+                modeMap[el]++;
+            }
+            if (modeMap[el] > maxCount) {
+                maxEl = el;
+                maxCount = modeMap[el];
+            }
+        }
+
+        return maxEl;
+    }
 }
 
 function isInnerNode(node) {
@@ -90,68 +158,6 @@ function isInnerNode(node) {
 
 function isTerminalNode(node) {
     return !isInnerNode(node);
-}
-
-// Create child splits for a node or make terminal
-function split(node, max_depth, min_size, depth) {
-    node.id = newId();
-    let [left, right] = node.groups;
-    delete node.groups;
-    // check for a no split
-    if (left.length == 0 || right.length == 0) {
-        node.left = to_terminal(left.concat(right));
-        node.right = to_terminal(left.concat(right));
-        return;
-    }
-    // check for max depth
-    if (depth >= max_depth) {
-        node.left = to_terminal(left);
-        node.right = to_terminal(right);
-        return;
-    }
-
-    function processChild(child, childName) {
-        if (child.length <= min_size) {
-            node[childName] = to_terminal(child);
-        } else {
-            node[childName] = get_split(child);
-            split(node[childName], max_depth, min_size, depth + 1);
-        }
-    }
-    // FK-TODO: an dieser Stelle könnte man parallelisieren, also
-    //          gleichzeitig auf verschiedenen Clients folgende beiden Zeilen ausführen:
-    processChild(left, 'left');
-    processChild(right, 'right');
-}
-
-// Create a terminal node value
-function to_terminal(group) {
-    const outcomes = group.map(getClassValFromRow);
-    return { id: newId(), value: mode(outcomes) };
-}
-
-// https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
-function mode(array) {
-    if (array.length == 0) {
-        return null;
-    }
-    let modeMap = {};
-    let maxEl = array[0],
-        maxCount = 1;
-    for (let i = 0; i < array.length; i++) {
-        let el = array[i];
-        if (modeMap[el] == null) {
-            modeMap[el] = 1;
-        } else {
-            modeMap[el]++;
-        }
-        if (modeMap[el] > maxCount) {
-            maxEl = el;
-            maxCount = modeMap[el];
-        }
-    }
-
-    return maxEl;
 }
 
 // Calculate accuracy percentage

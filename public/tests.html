@@ -65,7 +65,7 @@
     <div id="qunit-fixture"></div>
     <script src="https://code.jquery.com/qunit/qunit-2.9.2.js"></script>
     <script>
-        QUnit.skip("hello test", function (assert) {
+        QUnit.skip("hello test", function(assert) {
             const csv = `variance,skewness,curtosis,entropy,class
 3.6216,8.6661,-2.8073,-0.44699,0
 4.5459,8.1674,-2.4586,-1.4621,0
@@ -1439,9 +1439,11 @@
 -3.7503,-13.4586,17.5932,-2.7771,1
 -3.5637,-8.3827,12.393,-1.2823,1
 -2.5419,-0.65804,2.6842,1.1952,1`;
-            const results = Papa.parse(csv, { header: false });
+            const results = Papa.parse(csv, {
+                header: false
+            });
             const datasetDescription = getDatasetDescription(results.data);
-            const tree = build_tree(datasetDescription.dataset, 4, 10);
+            const tree = new DecisionTreeBuilder().build_tree(datasetDescription.dataset, 4, 10);
             const jsonTree = JSON.stringify(tree);
             /*            const jsonTree = `
                         {
@@ -1485,7 +1487,7 @@
             assert.ok(1 == "1", "Passed!");
         });
 
-        QUnit.test("should not prune terminal node", function (assert) {
+        QUnit.test("should not prune terminal node", function(assert) {
             const jsonTree = `
             {
                 "id": 6,
@@ -1494,7 +1496,7 @@
             shouldPruneTree(assert, jsonTree, jsonTree);
         });
 
-        QUnit.test("should not prune", function (assert) {
+        QUnit.test("should not prune", function(assert) {
             const jsonTree = `
             {
                 "index": 0,
@@ -1531,7 +1533,7 @@
             shouldPruneTree(assert, jsonTree, jsonTree);
         });
 
-        QUnit.test("should prune right child", function (assert) {
+        QUnit.test("should prune right child", function(assert) {
             const jsonTree = `
             {
                 "index": 0,
@@ -1592,7 +1594,7 @@
             shouldPruneTree(assert, jsonTree, jsonTreeExpected);
         });
 
-        QUnit.test("should prune twice", function (assert) {
+        QUnit.test("should prune twice", function(assert) {
             const jsonTree = `
             {
                 "index": 0,
@@ -1635,7 +1637,7 @@
             shouldPruneTree(assert, jsonTree, jsonTreeExpected);
         });
 
-        QUnit.test("should prune left and right child", function (assert) {
+        QUnit.test("should prune left and right child", function(assert) {
             const jsonTree = `
             {
                 "index": 0,
