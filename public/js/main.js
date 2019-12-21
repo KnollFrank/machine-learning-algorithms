@@ -48,8 +48,8 @@ function onDatasetChanged(datasetDescription) {
                 datasetDescription,
                 build_tree(
                     datasetDescription.dataset,
-                    getInputById('max_depth'),
-                    getInputById('min_size')));
+                    getInputValueById('max_depth'),
+                    getInputValueById('min_size')));
 
             return false;
         });
@@ -70,12 +70,16 @@ function onDecisionTreeChanged(datasetDescription, tree) {
         network);
 }
 
-function getInputById(id) {
-    return document.querySelector('#' + id).value;
+function getInputValueById(id) {
+    return getInputValueBy('#' + id);
 }
 
-function getInputByName(name) {
-    return document.querySelector(`input[name="${name}"]`).value;
+function getInputValueByName(name) {
+    return getInputValueBy(`input[name="${name}"]`);
+}
+
+function getInputValueBy(selectors) {
+    return document.querySelector(selectors).value;
 }
 
 function displayAccuracy(tree, dataset) {
