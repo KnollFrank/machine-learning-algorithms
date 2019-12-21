@@ -1,29 +1,35 @@
 'use strict';
 
-function createNetwork(node, attributeNames, depth = 0) {
-    const { nodes, edges } = _createNetwork(node, attributeNames, depth);
-    return {
-        nodes: new vis.DataSet(nodes),
-        edges: new vis.DataSet(edges)
-    };
-}
+class NetworkBuilder {
 
-function _createNetwork(node, attributeNames, depth) {
-    if (isInnerNode(node)) {
-        return createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth);
-    } else {
-        return createNetworkNode(node.value, depth, node.id);
+    constructor() {
+
     }
-}
 
-function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth) {
-    let leftNetwork = _createNetwork(node.left, attributeNames, depth + 1);
-    let rightNetwork = _createNetwork(node.right, attributeNames, depth + 1);
+    createNetwork(node, attributeNames, depth = 0) {
+        const { nodes, edges } = this._createNetwork(node, attributeNames, depth);
+        return {
+            nodes: new vis.DataSet(nodes),
+            edges: new vis.DataSet(edges)
+        };
+    }
 
-    let newNode = createNode(getNodeContent(node, attributeNames), depth, node.id);
+    _createNetwork(node, attributeNames, depth) {
+        if (isInnerNode(node)) {
+            return this.createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth);
+        } else {
+            return this.createNetworkNode(node.value, depth, node.id);
+        }
+    }
 
-    const createOneLevelEdges = (fromNode, toNodes, label) =>
-        toNodes
+    createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth) {
+        let leftNetwork = this._createNetwork(node.left, attributeNames, depth + 1);
+        let rightNetwork = this._createNetwork(node.right, attributeNames, depth + 1);
+
+        let newNode = this.createNode(getNodeContent(node, attributeNames), depth, node.id);
+
+        const createOneLevelEdges = (fromNode, toNodes, label) =>
+            toNodes
             .filter(toNode => toNode.level == fromNode.level + 1)
             .map(toNode => ({
                 from: fromNode.id,
@@ -31,32 +37,34 @@ function createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth
                 label: label
             }));
 
-    let newEdges =
-        createOneLevelEdges(newNode, leftNetwork.nodes, "true")
+        const newEdges =
+            createOneLevelEdges(newNode, leftNetwork.nodes, "true")
             .concat(
                 createOneLevelEdges(newNode, rightNetwork.nodes, "false"));
 
-    return {
-        nodes: [newNode].concat(leftNetwork.nodes, rightNetwork.nodes),
-        edges: newEdges.concat(leftNetwork.edges, rightNetwork.edges)
-    };
+        return {
+            nodes: [newNode].concat(leftNetwork.nodes, rightNetwork.nodes),
+            edges: newEdges.concat(leftNetwork.edges, rightNetwork.edges)
+        };
+    }
+
+    createNetworkNode(label, depth, id) {
+        return {
+            nodes: [this.createNode(label, depth, id)],
+            edges: []
+        };
+    }
+
+    createNode(label, depth, id) {
+        return {
+            id: id,
+            label: label,
+            level: depth,
+            shape: 'box'
+        };
+    }
 }
 
-function createNetworkNode(label, depth, id) {
-    return {
-        nodes: [createNode(label, depth, id)],
-        edges: []
-    };
-}
-
-function createNode(label, depth, id) {
-    return {
-        id: id,
-        label: label,
-        level: depth,
-        shape: 'box'
-    };
-}
 
 let network = null;
 
@@ -97,7 +105,7 @@ function displayNetwork(container, data) {
 
     network = new vis.Network(container, data, options);
 
-    network.on('select', function (params) {
+    network.on('select', function(params) {
         document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
     });
 }

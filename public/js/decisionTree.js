@@ -16,6 +16,7 @@ const dummyTreeListener = {
 };
 
 class DecisionTreeBuilder {
+
     constructor(max_depth, min_size, treeListener = dummyTreeListener) {
         this.max_depth = max_depth;
         this.min_size = min_size;
