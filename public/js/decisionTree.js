@@ -176,7 +176,7 @@ class DecisionTreeBuilder {
 }
 
 function isInnerNode(node) {
-    return 'left' in node && 'right' in node;
+    return 'left' in node || 'right' in node;
 }
 
 function isTerminalNode(node) {
@@ -200,6 +200,10 @@ function getClassValFromRow(row) {
 
 // Print a decision tree
 function print_tree(node, attributeNames, depth = 0) {
+    if (!node) {
+        return;
+    }
+
     if (isInnerNode(node)) {
         console.log(`${' '.repeat(depth)}[${node.id}: ${getNodeContent(node, attributeNames)}]`);
         print_tree(node.left, attributeNames, depth + 1);

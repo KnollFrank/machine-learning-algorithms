@@ -44,6 +44,8 @@ function onDatasetChanged(datasetDescription) {
         e => {
             e.preventDefault();
 
+            let firstTime = true;
+            let rootNode;
             onDecisionTreeChanged(
                 datasetDescription,
                 new DecisionTreeBuilder(
@@ -51,9 +53,16 @@ function onDatasetChanged(datasetDescription) {
                     getInputValueById('min_size'), {
                         onNodeAdded: function(node) {
                             console.log('onNodeAdded:', node);
+                            if (firstTime) {
+                                rootNode = node;
+                                firstTime = false;
+                            }
                         },
                         onEdgeAdded: function(fromNode, toNode) {
                             console.log('onEdgeAdded:', fromNode, toNode);
+                            console.log('START-tree');
+                            print_tree(rootNode, datasetDescription.attributeNames.all);
+                            console.log('END-tree');
                         }
                     })
                 .build_tree(datasetDescription.dataset));
