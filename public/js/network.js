@@ -18,7 +18,6 @@ class NetworkBuilder {
         return isInnerNode(node) ?
             this.createNetworkNodesFromLeftAndRightNodeChild(node, depth) :
             this.createNetworkNode(node.value, depth, node.id);
-
     }
 
     createNetworkNodesFromLeftAndRightNodeChild(node, depth) {
