@@ -10,10 +10,16 @@ function isNumber(n) {
     return !isNaN(n);
 }
 
+const dummyTreeListener = {
+    onNodeAdded: function(node) {},
+    onEdgeAdded: function(fromNode, toNode) {}
+};
+
 class DecisionTreeBuilder {
-    constructor(max_depth, min_size) {
+    constructor(max_depth, min_size, treeListener) {
         this.max_depth = max_depth;
         this.min_size = min_size;
+        this.treeListener = treeListener || dummyTreeListener;
     }
 
     // Build a decision tree
@@ -37,11 +43,12 @@ class DecisionTreeBuilder {
                 }
             }
         }
-        return {
+        return this._emitOnNodeAdded({
+            id: newId(),
             index: b_index,
             value: b_value,
             groups: b_groups
-        };
+        });
     }
 
     // Split a dataset based on an attribute and an attribute value
@@ -92,27 +99,32 @@ class DecisionTreeBuilder {
 
     // Create child splits for a node or make terminal
     split(node, depth) {
-        node.id = newId();
         let [left, right] = node.groups;
         delete node.groups;
         // check for a no split
         if (left.length == 0 || right.length == 0) {
             node.left = this.to_terminal(left.concat(right));
+            this._emitOnEdgeAdded(node, node.left);
             node.right = this.to_terminal(left.concat(right));
+            this._emitOnEdgeAdded(node, node.right);
             return;
         }
         // check for max depth
         if (depth >= this.max_depth) {
             node.left = this.to_terminal(left);
+            this._emitOnEdgeAdded(node, node.left);
             node.right = this.to_terminal(right);
+            this._emitOnEdgeAdded(node, node.right);
             return;
         }
 
         const processChild = (child, childName) => {
                 if (child.length <= this.min_size) {
                     node[childName] = this.to_terminal(child);
+                    this._emitOnEdgeAdded(node, node[childName]);
                 } else {
                     node[childName] = this.get_split(child);
+                    this._emitOnEdgeAdded(node, node[childName]);
                     this.split(node[childName], depth + 1);
                 }
             }
@@ -122,10 +134,19 @@ class DecisionTreeBuilder {
         processChild(right, 'right');
     }
 
+    _emitOnNodeAdded(node) {
+        this.treeListener.onNodeAdded(node);
+        return node;
+    }
+
+    _emitOnEdgeAdded(fromNode, toNode) {
+        this.treeListener.onEdgeAdded(fromNode, toNode);
+    }
+
     // Create a terminal node value
     to_terminal(group) {
         const outcomes = group.map(getClassValFromRow);
-        return { id: newId(), value: this.mode(outcomes) };
+        return this._emitOnNodeAdded({ id: newId(), value: this.mode(outcomes) });
     }
 
     // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array

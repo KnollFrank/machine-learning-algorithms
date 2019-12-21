@@ -48,7 +48,14 @@ function onDatasetChanged(datasetDescription) {
                 datasetDescription,
                 new DecisionTreeBuilder(
                     getInputValueById('max_depth'),
-                    getInputValueById('min_size'))
+                    getInputValueById('min_size'), {
+                        onNodeAdded: function(node) {
+                            console.log('onNodeAdded:', node);
+                        },
+                        onEdgeAdded: function(fromNode, toNode) {
+                            console.log('onEdgeAdded:', fromNode, toNode);
+                        }
+                    })
                 .build_tree(datasetDescription.dataset));
 
             return false;
