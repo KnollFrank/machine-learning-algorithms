@@ -1,6 +1,27 @@
 @charset "UTF-8";
+* {
+    box-sizing: border-box;
+    /* padding & border nach innen darstellen */
+}
+
+img {
+    max-width: 100%;
+    /* img dürfen sich verkleinern */
+    height: auto;
+}
+
 body {
     font: 10pt sans;
+}
+
+h1 {
+    text-align: center;
+}
+
+.center {
+    max-width: 1040px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #decisionTreeNetwork {

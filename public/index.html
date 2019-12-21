@@ -22,44 +22,46 @@
 </head>
 
 <body>
-    <h1>Entscheidungsbäume</h1>
-    <section>
-        <h2>Eingabedaten</h2>
-        <input type="file" id="csv-file" name="files" />
-        <div id="datasetTableContainer"></div>
-        </table>
-    </section>
-    <section>
-        <h2>Entscheidungsbaum</h2>
-        <form id="decisionTreeForm">
-            <div class="dataInputFields">
-                <div>
-                    <label for="max_depth">max_depth:</label>
-                    <input id="max_depth" type="text" value="5">
+    <main class="center">
+        <h1>Entscheidungsbäume</h1>
+        <section>
+            <h2>Eingabedaten</h2>
+            <input type="file" id="csv-file" name="files" />
+            <div id="datasetTableContainer"></div>
+            </table>
+        </section>
+        <section>
+            <h2>Entscheidungsbaum</h2>
+            <form id="decisionTreeForm">
+                <div class="dataInputFields">
+                    <div>
+                        <label for="max_depth">max_depth:</label>
+                        <input id="max_depth" type="text" value="5">
+                    </div>
+                    <div>
+                        <label for="min_size">min_size:</label>
+                        <input id="min_size" type="text" value="10">
+                    </div>
                 </div>
-                <div>
-                    <label for="min_size">min_size:</label>
-                    <input id="min_size" type="text" value="10">
-                </div>
-            </div>
-            <input type="submit" value="Go">
-        </form>
-        <div id="decisionTreeNetwork"></div>
-        <p id="selection"></p>
-        <p>
-            Accuracy: <span id="accuracy"></span>
-        </p>
-    </section>
-    <section>
-        <h2>Dateneingabe</h2>
-        <form id="dataInputForm">
-            <div class="dataInputFields"></div>
-            <input type="submit" value="vorhersagen">
-        </form>
-        <p>
-            Vorhersage: <span id="predicted"></span>
-        </p>
-    </section>
+                <input type="submit" value="Go">
+            </form>
+            <div id="decisionTreeNetwork"></div>
+            <p id="selection"></p>
+            <p>
+                Accuracy: <span id="accuracy"></span>
+            </p>
+        </section>
+        <section>
+            <h2>Dateneingabe</h2>
+            <form id="dataInputForm">
+                <div class="dataInputFields"></div>
+                <input type="submit" value="vorhersagen">
+            </form>
+            <p>
+                Vorhersage: <span id="predicted"></span>
+            </p>
+        </section>
+    </main>
 </body>
 
 </html>
