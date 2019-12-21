@@ -24,6 +24,10 @@ h1 {
     margin-right: auto;
 }
 
+#datasetTableContainer {
+    margin-top: 20px;
+}
+
 #dataInputAndDecisionTree {
     display: flex;
     flex-direction: row-reverse;
