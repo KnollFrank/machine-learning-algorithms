@@ -161,7 +161,7 @@ def predict(node, row):
 
 # Classification and Regression Tree Algorithm
 def decision_tree(train, test, max_depth, min_size):
-	tree = new DecisionTreeBuilder().build_tree(train, max_depth, min_size)
+	tree = build_tree(train, max_depth, min_size)
 	predictions = list()
 	for row in test:
 		prediction = predict(tree, row)

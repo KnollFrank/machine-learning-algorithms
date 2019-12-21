@@ -11,14 +11,15 @@ function isNumber(n) {
 }
 
 class DecisionTreeBuilder {
-    constructor() {
-
+    constructor(max_depth, min_size) {
+        this.max_depth = max_depth;
+        this.min_size = min_size;
     }
 
     // Build a decision tree
-    build_tree(train, max_depth, min_size) {
+    build_tree(train) {
         const root = this.get_split(train);
-        this.split(root, max_depth, min_size, 1);
+        this.split(root, 1);
         return prune(root);
     }
 
@@ -90,7 +91,7 @@ class DecisionTreeBuilder {
     }
 
     // Create child splits for a node or make terminal
-    split(node, max_depth, min_size, depth) {
+    split(node, depth) {
         node.id = newId();
         let [left, right] = node.groups;
         delete node.groups;
@@ -101,18 +102,18 @@ class DecisionTreeBuilder {
             return;
         }
         // check for max depth
-        if (depth >= max_depth) {
+        if (depth >= this.max_depth) {
             node.left = this.to_terminal(left);
             node.right = this.to_terminal(right);
             return;
         }
 
         const processChild = (child, childName) => {
-                if (child.length <= min_size) {
+                if (child.length <= this.min_size) {
                     node[childName] = this.to_terminal(child);
                 } else {
                     node[childName] = this.get_split(child);
-                    this.split(node[childName], max_depth, min_size, depth + 1);
+                    this.split(node[childName], depth + 1);
                 }
             }
             // FK-TODO: an dieser Stelle könnte man parallelisieren, also

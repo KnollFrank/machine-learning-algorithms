@@ -46,10 +46,10 @@ function onDatasetChanged(datasetDescription) {
 
             onDecisionTreeChanged(
                 datasetDescription,
-                new DecisionTreeBuilder().build_tree(
-                    datasetDescription.dataset,
+                new DecisionTreeBuilder(
                     getInputValueById('max_depth'),
-                    getInputValueById('min_size')));
+                    getInputValueById('min_size'))
+                .build_tree(datasetDescription.dataset));
 
             return false;
         });

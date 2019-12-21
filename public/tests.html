@@ -1443,7 +1443,7 @@
                 header: false
             });
             const datasetDescription = getDatasetDescription(results.data);
-            const tree = new DecisionTreeBuilder().build_tree(datasetDescription.dataset, 4, 10);
+            const tree = new DecisionTreeBuilder(4, 10).build_tree(datasetDescription.dataset);
             const jsonTree = JSON.stringify(tree);
             /*            const jsonTree = `
                         {
