@@ -44,6 +44,10 @@ h1 {
     border: 1px solid lightgray;
 }
 
+#decisionTreeForm {
+    margin-bottom: 10px;
+}
+
 .dataInputFields {
     display: table;
     border-spacing: 0.5em;
