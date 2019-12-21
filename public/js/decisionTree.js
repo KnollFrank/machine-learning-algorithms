@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function () {
+Array.prototype.sum = function() {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -41,8 +41,8 @@ function test_split(index, value, dataset) {
     for (const row of dataset) {
         const splitCondition =
             isNumber(value) ?
-                row[index] < value :
-                row[index] == value;
+            row[index] < value :
+            row[index] == value;
         if (splitCondition) {
             left.push(row);
         } else {
@@ -60,26 +60,26 @@ function isNumber(n) {
 function gini_index(groups, classes) {
     const getP = group => class_val =>
         group
-            .map(getClassValFromRow)
-            .filter(classVal => classVal == class_val)
-            .length / group.length;
+        .map(getClassValFromRow)
+        .filter(classVal => classVal == class_val)
+        .length / group.length;
 
     const getScore = group =>
         classes
-            .map(getP(group))
-            .map(p => p * p)
-            .sum();
+        .map(getP(group))
+        .map(p => p * p)
+        .sum();
 
     const n_instances =
         groups
-            .map(group => group.length)
-            .sum();
+        .map(group => group.length)
+        .sum();
 
     const gini =
         groups
-            .filter(group => group.length != 0)
-            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-            .sum();
+        .filter(group => group.length != 0)
+        .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+        .sum();
 
     return gini;
 }
@@ -118,6 +118,8 @@ function split(node, max_depth, min_size, depth) {
             split(node[childName], max_depth, min_size, depth + 1);
         }
     }
+    // FK-TODO: an dieser Stelle könnte man parallelisieren, also
+    //          gleichzeitig auf verschiedenen Clients folgende beiden Zeilen ausführen:
     processChild(left, 'left');
     processChild(right, 'right');
 }
@@ -190,8 +192,8 @@ function predict(node, row) {
 
     const splitCondition =
         isNumber(node.value) ?
-            row[node.index] < node.value :
-            row[node.index] == node.value;
+        row[node.index] < node.value :
+        row[node.index] == node.value;
 
     let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
     return { value: value, nodes: [node].concat(nodes) };
