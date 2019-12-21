@@ -8,7 +8,7 @@ function displayDataInput(dataInputForm, attributeNames, tree, network) {
         "submit",
         e => {
             e.preventDefault();
-            const prediction = predict(tree, getInputsById(attributeNames));
+            const prediction = predict(tree, getInputsByName(attributeNames));
             highlightPredictionInNetwork(prediction, network);
             document.querySelector('#predicted').innerHTML = prediction.value;
             return false;
@@ -53,6 +53,6 @@ function appendInputElements(parent, attributeNames) {
         .forEach(inputElement => parent.appendChild(inputElement));
 }
 
-function getInputsById(attributeNames) {
-    return attributeNames.map(getInputById);
+function getInputsByName(attributeNames) {
+    return attributeNames.map(getInputByName);
 }

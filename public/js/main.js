@@ -74,6 +74,10 @@ function getInputById(id) {
     return document.querySelector('#' + id).value;
 }
 
+function getInputByName(name) {
+    return document.querySelector(`input[name="${name}"]`).value;
+}
+
 function displayAccuracy(tree, dataset) {
     const accuracy = computeAccuracy(tree, dataset);
     document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
