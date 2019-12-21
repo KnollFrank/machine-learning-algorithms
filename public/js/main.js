@@ -63,7 +63,7 @@ function onDatasetChanged(datasetDescription) {
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
-    const network = new NetworkBuilder().createNetwork(tree, datasetDescription.attributeNames.X);
+    const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
 
     print_tree(tree, datasetDescription.attributeNames.all);

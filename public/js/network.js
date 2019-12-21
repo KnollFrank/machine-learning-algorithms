@@ -2,31 +2,31 @@
 
 class NetworkBuilder {
 
-    constructor() {
-
+    constructor(attributeNames) {
+        this.attributeNames = attributeNames;
     }
 
-    createNetwork(node, attributeNames, depth = 0) {
-        const { nodes, edges } = this._createNetwork(node, attributeNames, depth);
+    createNetwork(node, depth = 0) {
+        const { nodes, edges } = this._createNetwork(node, depth);
         return {
             nodes: new vis.DataSet(nodes),
             edges: new vis.DataSet(edges)
         };
     }
 
-    _createNetwork(node, attributeNames, depth) {
+    _createNetwork(node, depth) {
         if (isInnerNode(node)) {
-            return this.createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth);
+            return this.createNetworkNodesFromLeftAndRightNodeChild(node, depth);
         } else {
             return this.createNetworkNode(node.value, depth, node.id);
         }
     }
 
-    createNetworkNodesFromLeftAndRightNodeChild(node, attributeNames, depth) {
-        let leftNetwork = this._createNetwork(node.left, attributeNames, depth + 1);
-        let rightNetwork = this._createNetwork(node.right, attributeNames, depth + 1);
+    createNetworkNodesFromLeftAndRightNodeChild(node, depth) {
+        let leftNetwork = this._createNetwork(node.left, depth + 1);
+        let rightNetwork = this._createNetwork(node.right, depth + 1);
 
-        let newNode = this.createNode(getNodeContent(node, attributeNames), depth, node.id);
+        let newNode = this.createNode(getNodeContent(node, this.attributeNames), depth, node.id);
 
         const createOneLevelEdges = (fromNode, toNodes, label) =>
             toNodes
