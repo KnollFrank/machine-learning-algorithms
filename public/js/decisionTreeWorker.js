@@ -5,26 +5,33 @@ importScripts('decisionTree.js');
 
 onmessage = function(e) {
     const { dataset, max_depth, min_size } = e.data;
-    let first = true;
     let rootNode;
+    let lastPostMessageTime = new Date().getTime();
     const tree = new DecisionTreeBuilder(
         max_depth,
         min_size, {
             onNodeAdded: node => {
-                if (first) {
+                if (!rootNode) {
                     rootNode = node;
-                    first = false;
+                }
+                const actualPostMessageTime = new Date().getTime();
+                if (actualPostMessageTime - lastPostMessageTime >= 500) {
+                    lastPostMessageTime = actualPostMessageTime;
                     postMessage({
                         type: 'info',
                         value: rootNode
                     });
                 }
             },
-            onEdgeAdded: function(fromNode, toNode) {
-                postMessage({
-                    type: 'info',
-                    value: rootNode
-                });
+            onEdgeAdded: (fromNode, toNode) => {
+                const actualPostMessageTime = new Date().getTime();
+                if (actualPostMessageTime - lastPostMessageTime >= 500) {
+                    lastPostMessageTime = actualPostMessageTime;
+                    postMessage({
+                        type: 'info',
+                        value: rootNode
+                    });
+                }
             }
         }).build_tree(dataset);
     postMessage({

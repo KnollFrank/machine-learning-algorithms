@@ -60,10 +60,16 @@ function onDatasetChanged(datasetDescription) {
                                 }
                                 const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
 
-                                const newNodes = network.nodes.filter(node => gNetwork.nodes.get(node.id) === null);
+                                const newNodes = network.nodes.get({
+                                    filter: function(node) {
+                                        return gNetwork.nodes.get(node.id) === null;
+                                    }
+                                });
                                 gNetwork.nodes.add(newNodes);
 
-                                const newEdges = network.edges.filter(edge => gNetwork.edges.get(edge.id) === null);
+                                const newEdges = network.edges.get({
+                                    filter: edge => gNetwork.edges.get(edge.id) === null
+                                });
                                 gNetwork.edges.add(newEdges);
                                 break;
                             }
