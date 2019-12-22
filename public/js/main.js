@@ -70,6 +70,8 @@ function onDatasetChanged(datasetDescription) {
                         case 'result':
                             {
                                 const tree = result.value;
+                                gNetwork.nodes.clear();
+                                gNetwork.edges.clear();
                                 onDecisionTreeChanged(datasetDescription, tree);
                                 break;
                             }

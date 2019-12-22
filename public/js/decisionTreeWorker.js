@@ -14,13 +14,18 @@ onmessage = function(e) {
                 if (first) {
                     rootNode = node;
                     first = false;
+                    postMessage({
+                        type: 'info',
+                        value: rootNode
+                    });
                 }
+            },
+            onEdgeAdded: function(fromNode, toNode) {
                 postMessage({
                     type: 'info',
                     value: rootNode
                 });
-            },
-            onEdgeAdded: function(fromNode, toNode) {}
+            }
         }).build_tree(dataset);
     postMessage({
         type: 'result',
