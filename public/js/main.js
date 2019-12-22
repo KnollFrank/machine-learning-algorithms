@@ -71,9 +71,7 @@ function build_tree(datasetDescription) {
                     const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
 
                     const newNodes = network.nodes.get({
-                        filter: function(node) {
-                            return gNetwork.nodes.get(node.id) === null;
-                        }
+                        filter: node => gNetwork.nodes.get(node.id) === null
                     });
                     gNetwork.nodes.add(newNodes);
 
@@ -85,8 +83,6 @@ function build_tree(datasetDescription) {
                 }
             case 'result':
                 {
-                    gNetwork.nodes.clear();
-                    gNetwork.edges.clear();
                     onDecisionTreeChanged(datasetDescription, tree);
                     break;
                 }
