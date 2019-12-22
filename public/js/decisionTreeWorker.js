@@ -7,6 +7,7 @@ onmessage = function(e) {
     const { dataset, max_depth, min_size } = e.data;
     let rootNode;
     let lastPostMessageTime = new Date().getTime();
+    const waitTime = 100;
     const tree = new DecisionTreeBuilder(
         max_depth,
         min_size, {
@@ -15,7 +16,7 @@ onmessage = function(e) {
                     rootNode = node;
                 }
                 const actualPostMessageTime = new Date().getTime();
-                if (actualPostMessageTime - lastPostMessageTime >= 500) {
+                if (actualPostMessageTime - lastPostMessageTime >= waitTime) {
                     lastPostMessageTime = actualPostMessageTime;
                     postMessage({
                         type: 'info',
@@ -25,7 +26,7 @@ onmessage = function(e) {
             },
             onEdgeAdded: (fromNode, toNode) => {
                 const actualPostMessageTime = new Date().getTime();
-                if (actualPostMessageTime - lastPostMessageTime >= 500) {
+                if (actualPostMessageTime - lastPostMessageTime >= waitTime) {
                     lastPostMessageTime = actualPostMessageTime;
                     postMessage({
                         type: 'info',
