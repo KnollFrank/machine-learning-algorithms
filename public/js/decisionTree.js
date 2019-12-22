@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function () {
+Array.prototype.sum = function() {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -11,8 +11,8 @@ function isNumber(n) {
 }
 
 const dummyTreeListener = {
-    onNodeAdded: function (node) {},
-    onEdgeAdded: function (fromNode, toNode) {}
+    onNodeAdded: function(node) {},
+    onEdgeAdded: function(fromNode, toNode) {}
 };
 
 class DecisionTreeBuilder {
@@ -221,6 +221,13 @@ function getNodeContent(node, attributeNames) {
 
 // Make a prediction with a decision tree
 function predict(node, row) {
+    if (!node) {
+        return {
+            value: null,
+            nodes: []
+        };
+    }
+
     if (isTerminalNode(node)) {
         return {
             value: node.value,
