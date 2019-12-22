@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function() {
+Array.prototype.sum = function () {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -11,8 +11,8 @@ function isNumber(n) {
 }
 
 const dummyTreeListener = {
-    onNodeAdded: function(node) {},
-    onEdgeAdded: function(fromNode, toNode) {}
+    onNodeAdded: function (node) {},
+    onEdgeAdded: function (fromNode, toNode) {}
 };
 
 class DecisionTreeBuilder {
@@ -34,6 +34,7 @@ class DecisionTreeBuilder {
     get_split(dataset) {
         const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
+        // FK-TODO: hier parallelisieren
         for (let index = 0; index < dataset[0].length - 1; index++) {
             for (const row of dataset) {
                 const groups = this.test_split(index, row[index], dataset);
@@ -120,17 +121,15 @@ class DecisionTreeBuilder {
         }
 
         const processChild = (child, childName) => {
-                if (child.length <= this.min_size) {
-                    node[childName] = this.to_terminal(child);
-                    this._emitOnEdgeAdded(node, node[childName]);
-                } else {
-                    node[childName] = this.get_split(child);
-                    this._emitOnEdgeAdded(node, node[childName]);
-                    this.split(node[childName], depth + 1);
-                }
+            if (child.length <= this.min_size) {
+                node[childName] = this.to_terminal(child);
+                this._emitOnEdgeAdded(node, node[childName]);
+            } else {
+                node[childName] = this.get_split(child);
+                this._emitOnEdgeAdded(node, node[childName]);
+                this.split(node[childName], depth + 1);
             }
-            // FK-TODO: an dieser Stelle könnte man parallelisieren, also
-            //          gleichzeitig auf verschiedenen Clients folgende beiden Zeilen ausführen:
+        }
         processChild(left, 'left');
         processChild(right, 'right');
     }
@@ -147,7 +146,10 @@ class DecisionTreeBuilder {
     // Create a terminal node value
     to_terminal(group) {
         const outcomes = group.map(getClassValFromRow);
-        return this._emitOnNodeAdded({ id: newId(), value: this.mode(outcomes) });
+        return this._emitOnNodeAdded({
+            id: newId(),
+            value: this.mode(outcomes)
+        });
     }
 
     // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
@@ -220,7 +222,10 @@ function getNodeContent(node, attributeNames) {
 // Make a prediction with a decision tree
 function predict(node, row) {
     if (isTerminalNode(node)) {
-        return { value: node.value, nodes: [node] };
+        return {
+            value: node.value,
+            nodes: [node]
+        };
     }
 
     const splitCondition =
@@ -228,14 +233,23 @@ function predict(node, row) {
         Number(row[node.index]) < Number(node.value) :
         row[node.index] == node.value;
 
-    let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
-    return { value: value, nodes: [node].concat(nodes) };
+    let {
+        value,
+        nodes
+    } = predict(splitCondition ? node.left : node.right, row);
+    return {
+        value: value,
+        nodes: [node].concat(nodes)
+    };
 }
 
 const actualClassVals = fold => fold.map(getClassValFromRow);
 
 function prune(node) {
-    let pruneDescr = { node: node, hasChange: false };
+    let pruneDescr = {
+        node: node,
+        hasChange: false
+    };
     do {
         pruneDescr = _prune(pruneDescr.node);
     } while (pruneDescr.hasChange);
@@ -261,5 +275,8 @@ function _prune(node) {
         return node;
     }
 
-    return { node: prune(node), hasChange: hasChange };
+    return {
+        node: prune(node),
+        hasChange: hasChange
+    };
 }

@@ -27,23 +27,7 @@ node webserver.js
 
 FK-TODO:
 - Laden/Speichern eines Modells für Entscheidungsbäume (= Graph)
-- avoiding some of the unnecessary splits:
-  Thanks for the post, code, and all the follow ups! I also was wondering about avoiding some of the unnecessary splits at the bottom of the tree. In case others are curious, one short addition to the code would be to add
-  if len(class_values) == 1: return to_terminal(dataset)
-  as the second line of get_split, and then
-  if not isinstance(node, dict): return
-  at the beginning of split.
-  It looks like this avoids unnecessary splitting in the example given and in some other datasets.
-  Thanks again!
 - Aufteilung des Datensatzes in 80% Trainingsdaten und 20% Testdaten
-- FIXME: Beim Neuladen eines Datensatzes sollen alle anderen "Felder" (Baum, Accuracy, Dateneingabe, ...) geleert bzw. neu berechnet werden.
-  Bisheriger Fehler:
-  TypeError: document.querySelector(...) is null2 main.js:71:28
-    getInputNumberById http://127.0.0.1:5500/part2/project/js/main.js:71
-    map self-hosted:291
-    getInputNumbersById http://127.0.0.1:5500/part2/project/js/dataInput.js:24
-    displayDataInput http://127.0.0.1:5500/part2/project/js/dataInput.js:11
-- UI verschönern
 - Togglebutton einbauen, um die Berechnung des Entscheidungsbaums
   1. lokal im Browser durchzuführen oder
   2. mit node.js auf dem Server durchzuführen. Progressbar für den aktuellen Stand des Algorithmus dann mit Websockets auf dem Client anzeigen.
@@ -51,5 +35,3 @@ FK-TODO:
 	 - build_tree auf dem Server ausführen
 	 - Ergebnis von build_tree an den Client zurücksenden
 - build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
-- Progressbar für den aktuellen Stand des Trainings des Entscheidungsbaums
-  - Schon während des Trainings die dazugefügten Knoten und Kanten grafisch anzeigen in einem Einzelschrittmodus.
