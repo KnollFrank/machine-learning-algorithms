@@ -48,7 +48,16 @@ function onDatasetChanged(datasetDescription) {
                     max_depth: getInputValueById('max_depth'),
                     min_size: getInputValueById('min_size')
                 },
-                tree => onDecisionTreeChanged(datasetDescription, tree));
+                result => {
+                    switch (result.type) {
+                        case 'result':
+                            const tree = result.value;
+                            onDecisionTreeChanged(datasetDescription, tree);
+                            break;
+                        case 'info':
+                            console.log('info from worker:', result.value);
+                    }
+                });
             return false;
         });
 }
