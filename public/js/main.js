@@ -59,16 +59,12 @@ function onDatasetChanged(datasetDescription) {
                                     displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
                                 }
                                 const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
-                                network.nodes.forEach(function(node) {
-                                    if (gNetwork.nodes.get(node.id) === null) {
-                                        gNetwork.nodes.add(node);
-                                    }
-                                });
-                                network.edges.forEach(function(edge) {
-                                    if (gNetwork.edges.get(edge.id) === null) {
-                                        gNetwork.edges.add(edge);
-                                    }
-                                });
+
+                                const newNodes = network.nodes.filter(node => gNetwork.nodes.get(node.id) === null);
+                                gNetwork.nodes.add(newNodes);
+
+                                const newEdges = network.edges.filter(edge => gNetwork.edges.get(edge.id) === null);
+                                gNetwork.edges.add(newEdges);
                                 break;
                             }
                         case 'result':
