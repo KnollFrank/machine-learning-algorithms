@@ -5,13 +5,19 @@ importScripts('decisionTree.js');
 
 onmessage = function(e) {
     const { dataset, max_depth, min_size } = e.data;
+    let first = true;
+    let rootNode;
     const tree = new DecisionTreeBuilder(
         max_depth,
         min_size, {
-            onNodeAdded: function(node) {
+            onNodeAdded: node => {
+                if (first) {
+                    rootNode = node;
+                    first = false;
+                }
                 postMessage({
                     type: 'info',
-                    value: 'node added ' + node.id
+                    value: rootNode
                 });
             },
             onEdgeAdded: function(fromNode, toNode) {}

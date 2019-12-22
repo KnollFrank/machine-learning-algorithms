@@ -51,11 +51,18 @@ function onDatasetChanged(datasetDescription) {
                 result => {
                     switch (result.type) {
                         case 'result':
-                            const tree = result.value;
-                            onDecisionTreeChanged(datasetDescription, tree);
-                            break;
+                            {
+                                const tree = result.value;
+                                onDecisionTreeChanged(datasetDescription, tree);
+                                break;
+                            }
                         case 'info':
-                            console.log('info from worker:', result.value);
+                            {
+                                const tree = result.value;
+                                console.log('info from worker:', tree);
+                                const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+                                displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
+                            }
                     }
                 });
             return false;

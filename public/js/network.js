@@ -15,6 +15,12 @@ class NetworkBuilder {
     }
 
     _createNetwork(node, depth) {
+        if (!node) {
+            return {
+                nodes: [],
+                edges: []
+            };
+        }
         return isInnerNode(node) ?
             this.createNetworkNodesFromLeftAndRightNodeChild(node, depth) :
             this.createNetworkNode(node.value, depth, node.id);
