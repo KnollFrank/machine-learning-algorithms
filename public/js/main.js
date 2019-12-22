@@ -44,26 +44,19 @@ function onDatasetChanged(datasetDescription) {
         e => {
             e.preventDefault();
 
-            let firstTime = true;
-            let rootNode;
+            let numNodes = 0;
+            // https://www.quora.com/How-many-nodes-does-a-full-binary-tree-with-N-leaves-contain
+            const maxNumNodes = 2 * 2 ** getInputValueById('max_depth') - 1;
             onDecisionTreeChanged(
                 datasetDescription,
                 new DecisionTreeBuilder(
                     getInputValueById('max_depth'),
                     getInputValueById('min_size'), {
                         onNodeAdded: function(node) {
-                            console.log('onNodeAdded:', node);
-                            if (firstTime) {
-                                rootNode = node;
-                                firstTime = false;
-                            }
+                            numNodes++;
+                            console.log(`${numNodes}/${maxNumNodes}`);
                         },
-                        onEdgeAdded: function(fromNode, toNode) {
-                            console.log('onEdgeAdded:', fromNode, toNode);
-                            console.log('START-tree');
-                            print_tree(rootNode, datasetDescription.attributeNames.all);
-                            console.log('END-tree');
-                        }
+                        onEdgeAdded: function(fromNode, toNode) {}
                     })
                 .build_tree(datasetDescription.dataset));
 
