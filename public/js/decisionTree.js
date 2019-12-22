@@ -240,10 +240,7 @@ function predict(node, row) {
         Number(row[node.index]) < Number(node.value) :
         row[node.index] == node.value;
 
-    let {
-        value,
-        nodes
-    } = predict(splitCondition ? node.left : node.right, row);
+    let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
     return {
         value: value,
         nodes: [node].concat(nodes)
