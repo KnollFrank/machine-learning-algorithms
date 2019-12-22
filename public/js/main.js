@@ -56,6 +56,25 @@ function build_tree_onSubmit(datasetDescription) {
 
 function build_tree(datasetDescription) {
     let gNetwork;
+
+    function addNewNodesAndEdgesToNetwork(datasetDescription, tree) {
+        if (!gNetwork) {
+            gNetwork = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+            displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
+        }
+        const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+
+        const newNodes = network.nodes.get({
+            filter: node => gNetwork.nodes.get(node.id) === null
+        });
+        gNetwork.nodes.add(newNodes);
+
+        const newEdges = network.edges.get({
+            filter: edge => gNetwork.edges.get(edge.id) === null
+        });
+        gNetwork.edges.add(newEdges);
+    }
+
     build_tree_with_worker({
         dataset: datasetDescription.dataset,
         max_depth: getInputValueById('max_depth'),
@@ -63,29 +82,11 @@ function build_tree(datasetDescription) {
     }, ({ type: type, value: tree }) => {
         switch (type) {
             case 'info':
-                {
-                    if (!gNetwork) {
-                        gNetwork = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
-                        displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
-                    }
-                    const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
-
-                    const newNodes = network.nodes.get({
-                        filter: node => gNetwork.nodes.get(node.id) === null
-                    });
-                    gNetwork.nodes.add(newNodes);
-
-                    const newEdges = network.edges.get({
-                        filter: edge => gNetwork.edges.get(edge.id) === null
-                    });
-                    gNetwork.edges.add(newEdges);
-                    break;
-                }
+                addNewNodesAndEdgesToNetwork(datasetDescription, tree);
+                break;
             case 'result':
-                {
-                    onDecisionTreeChanged(datasetDescription, tree);
-                    break;
-                }
+                onDecisionTreeChanged(datasetDescription, tree);
+                break;
         }
     });
     return false;
