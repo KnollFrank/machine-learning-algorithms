@@ -57,44 +57,41 @@ function build_tree_onSubmit(datasetDescription) {
 function build_tree(datasetDescription) {
     let gNetwork;
     build_tree_with_worker({
-            dataset: datasetDescription.dataset,
-            max_depth: getInputValueById('max_depth'),
-            min_size: getInputValueById('min_size')
-        },
-        result => {
-            switch (result.type) {
-                case 'info':
-                    {
-                        const tree = result.value;
-                        if (!gNetwork) {
-                            gNetwork = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
-                            displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
+        dataset: datasetDescription.dataset,
+        max_depth: getInputValueById('max_depth'),
+        min_size: getInputValueById('min_size')
+    }, ({ type: type, value: tree }) => {
+        switch (type) {
+            case 'info':
+                {
+                    if (!gNetwork) {
+                        gNetwork = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+                        displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
+                    }
+                    const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+
+                    const newNodes = network.nodes.get({
+                        filter: function(node) {
+                            return gNetwork.nodes.get(node.id) === null;
                         }
-                        const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+                    });
+                    gNetwork.nodes.add(newNodes);
 
-                        const newNodes = network.nodes.get({
-                            filter: function(node) {
-                                return gNetwork.nodes.get(node.id) === null;
-                            }
-                        });
-                        gNetwork.nodes.add(newNodes);
-
-                        const newEdges = network.edges.get({
-                            filter: edge => gNetwork.edges.get(edge.id) === null
-                        });
-                        gNetwork.edges.add(newEdges);
-                        break;
-                    }
-                case 'result':
-                    {
-                        const tree = result.value;
-                        gNetwork.nodes.clear();
-                        gNetwork.edges.clear();
-                        onDecisionTreeChanged(datasetDescription, tree);
-                        break;
-                    }
-            }
-        });
+                    const newEdges = network.edges.get({
+                        filter: edge => gNetwork.edges.get(edge.id) === null
+                    });
+                    gNetwork.edges.add(newEdges);
+                    break;
+                }
+            case 'result':
+                {
+                    gNetwork.nodes.clear();
+                    gNetwork.edges.clear();
+                    onDecisionTreeChanged(datasetDescription, tree);
+                    break;
+                }
+        }
+    });
     return false;
 }
 
