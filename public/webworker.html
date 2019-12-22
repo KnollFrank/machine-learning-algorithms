@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Worker example: One-core computation</title>
+</head>
+
+<body>
+    <p>The highest prime number discovered so far is: <output id="result"></output></p>
+    <script>
+        'use strict';
+
+        function browserSupportsWebWorkers() {
+            return typeof window.Worker === "function";
+        }
+
+        if (browserSupportsWebWorkers()) {
+            const worker = new Worker('worker.js');
+            worker.onmessage = function(event) {
+                document.getElementById('result').textContent = event.data;
+            };
+        }
+    </script>
+</body>
+
+</html>
