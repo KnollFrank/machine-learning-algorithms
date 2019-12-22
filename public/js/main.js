@@ -50,31 +50,13 @@ function build_tree_onSubmit(datasetDescription) {
     submitEventListener = e => {
         e.preventDefault();
         build_tree(datasetDescription);
+        return false;
     }
     decisionTreeForm.addEventListener("submit", submitEventListener);
 }
 
 function build_tree(datasetDescription) {
     let gNetwork;
-
-    function addNewNodesAndEdgesToNetwork(datasetDescription, tree) {
-        if (!gNetwork) {
-            gNetwork = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
-            displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
-        }
-        const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
-
-        const newNodes = network.nodes.get({
-            filter: node => gNetwork.nodes.get(node.id) === null
-        });
-        gNetwork.nodes.add(newNodes);
-
-        const newEdges = network.edges.get({
-            filter: edge => gNetwork.edges.get(edge.id) === null
-        });
-        gNetwork.edges.add(newEdges);
-    }
-
     build_tree_with_worker({
         dataset: datasetDescription.dataset,
         max_depth: getInputValueById('max_depth'),
@@ -82,20 +64,38 @@ function build_tree(datasetDescription) {
     }, ({ type: type, value: tree }) => {
         switch (type) {
             case 'info':
-                addNewNodesAndEdgesToNetwork(datasetDescription, tree);
+                gNetwork = addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork);
                 break;
             case 'result':
                 onDecisionTreeChanged(datasetDescription, tree);
                 break;
         }
     });
-    return false;
 }
 
 function build_tree_with_worker(data, onmessage) {
     const worker = new Worker('js/decisionTreeWorker.js');
     worker.onmessage = event => onmessage(event.data);
     worker.postMessage(data);
+}
+
+function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
+    if (!gNetwork) {
+        gNetwork = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+        displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
+    }
+    const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+
+    const newNodes = network.nodes.get({
+        filter: node => gNetwork.nodes.get(node.id) === null
+    });
+    gNetwork.nodes.add(newNodes);
+
+    const newEdges = network.edges.get({
+        filter: edge => gNetwork.edges.get(edge.id) === null
+    });
+    gNetwork.edges.add(newEdges);
+    return gNetwork;
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
