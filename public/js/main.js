@@ -43,6 +43,7 @@ function onDatasetChanged(datasetDescription) {
         "submit",
         e => {
             e.preventDefault();
+            let gNetwork;
             build_tree_with_worker({
                     dataset: datasetDescription.dataset,
                     max_depth: getInputValueById('max_depth'),
@@ -53,8 +54,21 @@ function onDatasetChanged(datasetDescription) {
                         case 'info':
                             {
                                 const tree = result.value;
+                                if (!gNetwork) {
+                                    gNetwork = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+                                    displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
+                                }
                                 const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
-                                displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
+                                network.nodes.forEach(function(node) {
+                                    if (gNetwork.nodes.get(node.id) === null) {
+                                        gNetwork.nodes.add(node);
+                                    }
+                                });
+                                network.edges.forEach(function(edge) {
+                                    if (gNetwork.edges.get(edge.id) === null) {
+                                        gNetwork.edges.add(edge);
+                                    }
+                                });
                                 break;
                             }
                         case 'result':
