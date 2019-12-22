@@ -43,19 +43,20 @@ function onDatasetChanged(datasetDescription) {
         "submit",
         e => {
             e.preventDefault();
-
-            onDecisionTreeChanged(
-                datasetDescription,
-                new DecisionTreeBuilder(
-                    getInputValueById('max_depth'),
-                    getInputValueById('min_size'), {
-                        onNodeAdded: function(node) {},
-                        onEdgeAdded: function(fromNode, toNode) {}
-                    })
-                .build_tree(datasetDescription.dataset));
-
+            build_tree_with_worker({
+                    dataset: datasetDescription.dataset,
+                    max_depth: getInputValueById('max_depth'),
+                    min_size: getInputValueById('min_size')
+                },
+                tree => onDecisionTreeChanged(datasetDescription, tree));
             return false;
         });
+}
+
+function build_tree_with_worker(data, onmessage) {
+    const worker = new Worker('js/decisionTreeWorker.js');
+    worker.onmessage = event => onmessage(event.data);
+    worker.postMessage(data);
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
