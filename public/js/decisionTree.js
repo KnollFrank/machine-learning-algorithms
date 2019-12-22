@@ -60,7 +60,7 @@ class DecisionTreeBuilder {
         for (const row of dataset) {
             const splitCondition =
                 isNumber(value) ?
-                row[index] < value :
+                Number(row[index]) < Number(value) :
                 row[index] == value;
             if (splitCondition) {
                 left.push(row);
