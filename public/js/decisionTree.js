@@ -32,10 +32,13 @@ class DecisionTreeBuilder {
 
     // Select the best split point for a dataset
     get_split(dataset) {
+        const id = newId();
         const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
         // FK-TODO: hier parallelisieren
+        console.log(`START: get_split(${id}):`);
         for (let index = 0; index < dataset[0].length - 1; index++) {
+            console.log(`START: get_split(${id}) at index`, index);
             for (const row of dataset) {
                 const groups = this.test_split(index, row[index], dataset);
                 const gini = this.gini_index(groups, class_values);
@@ -45,8 +48,9 @@ class DecisionTreeBuilder {
                 }
             }
         }
+        console.log(`END: get_split(${id}):`);
         return this._emitOnNodeAdded({
-            id: newId(),
+            id: id,
             index: b_index,
             value: b_value,
             groups: b_groups
