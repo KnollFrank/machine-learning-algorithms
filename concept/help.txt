@@ -37,4 +37,7 @@ FK-TODO:
 - build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
 - nicht den GANZEN Datensatz in den Speicher laden, sondern nur Chunks (siehe Papa parse)
   - auch in der DataTable den Datensatz nur seitenweise laden
-- Aufteilung des Datensatzes in 80% Trainingsdaten und 20% Testdaten
+- In der Tabelle für die Testdaten eine zusätzliche Spalte einbauen, in welcher
+  der vorhergesagte (predicted) y-Wert neben der Spalte für
+  den tatsächlichen y-Wert steht.
+  Fehlerhafte Vorhersagen sollen rot markiert sein, korrekte grün. 
