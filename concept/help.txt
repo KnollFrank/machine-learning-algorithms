@@ -13,6 +13,7 @@ Abhängigkeiten:
 - https://www.papaparse.com/
 - https://visjs.org/ oder https://almende.github.io/vis/
 - https://datatables.net/
+- vielleicht: https://github.com/deThread/dethread
 
 Install:
 npm init
