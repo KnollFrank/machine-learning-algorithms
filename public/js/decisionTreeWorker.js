@@ -3,7 +3,7 @@
 importScripts('idGenerator.js');
 importScripts('decisionTree.js');
 
-onmessage = function(e) {
+onmessage = function (e) {
     postMessage({
         type: 'result',
         value: build_tree(e.data)
@@ -12,9 +12,9 @@ onmessage = function(e) {
 
 function build_tree({ dataset, max_depth, min_size }) {
     return new DecisionTreeBuilder(
-            max_depth,
-            min_size,
-            createTreeListener())
+        max_depth,
+        min_size,
+        createTreeListener())
         .build_tree(dataset);
 }
 
@@ -30,6 +30,15 @@ function createTreeListener() {
         },
         onEdgeAdded: (fromNode, toNode) => {
             timedExecutor.execute(() => postMessage({ type: 'info', value: rootNode }));
+        },
+        onStartSplit: nodeId => {
+            console.log(`START: get_split(${nodeId}):`);
+        },
+        onInnerSplit: ({ nodeId, startSplitIndex, actualSplitIndex, endSplitIndex }) => {
+            console.log(`get_split(${nodeId}):`, { nodeId, startSplitIndex, actualSplitIndex, endSplitIndex });
+        },
+        onEndSplit: nodeId => {
+            console.log(`END: get_split(${nodeId}):`);
         }
     }
 }

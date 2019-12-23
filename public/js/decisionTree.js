@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function() {
+Array.prototype.sum = function () {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -11,8 +11,11 @@ function isNumber(n) {
 }
 
 const dummyTreeListener = {
-    onNodeAdded: function(node) {},
-    onEdgeAdded: function(fromNode, toNode) {}
+    onNodeAdded: node => { },
+    onEdgeAdded: (fromNode, toNode) => { },
+    onStartSplit: nodeId => { },
+    onInnerSplit: ({ nodeId, startSplitIndex, actualSplitIndex, endSplitIndex }) => { },
+    onEndSplit: nodeId => { }
 };
 
 class DecisionTreeBuilder {
@@ -32,13 +35,13 @@ class DecisionTreeBuilder {
 
     // Select the best split point for a dataset
     get_split(dataset) {
-        const id = newId();
+        const nodeId = newId();
         const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
         // FK-TODO: hier parallelisieren
-        console.log(`START: get_split(${id}):`);
+        this.treeListener.onStartSplit(nodeId);
         for (let index = 0; index < dataset[0].length - 1; index++) {
-            console.log(`START: get_split(${id}) at index`, index);
+            this.treeListener.onInnerSplit({ nodeId: nodeId, startSplitIndex: 0, actualSplitIndex: index, endSplitIndex: dataset[0].length - 2 });
             for (const row of dataset) {
                 const groups = this.test_split(index, row[index], dataset);
                 const gini = this.gini_index(groups, class_values);
@@ -48,9 +51,9 @@ class DecisionTreeBuilder {
                 }
             }
         }
-        console.log(`END: get_split(${id}):`);
+        this.treeListener.onEndSplit(nodeId);
         return this._emitOnNodeAdded({
-            id: id,
+            id: nodeId,
             index: b_index,
             value: b_value,
             groups: b_groups
@@ -64,8 +67,8 @@ class DecisionTreeBuilder {
         for (const row of dataset) {
             const splitCondition =
                 isNumber(value) ?
-                Number(row[index]) < Number(value) :
-                row[index] == value;
+                    Number(row[index]) < Number(value) :
+                    row[index] == value;
             if (splitCondition) {
                 left.push(row);
             } else {
@@ -79,26 +82,26 @@ class DecisionTreeBuilder {
     gini_index(groups, classes) {
         const getP = group => class_val =>
             group
-            .map(getClassValFromRow)
-            .filter(classVal => classVal == class_val)
-            .length / group.length;
+                .map(getClassValFromRow)
+                .filter(classVal => classVal == class_val)
+                .length / group.length;
 
         const getScore = group =>
             classes
-            .map(getP(group))
-            .map(p => p * p)
-            .sum();
+                .map(getP(group))
+                .map(p => p * p)
+                .sum();
 
         const n_instances =
             groups
-            .map(group => group.length)
-            .sum();
+                .map(group => group.length)
+                .sum();
 
         const gini =
             groups
-            .filter(group => group.length != 0)
-            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-            .sum();
+                .filter(group => group.length != 0)
+                .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+                .sum();
 
         return gini;
     }
@@ -241,8 +244,8 @@ function predict(node, row) {
 
     const splitCondition =
         isNumber(node.value) ?
-        Number(row[node.index]) < Number(node.value) :
-        row[node.index] == node.value;
+            Number(row[node.index]) < Number(node.value) :
+            row[node.index] == node.value;
 
     let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
     return {
