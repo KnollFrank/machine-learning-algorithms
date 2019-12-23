@@ -48,7 +48,7 @@ h1 {
     border: 1px solid lightgray;
 }
 
-#decisionTreeForm {
+#decisionTreeForm, #progress {
     margin-bottom: 10px;
 }
 
