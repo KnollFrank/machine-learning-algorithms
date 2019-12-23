@@ -1701,28 +1701,22 @@
             assert.deepEqual(prunedTree, JSON.parse(jsonTreeExpected));
         }
 
-        function train_test_split(dataset) {
-            const end = 0.8 * dataset.length;
-            return {
-                train: dataset.slice(0, end),
-                test: dataset.slice(end)
-            };
-        }
-
         QUnit.test("should split dataset", function(assert) {
-            // Given
-            const dataset = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            assert.deepEqual(
+                train_test_split(
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    0.8), {
+                    train: [1, 2, 3, 4, 5, 6, 7, 8],
+                    test: [9, 10]
+                });
 
-            const datasetSplitted = {
-                train: [1, 2, 3, 4, 5, 6, 7, 8],
-                test: [9, 10]
-            };
-
-            // When
-            const datasetSplittedActual = train_test_split(dataset);
-
-            // Then
-            assert.deepEqual(datasetSplittedActual, datasetSplitted);
+            assert.deepEqual(
+                train_test_split(
+                    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    0.5), {
+                    train: [1, 2, 3, 4, 5],
+                    test: [6, 7, 8, 9, 10]
+                });
         });
     </script>
 </body>

@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function (results) {
+            complete: function(results) {
                 onDatasetChanged(getDatasetDescription(results.data));
             }
         });
@@ -32,6 +32,14 @@ function getDatasetDescription(dataset) {
             }
         },
         dataset: dataset
+    };
+}
+
+function train_test_split(dataset, train_proportion) {
+    const end = train_proportion * dataset.length;
+    return {
+        train: dataset.slice(0, end),
+        test: dataset.slice(end)
     };
 }
 
