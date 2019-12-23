@@ -103,7 +103,7 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
 
 function displayProgress({ nodeId, actualSplitIndex, endSplitIndex }) {
     const text = document.querySelector('#progress-text');
-    text.textContent = `Node: ${nodeId}`;
+    text.textContent = `Node: ${nodeId} (${actualSplitIndex + 1}/${endSplitIndex + 1})`;
 
     const progress = document.querySelector('#progress-build-decision-tree');
     progress.value = actualSplitIndex;
