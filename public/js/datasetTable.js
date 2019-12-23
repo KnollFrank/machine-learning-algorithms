@@ -1,32 +1,25 @@
-function displayDatasetAsTable(datasetTableContainer, datasetDescription) {
-    const trainDataTable = createTableElement('trainDataTable');
-    const testDataTable = createTableElement('testDataTable');
-    datasetTableContainer.empty();
-    datasetTableContainer.append(trainDataTable);
-    datasetTableContainer.append(testDataTable);
+function displayDatasetAsTable(tableContainer, attributeNames, dataset) {
+    const table = createTableElement();
+    tableContainer.empty();
+    tableContainer.append(table);
 
-    $('#' + trainDataTable.id).DataTable({
-        data: datasetDescription.splittedDataset.train,
-        columns: getColumns(datasetDescription)
-    });
-
-    $('#' + testDataTable.id).DataTable({
-        data: datasetDescription.splittedDataset.test,
-        columns: getColumns(datasetDescription)
+    $('#' + table.id).DataTable({
+        data: dataset,
+        columns: getColumns(attributeNames)
     });
 }
 
 // <table id="datasetTable" class="display" style="width:100%">
-function createTableElement(id) {
+function createTableElement() {
     const table = document.createElement('table');
-    table.setAttribute('id', id);
+    table.setAttribute('id', '_' + newId());
     table.classList.add('display');
     table.setAttribute("style", "width:100%;");
     return table;
 }
 
-function getColumns(datasetDescription) {
-    return datasetDescription.attributeNames.all.map(
+function getColumns(attributeNames) {
+    return attributeNames.map(
         attributeName => ({
             title: attributeName
         }));

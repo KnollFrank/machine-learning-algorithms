@@ -44,7 +44,8 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
-    displayDatasetAsTable($('#datasetTableContainer'), datasetDescription);
+    displayDatasetAsTable($('#container-trainingDataSet'), datasetDescription.attributeNames.all, datasetDescription.splittedDataset.train);
+    displayDatasetAsTable($('#container-testDataSet'), datasetDescription.attributeNames.all, datasetDescription.splittedDataset.test);
     build_tree_onSubmit(datasetDescription);
 }
 
