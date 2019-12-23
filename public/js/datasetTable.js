@@ -4,7 +4,7 @@ function displayDatasetAsTable(datasetTableContainer, datasetDescription) {
     datasetTableContainer.append(table);
 
     $('#' + table.id).DataTable({
-        data: datasetDescription.dataset,
+        data: datasetDescription.splittedDataset.train,
         columns: getColumns(datasetDescription)
     });
 }

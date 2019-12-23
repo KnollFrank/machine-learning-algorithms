@@ -31,7 +31,7 @@ function getDatasetDescription(dataset) {
                 return this.X.concat(this.y);
             }
         },
-        dataset: dataset
+        splittedDataset: train_test_split(dataset, 0.8)
     };
 }
 
@@ -66,7 +66,7 @@ function build_tree_onSubmit(datasetDescription) {
 function build_tree(datasetDescription) {
     let gNetwork;
     build_tree_with_worker({
-        dataset: datasetDescription.dataset,
+        dataset: datasetDescription.splittedDataset.train,
         max_depth: getInputValueById('max_depth'),
         min_size: getInputValueById('min_size')
     }, ({ type: type, value: value }) => {
@@ -124,7 +124,7 @@ function onDecisionTreeChanged(datasetDescription, tree) {
 
     print_tree(tree, datasetDescription.attributeNames.all);
 
-    displayAccuracy(tree, datasetDescription.dataset);
+    displayAccuracy(tree, datasetDescription.splittedDataset.test);
 
     displayDataInput(
         document.querySelector('#dataInputForm'),
