@@ -67,15 +67,7 @@ function build_tree(datasetDescription) {
                 gNetwork = addNewNodesAndEdgesToNetwork(datasetDescription, value, gNetwork);
                 break;
             case 'inner-split':
-                // FK-TODO: refactor
-                const { nodeId, actualSplitIndex, endSplitIndex } = value;
-
-                const text = document.querySelector('#progress-text');
-                text.textContent = `Node: ${nodeId}`;
-
-                const progress = document.querySelector('#progress-build-decision-tree');
-                progress.value = actualSplitIndex;
-                progress.max = endSplitIndex;
+                displayProgress(value);
                 break;
             case 'result':
                 onDecisionTreeChanged(datasetDescription, value);
@@ -107,6 +99,15 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     });
     gNetwork.edges.add(newEdges);
     return gNetwork;
+}
+
+function displayProgress({ nodeId, actualSplitIndex, endSplitIndex }) {
+    const text = document.querySelector('#progress-text');
+    text.textContent = `Node: ${nodeId}`;
+
+    const progress = document.querySelector('#progress-build-decision-tree');
+    progress.value = actualSplitIndex;
+    progress.max = endSplitIndex;
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
