@@ -32,8 +32,8 @@ function createTreeListener() {
             timedExecutor.execute(() => postMessage({ type: 'info', value: rootNode }));
         },
         onStartSplit: nodeId => { },
-        onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => {
-            postMessage({ type: 'inner-split', value: { nodeId, actualSplitIndex, endSplitIndex } });
+        onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
+            postMessage({ type: 'inner-split', value: { nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
         },
         onEndSplit: nodeId => { }
     }

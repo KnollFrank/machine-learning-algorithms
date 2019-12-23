@@ -101,9 +101,9 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     return gNetwork;
 }
 
-function displayProgress({ nodeId, actualSplitIndex, endSplitIndex }) {
+function displayProgress({ nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) {
     const text = document.querySelector('#progress-text');
-    text.textContent = `Node: ${nodeId} (${actualSplitIndex + 1}/${endSplitIndex + 1})`;
+    text.textContent = `Node: ${nodeId}, Step: ${actualSplitIndex + 1}/${endSplitIndex + 1}, Number of entries in actual dataset: ${numberOfEntriesInDataset}`;
 
     const progress = document.querySelector('#progress-build-decision-tree');
     progress.value = actualSplitIndex;

@@ -41,7 +41,7 @@ class DecisionTreeBuilder {
         // FK-TODO: hier parallelisieren
         this.treeListener.onStartSplit(nodeId);
         for (let index = 0; index < dataset[0].length - 1; index++) {
-            this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: dataset[0].length - 2 });
+            this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: dataset[0].length - 2, numberOfEntriesInDataset: dataset.length });
             for (const row of dataset) {
                 const groups = this.test_split(index, row[index], dataset);
                 const gini = this.gini_index(groups, class_values);
