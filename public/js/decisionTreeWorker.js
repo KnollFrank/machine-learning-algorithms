@@ -31,15 +31,11 @@ function createTreeListener() {
         onEdgeAdded: (fromNode, toNode) => {
             timedExecutor.execute(() => postMessage({ type: 'info', value: rootNode }));
         },
-        onStartSplit: nodeId => {
-            console.log(`START: get_split(${nodeId}):`);
+        onStartSplit: nodeId => { },
+        onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => {
+            postMessage({ type: 'inner-split', value: { nodeId, actualSplitIndex, endSplitIndex } });
         },
-        onInnerSplit: ({ nodeId, startSplitIndex, actualSplitIndex, endSplitIndex }) => {
-            console.log(`get_split(${nodeId}):`, { nodeId, startSplitIndex, actualSplitIndex, endSplitIndex });
-        },
-        onEndSplit: nodeId => {
-            console.log(`END: get_split(${nodeId}):`);
-        }
+        onEndSplit: nodeId => { }
     }
 }
 

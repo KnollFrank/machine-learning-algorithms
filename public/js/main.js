@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function(results) {
+            complete: function (results) {
                 onDatasetChanged(getDatasetDescription(results.data));
             }
         });
@@ -61,13 +61,24 @@ function build_tree(datasetDescription) {
         dataset: datasetDescription.dataset,
         max_depth: getInputValueById('max_depth'),
         min_size: getInputValueById('min_size')
-    }, ({ type: type, value: tree }) => {
+    }, ({ type: type, value: value }) => {
         switch (type) {
             case 'info':
-                gNetwork = addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork);
+                gNetwork = addNewNodesAndEdgesToNetwork(datasetDescription, value, gNetwork);
+                break;
+            case 'inner-split':
+                // FK-TODO: refactor
+                const { nodeId, actualSplitIndex, endSplitIndex } = value;
+
+                const text = document.querySelector('#progress-text');
+                text.textContent = `Node: ${nodeId}`;
+
+                const progress = document.querySelector('#progress-build-decision-tree');
+                progress.value = actualSplitIndex;
+                progress.max = endSplitIndex;
                 break;
             case 'result':
-                onDecisionTreeChanged(datasetDescription, tree);
+                onDecisionTreeChanged(datasetDescription, value);
                 break;
         }
     });
