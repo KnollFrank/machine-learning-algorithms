@@ -1,11 +1,12 @@
-function displayDatasetAsTable({ tableContainer, attributeNames, dataset }) {
+function displayDatasetAsTable({ tableContainer, attributeNames, dataset, createdRow }) {
     const table = createTableElement();
     tableContainer.empty();
     tableContainer.append(table);
 
     $('#' + table.id).DataTable({
         data: dataset,
-        columns: getColumns(attributeNames)
+        columns: getColumns(attributeNames),
+        createdRow: createdRow || (() => {})
     });
 }
 

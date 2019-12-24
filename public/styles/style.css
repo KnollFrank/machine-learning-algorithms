@@ -48,7 +48,8 @@ h1 {
     border: 1px solid lightgray;
 }
 
-#decisionTreeForm, #progress {
+#decisionTreeForm,
+#progress {
     margin-bottom: 10px;
 }
 
@@ -68,4 +69,8 @@ h1 {
 
 .dataInputFields>div>input {
     width: 100px;
+}
+
+.wrongPrediction {
+    background-color: red !important;
 }

@@ -166,9 +166,19 @@ function displayTestingTableWithPredictions(tree, datasetDescription) {
     const addPrediction2Row = row => row.concat(predict(tree, row).value);
     const addPredictions = rows => rows.map(addPrediction2Row);
 
+    function markRowIfItsPredictionIsWrong(row, data) {
+        const isRowsPredictionWrong = data[data.length - 2] != data[data.length - 1];
+        const markRow = () => $(row).find("td").addClass('wrongPrediction');
+
+        if (isRowsPredictionWrong) {
+            markRow();
+        }
+    }
+
     displayDatasetAsTable({
         tableContainer: $('#container-testDataSet'),
         attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
-        dataset: addPredictions(datasetDescription.splittedDataset.test)
+        dataset: addPredictions(datasetDescription.splittedDataset.test),
+        createdRow: markRowIfItsPredictionIsWrong
     });
 }
