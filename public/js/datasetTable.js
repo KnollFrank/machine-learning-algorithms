@@ -1,4 +1,4 @@
-function displayDatasetAsTable(tableContainer, attributeNames, dataset) {
+function displayDatasetAsTable({ tableContainer, attributeNames, dataset }) {
     const table = createTableElement();
     tableContainer.empty();
     tableContainer.append(table);

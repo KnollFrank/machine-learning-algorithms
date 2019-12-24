@@ -44,7 +44,11 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
-    displayDatasetAsTable($('#container-trainingDataSet'), datasetDescription.attributeNames.all, datasetDescription.splittedDataset.train);
+    displayDatasetAsTable({
+        tableContainer: $('#container-trainingDataSet'),
+        attributeNames: datasetDescription.attributeNames.all,
+        dataset: datasetDescription.splittedDataset.train
+    });
     build_tree_onSubmit(datasetDescription);
 }
 
@@ -153,17 +157,13 @@ function computeAccuracy(tree, dataset) {
     return accuracy_percentage(actualClassVals(dataset), predicted);
 }
 
-// TODO: refactor
 function displayTestingTableWithPredictions(tree, datasetDescription) {
-    const tableContainer = $('#container-testDataSet');
     const attributeNames = datasetDescription.attributeNames.all.concat(['predicted']);
     const dataset = datasetDescription.splittedDataset.test.map(row => row.concat(predict(tree, row).value))
-    const table = createTableElement();
-    tableContainer.empty();
-    tableContainer.append(table);
 
-    $('#' + table.id).DataTable({
-        data: dataset,
-        columns: getColumns(attributeNames)
+    displayDatasetAsTable({
+        tableContainer: $('#container-testDataSet'),
+        attributeNames: attributeNames,
+        dataset: dataset
     });
 }
