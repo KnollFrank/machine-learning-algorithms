@@ -158,9 +158,17 @@ function computeAccuracy(tree, dataset) {
 }
 
 function displayTestingTableWithPredictions(tree, datasetDescription) {
+    function addPredictionAttribute(attributeNames) {
+        const lastAttributeName = attributeNames[attributeNames.length - 1];
+        return attributeNames.concat('prediction for ' + lastAttributeName);
+    }
+
+    const addPRediction2Row = row => row.concat(predict(tree, row).value);
+    const addPredictions = rows => rows.map(addPRediction2Row);
+
     displayDatasetAsTable({
         tableContainer: $('#container-testDataSet'),
-        attributeNames: datasetDescription.attributeNames.all.concat(['predicted']),
-        dataset: datasetDescription.splittedDataset.test.map(row => row.concat(predict(tree, row).value))
+        attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
+        dataset: addPredictions(datasetDescription.splittedDataset.test)
     });
 }
