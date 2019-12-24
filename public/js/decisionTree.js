@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function () {
+Array.prototype.sum = function() {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -11,11 +11,11 @@ function isNumber(n) {
 }
 
 const dummyTreeListener = {
-    onNodeAdded: node => { },
-    onEdgeAdded: (fromNode, toNode) => { },
-    onStartSplit: nodeId => { },
-    onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => { },
-    onEndSplit: nodeId => { }
+    onNodeAdded: node => {},
+    onEdgeAdded: (fromNode, toNode) => {},
+    onStartSplit: nodeId => {},
+    onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => {},
+    onEndSplit: nodeId => {}
 };
 
 class DecisionTreeBuilder {
@@ -27,14 +27,14 @@ class DecisionTreeBuilder {
     }
 
     // Build a decision tree
-    build_tree(train) {
-        const root = this.get_split(train);
-        this.split(root, 1);
-        return prune(root);
+    build_tree(train, k) {
+        this.get_split(
+            train,
+            root => this.split(root, 1, root => k(prune(root))));
     }
 
     // Select the best split point for a dataset
-    get_split(dataset) {
+    get_split(dataset, k) {
         const nodeId = newId();
         const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
@@ -51,12 +51,12 @@ class DecisionTreeBuilder {
             }
         }
         this.treeListener.onEndSplit(nodeId);
-        return this._emitOnNodeAdded({
+        k(this._emitOnNodeAdded({
             id: nodeId,
             index: b_index,
             value: b_value,
             groups: b_groups
-        });
+        }));
     }
 
     // Split a dataset based on an attribute and an attribute value
@@ -66,8 +66,8 @@ class DecisionTreeBuilder {
         for (const row of dataset) {
             const splitCondition =
                 isNumber(value) ?
-                    Number(row[index]) < Number(value) :
-                    row[index] == value;
+                Number(row[index]) < Number(value) :
+                row[index] == value;
             if (splitCondition) {
                 left.push(row);
             } else {
@@ -81,32 +81,32 @@ class DecisionTreeBuilder {
     gini_index(groups, classes) {
         const getP = group => class_val =>
             group
-                .map(getClassValFromRow)
-                .filter(classVal => classVal == class_val)
-                .length / group.length;
+            .map(getClassValFromRow)
+            .filter(classVal => classVal == class_val)
+            .length / group.length;
 
         const getScore = group =>
             classes
-                .map(getP(group))
-                .map(p => p * p)
-                .sum();
+            .map(getP(group))
+            .map(p => p * p)
+            .sum();
 
         const n_instances =
             groups
-                .map(group => group.length)
-                .sum();
+            .map(group => group.length)
+            .sum();
 
         const gini =
             groups
-                .filter(group => group.length != 0)
-                .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-                .sum();
+            .filter(group => group.length != 0)
+            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+            .sum();
 
         return gini;
     }
 
     // Create child splits for a node or make terminal
-    split(node, depth) {
+    split(node, depth, k) {
         let [left, right] = node.groups;
         delete node.groups;
         // check for a no split
@@ -115,29 +115,38 @@ class DecisionTreeBuilder {
             this._emitOnEdgeAdded(node, node.left);
             node.right = this.to_terminal(left.concat(right));
             this._emitOnEdgeAdded(node, node.right);
-            return;
+            k(node);
         }
         // check for max depth
-        if (depth >= this.max_depth) {
+        else if (depth >= this.max_depth) {
             node.left = this.to_terminal(left);
             this._emitOnEdgeAdded(node, node.left);
             node.right = this.to_terminal(right);
             this._emitOnEdgeAdded(node, node.right);
-            return;
-        }
-
-        const processChild = (child, childName) => {
-            if (child.length <= this.min_size) {
-                node[childName] = this.to_terminal(child);
-                this._emitOnEdgeAdded(node, node[childName]);
-            } else {
-                node[childName] = this.get_split(child);
-                this._emitOnEdgeAdded(node, node[childName]);
-                this.split(node[childName], depth + 1);
+            k(node);
+        } else {
+            const processChild = (child, childName, k) => {
+                if (child.length <= this.min_size) {
+                    node[childName] = this.to_terminal(child);
+                    this._emitOnEdgeAdded(node, node[childName]);
+                    k(node);
+                } else {
+                    this.get_split(child, res => {
+                        node[childName] = res;
+                        this._emitOnEdgeAdded(node, node[childName]);
+                        this.split(node[childName], depth + 1, _ => k(node));
+                    });
+                }
             }
+
+            processChild(
+                left,
+                'left',
+                _ => processChild(
+                    right,
+                    'right',
+                    k));
         }
-        processChild(left, 'left');
-        processChild(right, 'right');
     }
 
     _emitOnNodeAdded(node) {
@@ -243,8 +252,8 @@ function predict(node, row) {
 
     const splitCondition =
         isNumber(node.value) ?
-            Number(row[node.index]) < Number(node.value) :
-            row[node.index] == node.value;
+        Number(row[node.index]) < Number(node.value) :
+        row[node.index] == node.value;
 
     let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
     return {
