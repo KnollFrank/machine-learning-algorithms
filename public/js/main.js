@@ -158,12 +158,9 @@ function computeAccuracy(tree, dataset) {
 }
 
 function displayTestingTableWithPredictions(tree, datasetDescription) {
-    const attributeNames = datasetDescription.attributeNames.all.concat(['predicted']);
-    const dataset = datasetDescription.splittedDataset.test.map(row => row.concat(predict(tree, row).value))
-
     displayDatasetAsTable({
         tableContainer: $('#container-testDataSet'),
-        attributeNames: attributeNames,
-        dataset: dataset
+        attributeNames: datasetDescription.attributeNames.all.concat(['predicted']),
+        dataset: datasetDescription.splittedDataset.test.map(row => row.concat(predict(tree, row).value))
     });
 }
