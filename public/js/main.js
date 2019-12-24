@@ -163,8 +163,8 @@ function displayTestingTableWithPredictions(tree, datasetDescription) {
         return attributeNames.concat('prediction for ' + lastAttributeName);
     }
 
-    const addPRediction2Row = row => row.concat(predict(tree, row).value);
-    const addPredictions = rows => rows.map(addPRediction2Row);
+    const addPrediction2Row = row => row.concat(predict(tree, row).value);
+    const addPredictions = rows => rows.map(addPrediction2Row);
 
     displayDatasetAsTable({
         tableContainer: $('#container-testDataSet'),
