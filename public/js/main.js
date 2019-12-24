@@ -45,7 +45,6 @@ function train_test_split(dataset, train_proportion) {
 
 function onDatasetChanged(datasetDescription) {
     displayDatasetAsTable($('#container-trainingDataSet'), datasetDescription.attributeNames.all, datasetDescription.splittedDataset.train);
-    displayDatasetAsTable($('#container-testDataSet'), datasetDescription.attributeNames.all, datasetDescription.splittedDataset.test);
     build_tree_onSubmit(datasetDescription);
 }
 
@@ -122,11 +121,9 @@ function displayProgress({ nodeId, actualSplitIndex, endSplitIndex, numberOfEntr
 function onDecisionTreeChanged(datasetDescription, tree) {
     const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
-
     print_tree(tree, datasetDescription.attributeNames.all);
-
     displayAccuracy(tree, datasetDescription.splittedDataset.test);
-
+    displayTestingTableWithPredictions(tree, datasetDescription);
     displayDataInput(
         document.querySelector('#dataInputForm'),
         datasetDescription.attributeNames.X,
@@ -154,4 +151,19 @@ function displayAccuracy(tree, dataset) {
 function computeAccuracy(tree, dataset) {
     const predicted = dataset.map(row => predict(tree, row).value);
     return accuracy_percentage(actualClassVals(dataset), predicted);
+}
+
+// TODO: refactor
+function displayTestingTableWithPredictions(tree, datasetDescription) {
+    const tableContainer = $('#container-testDataSet');
+    const attributeNames = datasetDescription.attributeNames.all.concat(['predicted']);
+    const dataset = datasetDescription.splittedDataset.test.map(row => row.concat(predict(tree, row).value))
+    const table = createTableElement();
+    tableContainer.empty();
+    tableContainer.append(table);
+
+    $('#' + table.id).DataTable({
+        data: dataset,
+        columns: getColumns(attributeNames)
+    });
 }

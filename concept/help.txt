@@ -40,4 +40,5 @@ FK-TODO:
 - In der Tabelle für die Testdaten eine zusätzliche Spalte einbauen, in welcher
   der vorhergesagte (predicted) y-Wert neben der Spalte für
   den tatsächlichen y-Wert steht.
-  Fehlerhafte Vorhersagen sollen rot markiert sein, korrekte grün. 
+  Fehlerhafte Vorhersagen sollen rot markiert sein, korrekte grün.
+  
