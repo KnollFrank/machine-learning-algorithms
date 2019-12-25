@@ -14,11 +14,13 @@ Abhängigkeiten:
 - https://www.papaparse.com/
 - https://visjs.org/ oder https://almende.github.io/vis/
 - https://datatables.net/
-- vielleicht: https://github.com/deThread/dethread
+- vielleicht: https://github.com/deThread/dethread, https://github.com/deThread/dethread-demo-applications
+- https://socket.io/docs/client-api/
 
 Install:
 npm init
 npm install express
+npm install socket.io
 npm install formidable
 
 Um Dateiänderungen im laufenden Node.js-Betrieb aufzunehmen:
