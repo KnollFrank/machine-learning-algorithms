@@ -1701,7 +1701,7 @@
             assert.deepEqual(prunedTree, JSON.parse(jsonTreeExpected));
         }
 
-        QUnit.test("should split dataset", function(assert) {
+        QUnit.test("should train_test_split dataset", function(assert) {
             assert.deepEqual(
                 train_test_split(
                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -1717,6 +1717,72 @@
                     train: [1, 2, 3, 4, 5],
                     test: [6, 7, 8, 9, 10]
                 });
+        });
+
+        function splitItemsIntoChunks({
+            numItems,
+            numChunks
+        }) {
+            const parts = [];
+            const chunkSize = Math.floor(numItems / numChunks);
+            for (let chunkIndex = 0; chunkIndex < numChunks - 1; chunkIndex++) {
+                parts.push({
+                    oneBasedStartIndexOfChunk: chunkIndex * chunkSize + 1,
+                    endIndexInclusiveOfChunk: (chunkIndex + 1) * chunkSize
+                });
+            }
+            parts.push({
+                oneBasedStartIndexOfChunk: (numChunks - 1) * chunkSize + 1,
+                endIndexInclusiveOfChunk: numItems
+            });
+            return parts;
+        }
+
+        QUnit.test("should split dataset", function(assert) {
+            assert.deepEqual(
+                splitItemsIntoChunks({
+                    numItems: 10,
+                    numChunks: 2
+                }), [{
+                    oneBasedStartIndexOfChunk: 1,
+                    endIndexInclusiveOfChunk: 5
+                }, {
+                    oneBasedStartIndexOfChunk: 6,
+                    endIndexInclusiveOfChunk: 10
+                }]);
+
+            assert.deepEqual(
+                splitItemsIntoChunks({
+                    numItems: 10,
+                    numChunks: 3
+                }), [{
+                    oneBasedStartIndexOfChunk: 1,
+                    endIndexInclusiveOfChunk: 3
+                }, {
+                    oneBasedStartIndexOfChunk: 4,
+                    endIndexInclusiveOfChunk: 6
+                }, {
+                    oneBasedStartIndexOfChunk: 7,
+                    endIndexInclusiveOfChunk: 10
+                }]);
+
+            assert.deepEqual(
+                splitItemsIntoChunks({
+                    numItems: 10,
+                    numChunks: 4
+                }), [{
+                    oneBasedStartIndexOfChunk: 1,
+                    endIndexInclusiveOfChunk: 2
+                }, {
+                    oneBasedStartIndexOfChunk: 3,
+                    endIndexInclusiveOfChunk: 4
+                }, {
+                    oneBasedStartIndexOfChunk: 5,
+                    endIndexInclusiveOfChunk: 6
+                }, {
+                    oneBasedStartIndexOfChunk: 7,
+                    endIndexInclusiveOfChunk: 10
+                }]);
         });
     </script>
 </body>
