@@ -64,7 +64,7 @@ class DecisionTreeBuilder {
                 numItems: this.getNumberOfAttributes(dataset),
                 maxNumChunks: numChunks
             })) {
-            const [index, value, score, groups] = this.bla(chunk, nodeId, dataset, class_values);
+            const [index, value, score, groups] = this.get_split_for_chunk(chunk, nodeId, dataset, class_values);
             if (score < b_score) {
                 [b_index, b_value, b_score, b_groups] = [index, value, score, groups];
             }
@@ -78,7 +78,7 @@ class DecisionTreeBuilder {
         }));
     }
 
-    bla({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset, class_values) {
+    get_split_for_chunk({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset, class_values) {
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
         for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
             this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: this.getNumberOfAttributes(dataset) - 1, numberOfEntriesInDataset: dataset.length });
