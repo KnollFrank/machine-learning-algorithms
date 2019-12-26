@@ -1723,22 +1723,22 @@
             numItems,
             numChunks
         }) {
-            const parts = [];
+            const chunk = [];
             const chunkSize = Math.floor(numItems / numChunks);
             for (let chunkIndex = 0; chunkIndex < numChunks - 1; chunkIndex++) {
-                parts.push({
+                chunk.push({
                     oneBasedStartIndexOfChunk: chunkIndex * chunkSize + 1,
                     endIndexInclusiveOfChunk: (chunkIndex + 1) * chunkSize
                 });
             }
-            parts.push({
+            chunk.push({
                 oneBasedStartIndexOfChunk: (numChunks - 1) * chunkSize + 1,
                 endIndexInclusiveOfChunk: numItems
             });
-            return parts;
+            return chunk;
         }
 
-        QUnit.test("should split dataset", function(assert) {
+        QUnit.test("should split items into chunks", function(assert) {
             assert.deepEqual(
                 splitItemsIntoChunks({
                     numItems: 10,
@@ -1782,6 +1782,27 @@
                 }, {
                     oneBasedStartIndexOfChunk: 7,
                     endIndexInclusiveOfChunk: 10
+                }]);
+
+            assert.deepEqual(
+                splitItemsIntoChunks({
+                    numItems: 5,
+                    numChunks: 8
+                }), [{
+                    oneBasedStartIndexOfChunk: 1,
+                    endIndexInclusiveOfChunk: 1
+                }, {
+                    oneBasedStartIndexOfChunk: 2,
+                    endIndexInclusiveOfChunk: 2
+                }, {
+                    oneBasedStartIndexOfChunk: 3,
+                    endIndexInclusiveOfChunk: 3
+                }, {
+                    oneBasedStartIndexOfChunk: 4,
+                    endIndexInclusiveOfChunk: 4
+                }, {
+                    oneBasedStartIndexOfChunk: 5,
+                    endIndexInclusiveOfChunk: 5
                 }]);
         });
     </script>
