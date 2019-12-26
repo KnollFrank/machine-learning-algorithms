@@ -65,14 +65,12 @@ class DecisionTreeBuilder {
             numItems: this.getNumberOfAttributes(dataset),
             maxNumChunks: numChunks
         });
-        this.treeListener.onStartSplit(nodeId);
         this.get_splits_for_chunks(
             chunks,
             nodeId,
             dataset,
             splits_for_chunks => {
                 const [b_index, b_value, b_score, b_groups] = getMinOfArray(splits_for_chunks, ([index1, value1, score1, groups1], [index2, value2, score2, groups2]) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
-                this.treeListener.onEndSplit(nodeId);
                 k(this._emitOnNodeAdded({
                     id: nodeId,
                     index: b_index,
@@ -83,7 +81,10 @@ class DecisionTreeBuilder {
     }
 
     get_splits_for_chunks(chunks, nodeId, dataset, k) {
-        k(chunks.map(chunk => this.get_split_for_chunk(chunk, nodeId, dataset)));
+        this.treeListener.onStartSplit(nodeId);
+        const splits_for_chunks = chunks.map(chunk => this.get_split_for_chunk(chunk, nodeId, dataset));
+        this.treeListener.onEndSplit(nodeId);
+        k(splits_for_chunks);
     }
 
     get_split_for_chunk({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset) {
