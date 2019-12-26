@@ -1721,18 +1721,18 @@
 
         function splitItemsIntoChunks({
             numItems,
-            numChunks
+            maxNumChunks
         }) {
             const chunk = [];
-            const chunkSize = Math.floor(numItems / numChunks);
-            for (let chunkIndex = 0; chunkIndex < numChunks - 1; chunkIndex++) {
+            const chunkSize = Math.floor(numItems / maxNumChunks);
+            for (let chunkIndex = 0; chunkIndex < maxNumChunks - 1; chunkIndex++) {
                 chunk.push({
                     oneBasedStartIndexOfChunk: chunkIndex * chunkSize + 1,
                     endIndexInclusiveOfChunk: (chunkIndex + 1) * chunkSize
                 });
             }
             chunk.push({
-                oneBasedStartIndexOfChunk: (numChunks - 1) * chunkSize + 1,
+                oneBasedStartIndexOfChunk: (maxNumChunks - 1) * chunkSize + 1,
                 endIndexInclusiveOfChunk: numItems
             });
             return chunk;
@@ -1742,7 +1742,7 @@
             assert.deepEqual(
                 splitItemsIntoChunks({
                     numItems: 10,
-                    numChunks: 2
+                    maxNumChunks: 2
                 }), [{
                     oneBasedStartIndexOfChunk: 1,
                     endIndexInclusiveOfChunk: 5
@@ -1754,7 +1754,7 @@
             assert.deepEqual(
                 splitItemsIntoChunks({
                     numItems: 10,
-                    numChunks: 3
+                    maxNumChunks: 3
                 }), [{
                     oneBasedStartIndexOfChunk: 1,
                     endIndexInclusiveOfChunk: 3
@@ -1769,7 +1769,7 @@
             assert.deepEqual(
                 splitItemsIntoChunks({
                     numItems: 10,
-                    numChunks: 4
+                    maxNumChunks: 4
                 }), [{
                     oneBasedStartIndexOfChunk: 1,
                     endIndexInclusiveOfChunk: 2
@@ -1787,7 +1787,7 @@
             assert.deepEqual(
                 splitItemsIntoChunks({
                     numItems: 5,
-                    numChunks: 8
+                    maxNumChunks: 8
                 }), [{
                     oneBasedStartIndexOfChunk: 1,
                     endIndexInclusiveOfChunk: 1
