@@ -60,21 +60,13 @@ class DecisionTreeBuilder {
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
         // FK-TODO: hier parallelisieren
         this.treeListener.onStartSplit(nodeId);
-        const chunks = splitItemsIntoChunks({
-            numItems: this.getNumberOfAttributes(dataset),
-            maxNumChunks: numChunks
-        });
-        for (const { oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }
-            of chunks) {
-            for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
-                this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: this.getNumberOfAttributes(dataset) - 1, numberOfEntriesInDataset: dataset.length });
-                for (const row of dataset) {
-                    const groups = this.test_split(index, row[index], dataset);
-                    const gini = this.gini_index(groups, class_values);
-                    if (gini < b_score) {
-                        [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
-                    }
-                }
+        for (const chunk of splitItemsIntoChunks({
+                numItems: this.getNumberOfAttributes(dataset),
+                maxNumChunks: numChunks
+            })) {
+            const [index, value, score, groups] = this.bla(chunk, nodeId, dataset, class_values);
+            if (score < b_score) {
+                [b_index, b_value, b_score, b_groups] = [index, value, score, groups];
             }
         }
         this.treeListener.onEndSplit(nodeId);
@@ -84,6 +76,21 @@ class DecisionTreeBuilder {
             value: b_value,
             groups: b_groups
         }));
+    }
+
+    bla({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset, class_values) {
+        let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
+        for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
+            this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: this.getNumberOfAttributes(dataset) - 1, numberOfEntriesInDataset: dataset.length });
+            for (const row of dataset) {
+                const groups = this.test_split(index, row[index], dataset);
+                const gini = this.gini_index(groups, class_values);
+                if (gini < b_score) {
+                    [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
+                }
+            }
+        }
+        return [b_index, b_value, b_score, b_groups];
     }
 
     getNumberOfAttributes(dataset) {
