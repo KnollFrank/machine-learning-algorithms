@@ -40,7 +40,7 @@ class DecisionTreeBuilder {
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
         // FK-TODO: hier parallelisieren
         this.treeListener.onStartSplit(nodeId);
-        for (let index = 0; index < dataset[0].length - 1; index++) {
+        for (let index = 0; index < this.getNumberOfAttributes(dataset); index++) {
             this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: dataset[0].length - 2, numberOfEntriesInDataset: dataset.length });
             for (const row of dataset) {
                 const groups = this.test_split(index, row[index], dataset);
@@ -57,6 +57,10 @@ class DecisionTreeBuilder {
             value: b_value,
             groups: b_groups
         }));
+    }
+
+    getNumberOfAttributes(dataset) {
+        return dataset[0].length - 1;
     }
 
     // Split a dataset based on an attribute and an attribute value
