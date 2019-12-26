@@ -60,25 +60,34 @@ class DecisionTreeBuilder {
     get_split(dataset, k) {
         const numChunks = 4;
         const nodeId = newId();
-        const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
         // FK-TODO: hier parallelisieren
         const chunks = splitItemsIntoChunks({
             numItems: this.getNumberOfAttributes(dataset),
             maxNumChunks: numChunks
         });
         this.treeListener.onStartSplit(nodeId);
-        const splits_for_chunks = chunks.map(chunk => this.get_split_for_chunk(chunk, nodeId, dataset, class_values));
-        const [b_index, b_value, b_score, b_groups] = getMinOfArray(splits_for_chunks, ([index1, value1, score1, groups1], [index2, value2, score2, groups2]) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
-        this.treeListener.onEndSplit(nodeId);
-        k(this._emitOnNodeAdded({
-            id: nodeId,
-            index: b_index,
-            value: b_value,
-            groups: b_groups
-        }));
+        this.get_splits_for_chunks(
+            chunks,
+            nodeId,
+            dataset,
+            splits_for_chunks => {
+                const [b_index, b_value, b_score, b_groups] = getMinOfArray(splits_for_chunks, ([index1, value1, score1, groups1], [index2, value2, score2, groups2]) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
+                this.treeListener.onEndSplit(nodeId);
+                k(this._emitOnNodeAdded({
+                    id: nodeId,
+                    index: b_index,
+                    value: b_value,
+                    groups: b_groups
+                }));
+            });
     }
 
-    get_split_for_chunk({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset, class_values) {
+    get_splits_for_chunks(chunks, nodeId, dataset, k) {
+        k(chunks.map(chunk => this.get_split_for_chunk(chunk, nodeId, dataset)));
+    }
+
+    get_split_for_chunk({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset) {
+        const class_values = getClassValsFromRows(dataset);
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
         for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
             this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: this.getNumberOfAttributes(dataset) - 1, numberOfEntriesInDataset: dataset.length });
@@ -251,6 +260,10 @@ function accuracy_percentage(actual, predicted) {
 
 function getClassValFromRow(row) {
     return row[row.length - 1];
+}
+
+function getClassValsFromRows(dataset) {
+    return Array.from(new Set(dataset.map(getClassValFromRow)));
 }
 
 // Print a decision tree
