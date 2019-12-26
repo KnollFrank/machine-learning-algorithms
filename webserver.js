@@ -9,7 +9,7 @@ const expressServer = express();
 
 // Express-Middleware
 expressServer.use(express.static('public'));
-// expressServer.use(bodyParser.json());
+expressServer.use(bodyParser.json());
 
 // HTTP
 const http = require('http');
@@ -18,6 +18,14 @@ const httpServer = http.Server(expressServer);
 // Websocket
 const socketIo = require('socket.io');
 const io = socketIo(httpServer);
+
+// An array of the total set of all task chunks.
+const tasks = ['fkk-task'];
+// An options object to provide data to the clients on initial socket connection.
+const clientInit = { fkk: 4711 };
+
+const dethread = require('dethread');
+dethread.start(io, tasks, clientInit);
 
 io.on('connect', socket => {
     // Die individuelle Verbindung ist im socket abgelegt

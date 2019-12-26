@@ -28,6 +28,14 @@
                 data = JSON.parse(data);
                 console.log('nachricht empfangen:', data);
             });
+
+            socket.on('clientInit', clientInit => console.log('clientInit:', clientInit));
+            socket.emit('clientReady');
+            socket.on('startTask', task => {
+                console.log('startTask:', task);
+                socket.emit('finishTask', task);
+            });
+            // socket.emit('processComplete', 'fkk-result');
         });
     </script>
 </head>
