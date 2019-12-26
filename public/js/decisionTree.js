@@ -10,6 +10,10 @@ function isNumber(n) {
     return !isNaN(n);
 }
 
+function getMinOfArray(es, getMinElement) {
+    return es.reduce(getMinElement);
+}
+
 function splitItemsIntoChunks({
     numItems,
     maxNumChunks
@@ -57,18 +61,14 @@ class DecisionTreeBuilder {
         const numChunks = 4;
         const nodeId = newId();
         const class_values = Array.from(new Set(dataset.map(getClassValFromRow)));
-        let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
         // FK-TODO: hier parallelisieren
+        const chunks = splitItemsIntoChunks({
+            numItems: this.getNumberOfAttributes(dataset),
+            maxNumChunks: numChunks
+        });
         this.treeListener.onStartSplit(nodeId);
-        for (const chunk of splitItemsIntoChunks({
-                numItems: this.getNumberOfAttributes(dataset),
-                maxNumChunks: numChunks
-            })) {
-            const [index, value, score, groups] = this.get_split_for_chunk(chunk, nodeId, dataset, class_values);
-            if (score < b_score) {
-                [b_index, b_value, b_score, b_groups] = [index, value, score, groups];
-            }
-        }
+        const splits_for_chunks = chunks.map(chunk => this.get_split_for_chunk(chunk, nodeId, dataset, class_values));
+        const [b_index, b_value, b_score, b_groups] = getMinOfArray(splits_for_chunks, ([index1, value1, score1, groups1], [index2, value2, score2, groups2]) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
         this.treeListener.onEndSplit(nodeId);
         k(this._emitOnNodeAdded({
             id: nodeId,

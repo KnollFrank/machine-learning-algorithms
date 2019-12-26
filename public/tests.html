@@ -1803,6 +1803,18 @@
                 }],
                 "numItems: 2, maxNumChunks: 2");
         });
+
+        QUnit.test("should getMinOfArray", function(assert) {
+            assert.equal(
+                getMinOfArray([3, 2, 1], (a, b) => Math.min(a, b)),
+                1,
+                "getMinOfArray([3, 2, 1], (a, b) => Math.min(a, b))");
+
+            assert.equal(
+                getMinOfArray(["aaa", "aa", "a"], (a, b) => a.length < b.length ? a : b),
+                "a",
+                'getMinOfArray(["aaa", "aa", "a"], (a, b) => a.length < b.length ? a : b)');
+        });
     </script>
 </body>
 
