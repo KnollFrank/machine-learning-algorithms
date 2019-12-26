@@ -1723,26 +1723,16 @@
             numItems,
             maxNumChunks
         }) {
-            if (numItems < maxNumChunks) {
-                const chunks = [];
-                for (let chunkIndex = 0; chunkIndex < numItems; chunkIndex++) {
-                    chunks.push({
-                        oneBasedStartIndexOfChunk: chunkIndex + 1,
-                        endIndexInclusiveOfChunk: chunkIndex + 1
-                    });
-                }
-                return chunks;
-            }
             const chunks = [];
-            const chunkSize = Math.floor(numItems / maxNumChunks);
-            for (let chunkIndex = 0; chunkIndex < maxNumChunks - 1; chunkIndex++) {
+            const chunkSize = numItems < maxNumChunks ? 1 : Math.floor(numItems / maxNumChunks);
+            for (let chunkIndex = 0; chunkIndex < Math.min(maxNumChunks, numItems) - 1; chunkIndex++) {
                 chunks.push({
                     oneBasedStartIndexOfChunk: chunkIndex * chunkSize + 1,
                     endIndexInclusiveOfChunk: (chunkIndex + 1) * chunkSize
                 });
             }
             chunks.push({
-                oneBasedStartIndexOfChunk: (maxNumChunks - 1) * chunkSize + 1,
+                oneBasedStartIndexOfChunk: (Math.min(maxNumChunks, numItems) - 1) * chunkSize + 1,
                 endIndexInclusiveOfChunk: numItems
             });
             return chunks;
@@ -1835,4 +1825,4 @@
     </script>
 </body>
 
-</html>
+</html
