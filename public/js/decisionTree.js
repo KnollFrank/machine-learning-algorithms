@@ -50,7 +50,7 @@ class DecisionTreeBuilder {
     }
 
     build_tree(train, k) {
-        let continuationOrVal = this._build_tree(train, k);
+        let continuationOrVal = this.start_build_tree(train, k);
         while (typeof continuationOrVal === "function") {
             continuationOrVal = continuationOrVal();
         }
@@ -58,7 +58,7 @@ class DecisionTreeBuilder {
     }
 
     // Build a decision tree
-    _build_tree(train, k) {
+    start_build_tree(train, k) {
         return this.get_split(
             train,
             root => this.split(root, 1, root => k(prune(root))));
