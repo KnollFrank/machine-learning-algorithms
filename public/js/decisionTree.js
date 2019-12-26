@@ -10,6 +10,25 @@ function isNumber(n) {
     return !isNaN(n);
 }
 
+function splitItemsIntoChunks({
+    numItems,
+    maxNumChunks
+}) {
+    const chunks = [];
+    const chunkSize = numItems < maxNumChunks ? 1 : Math.floor(numItems / maxNumChunks);
+    for (let chunkIndex = 0; chunkIndex < Math.min(maxNumChunks, numItems) - 1; chunkIndex++) {
+        chunks.push({
+            oneBasedStartIndexOfChunk: chunkIndex * chunkSize + 1,
+            endIndexInclusiveOfChunk: (chunkIndex + 1) * chunkSize
+        });
+    }
+    chunks.push({
+        oneBasedStartIndexOfChunk: (Math.min(maxNumChunks, numItems) - 1) * chunkSize + 1,
+        endIndexInclusiveOfChunk: numItems
+    });
+    return chunks;
+}
+
 const dummyTreeListener = {
     onNodeAdded: node => {},
     onEdgeAdded: (fromNode, toNode) => {},
