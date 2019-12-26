@@ -49,9 +49,17 @@ class DecisionTreeBuilder {
         this.treeListener = treeListener;
     }
 
-    // Build a decision tree
     build_tree(train, k) {
-        this.get_split(
+        let continuationOrVal = this._build_tree(train, k);
+        while (typeof continuationOrVal === "function") {
+            continuationOrVal = continuationOrVal();
+        }
+        return continuationOrVal;
+    }
+
+    // Build a decision tree
+    _build_tree(train, k) {
+        return this.get_split(
             train,
             root => this.split(root, 1, root => k(prune(root))));
     }
@@ -65,13 +73,13 @@ class DecisionTreeBuilder {
             numItems: this.getNumberOfAttributes(dataset),
             maxNumChunks: numChunks
         });
-        this.get_splits_for_chunks(
+        return this.get_splits_for_chunks(
             chunks,
             nodeId,
             dataset,
             splits_for_chunks => {
                 const [b_index, b_value, b_score, b_groups] = getMinOfArray(splits_for_chunks, ([index1, value1, score1, groups1], [index2, value2, score2, groups2]) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
-                k(this._emitOnNodeAdded({
+                return k(this._emitOnNodeAdded({
                     id: nodeId,
                     index: b_index,
                     value: b_value,
@@ -84,7 +92,7 @@ class DecisionTreeBuilder {
         this.treeListener.onStartSplit(nodeId);
         const splits_for_chunks = chunks.map(chunk => this.get_split_for_chunk(chunk, nodeId, dataset));
         this.treeListener.onEndSplit(nodeId);
-        k(splits_for_chunks);
+        return () => k(splits_for_chunks);
     }
 
     get_split_for_chunk({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset) {
@@ -163,7 +171,7 @@ class DecisionTreeBuilder {
             this._emitOnEdgeAdded(node, node.left);
             node.right = this.to_terminal(left.concat(right));
             this._emitOnEdgeAdded(node, node.right);
-            k(node);
+            return k(node);
         }
         // check for max depth
         else if (depth >= this.max_depth) {
@@ -171,23 +179,23 @@ class DecisionTreeBuilder {
             this._emitOnEdgeAdded(node, node.left);
             node.right = this.to_terminal(right);
             this._emitOnEdgeAdded(node, node.right);
-            k(node);
+            return k(node);
         } else {
             const processChild = (child, childName, k) => {
                 if (child.length <= this.min_size) {
                     node[childName] = this.to_terminal(child);
                     this._emitOnEdgeAdded(node, node[childName]);
-                    k(node);
+                    return k(node);
                 } else {
-                    this.get_split(child, res => {
+                    return this.get_split(child, res => {
                         node[childName] = res;
                         this._emitOnEdgeAdded(node, node[childName]);
-                        this.split(node[childName], depth + 1, _ => k(node));
+                        return this.split(node[childName], depth + 1, _ => k(node));
                     });
                 }
             }
 
-            processChild(
+            return processChild(
                 left,
                 'left',
                 _ => processChild(
