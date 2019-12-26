@@ -68,9 +68,8 @@ class DecisionTreeBuilder {
     get_split(dataset, k) {
         const numChunks = 4;
         const nodeId = newId();
-        // FK-TODO: hier parallelisieren
         const chunks = splitItemsIntoChunks({
-            numItems: this.getNumberOfAttributes(dataset),
+            numItems: getNumberOfAttributes(dataset),
             maxNumChunks: numChunks
         });
         return this.get_splits_for_chunks(
@@ -90,75 +89,14 @@ class DecisionTreeBuilder {
 
     get_splits_for_chunks(chunks, nodeId, dataset, k) {
         this.treeListener.onStartSplit(nodeId);
+        // FK-TODO: hier parallelisieren
         const splits_for_chunks = chunks.map(chunk => this.get_split_for_chunk(chunk, nodeId, dataset));
         this.treeListener.onEndSplit(nodeId);
         return () => k(splits_for_chunks);
     }
 
-    get_split_for_chunk({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset) {
-        const class_values = getClassValsFromRows(dataset);
-        let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
-        for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
-            this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: this.getNumberOfAttributes(dataset) - 1, numberOfEntriesInDataset: dataset.length });
-            for (const row of dataset) {
-                const groups = this.test_split(index, row[index], dataset);
-                const gini = this.gini_index(groups, class_values);
-                if (gini < b_score) {
-                    [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
-                }
-            }
-        }
-        return [b_index, b_value, b_score, b_groups];
-    }
-
-    getNumberOfAttributes(dataset) {
-        return dataset[0].length - 1;
-    }
-
-    // Split a dataset based on an attribute and an attribute value
-    test_split(index, value, dataset) {
-        const left = [];
-        const right = [];
-        for (const row of dataset) {
-            const splitCondition =
-                isNumber(value) ?
-                Number(row[index]) < Number(value) :
-                row[index] == value;
-            if (splitCondition) {
-                left.push(row);
-            } else {
-                right.push(row);
-            }
-        }
-        return [left, right];
-    }
-
-    // Calculate the Gini index for a split dataset
-    gini_index(groups, classes) {
-        const getP = group => class_val =>
-            group
-            .map(getClassValFromRow)
-            .filter(classVal => classVal == class_val)
-            .length / group.length;
-
-        const getScore = group =>
-            classes
-            .map(getP(group))
-            .map(p => p * p)
-            .sum();
-
-        const n_instances =
-            groups
-            .map(group => group.length)
-            .sum();
-
-        const gini =
-            groups
-            .filter(group => group.length != 0)
-            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-            .sum();
-
-        return gini;
+    get_split_for_chunk(chunk, nodeId, dataset) {
+        return new Splitter(this.treeListener).get_split_for_chunk(chunk, nodeId, dataset);
     }
 
     // Create child splits for a node or make terminal
@@ -248,6 +186,75 @@ class DecisionTreeBuilder {
     }
 }
 
+class Splitter {
+
+    constructor(treeListener) {
+        this.treeListener = treeListener;
+    }
+
+    get_split_for_chunk({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset) {
+        const class_values = getClassValsFromRows(dataset);
+        let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
+        for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
+            this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: getNumberOfAttributes(dataset) - 1, numberOfEntriesInDataset: dataset.length });
+            for (const row of dataset) {
+                const groups = this.test_split(index, row[index], dataset);
+                const gini = this.gini_index(groups, class_values);
+                if (gini < b_score) {
+                    [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
+                }
+            }
+        }
+        return [b_index, b_value, b_score, b_groups];
+    }
+
+    // Split a dataset based on an attribute and an attribute value
+    test_split(index, value, dataset) {
+        const left = [];
+        const right = [];
+        for (const row of dataset) {
+            const splitCondition =
+                isNumber(value) ?
+                Number(row[index]) < Number(value) :
+                row[index] == value;
+            if (splitCondition) {
+                left.push(row);
+            } else {
+                right.push(row);
+            }
+        }
+        return [left, right];
+    }
+
+    // Calculate the Gini index for a split dataset
+    gini_index(groups, classes) {
+        const getP = group => class_val =>
+            group
+            .map(getClassValFromRow)
+            .filter(classVal => classVal == class_val)
+            .length / group.length;
+
+        const getScore = group =>
+            classes
+            .map(getP(group))
+            .map(p => p * p)
+            .sum();
+
+        const n_instances =
+            groups
+            .map(group => group.length)
+            .sum();
+
+        const gini =
+            groups
+            .filter(group => group.length != 0)
+            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+            .sum();
+
+        return gini;
+    }
+}
+
 function isInnerNode(node) {
     return 'left' in node || 'right' in node;
 }
@@ -265,6 +272,10 @@ function accuracy_percentage(actual, predicted) {
         }
     }
     return correct / actual.length * 100.0;
+}
+
+function getNumberOfAttributes(dataset) {
+    return dataset[0].length - 1;
 }
 
 function getClassValFromRow(row) {
