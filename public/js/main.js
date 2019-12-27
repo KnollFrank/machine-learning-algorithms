@@ -79,7 +79,7 @@ function build_tree(datasetDescription) {
                 gNetwork = addNewNodesAndEdgesToNetwork(datasetDescription, value, gNetwork);
                 break;
             case 'inner-split':
-                displayProgress(value);
+                displayProgress(value, datasetDescription.attributeNames.X);
                 break;
             case 'result':
                 onDecisionTreeChanged(datasetDescription, value);
@@ -111,9 +111,9 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     return gNetwork;
 }
 
-function displayProgress({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) {
+function displayProgress({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }, attributeNames) {
     const text = document.querySelector('#progress-text-' + workerIndex);
-    text.textContent = `Node: ${nodeId}, Step: ${startSplitIndex} <= ${actualSplitIndex} <= ${endSplitIndex}, Number of entries in actual dataset: ${numberOfEntriesInDataset}`;
+    text.textContent = `Node: ${nodeId}, Step: ${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]}), Number of entries in actual dataset: ${numberOfEntriesInDataset}`;
 
     const progress = document.querySelector('#progress-build-decision-tree-' + workerIndex);
     progress.value = actualSplitIndex - startSplitIndex + 1;
