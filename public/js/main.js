@@ -211,12 +211,13 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
         attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
         dataset: addPredictions(datasetDescription.splittedDataset.test),
         createdRow: markRowIfItsPredictionIsWrong,
-        onRowClicked: data => {
-            const vals = data.slice(0, datasetDescription.attributeNames.X.length);
-            const prediction = predict(tree, vals);
-            highlightPredictionInNetwork(prediction, network);
-        }
+        onRowClicked: row => predictAndHighlightInNetwork(tree, network, row, datasetDescription)
     });
+}
+
+function predictAndHighlightInNetwork(tree, network, row, datasetDescription) {
+    const independentValsFromRow = row.slice(0, datasetDescription.attributeNames.X.length);
+    highlightPredictionInNetwork(predict(tree, independentValsFromRow), network);
 }
 
 function createTreeListener(onmessage) {
