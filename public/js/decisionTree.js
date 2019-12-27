@@ -69,7 +69,12 @@ class DecisionTreeBuilder {
             nodeId,
             dataset,
             splits_for_chunks => {
-                const [b_index, b_value, b_score, b_groups] = getMinOfArray(splits_for_chunks, ([index1, value1, score1, groups1], [index2, value2, score2, groups2]) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
+                const [b_index, b_value, b_score, b_groups] =
+                getMinOfArray(
+                    splits_for_chunks,
+                    (
+                        [index1, value1, score1, groups1], [index2, value2, score2, groups2]
+                    ) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
                 k(this._emitOnNodeAdded({
                     id: nodeId,
                     index: b_index,
@@ -81,7 +86,6 @@ class DecisionTreeBuilder {
 
     get_splits_for_chunks(chunks, nodeId, dataset, k) {
         this.treeListener.onStartSplit(nodeId);
-        // FK-TODO: hier parallelisieren
         const splits_for_chunks = [];
         for (let i = 0; i < chunks.length; i++) {
             this.get_split_for_chunk(
@@ -99,10 +103,17 @@ class DecisionTreeBuilder {
     }
 
     get_split_for_chunk(chunk, nodeId, dataset, addChunk) {
-        // FIXME: ein Worker (splitterWorker.js) in einer Worker (decisionTreeWorker.js) klappt nicht
         const worker = new Worker('js/splitterWorker.js');
         worker.onmessage = event => {
-            addChunk(event.data);
+            const { type, value } = event.data;
+            switch (type) {
+                case 'inner-split':
+                    this.treeListener.onInnerSplit(value);
+                    break;
+                case 'result':
+                    addChunk(value);
+                    break;
+            }
         };
         worker.postMessage({ chunk, nodeId, dataset });
     }
@@ -165,12 +176,12 @@ class DecisionTreeBuilder {
         const outcomes = group.map(getClassValFromRow);
         return this._emitOnNodeAdded({
             id: newId(),
-            value: this.mode(outcomes)
+            value: this.getElementWithHighestOccurenceOf(outcomes)
         });
     }
 
     // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
-    mode(array) {
+    getElementWithHighestOccurenceOf(array) {
         if (array.length == 0) {
             return null;
         }

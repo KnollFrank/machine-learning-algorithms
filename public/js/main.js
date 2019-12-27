@@ -89,7 +89,7 @@ function build_tree(datasetDescription) {
 }
 
 function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
-    new DecisionTreeBuilder(max_depth, min_size).build_tree(dataset, tree => onmessage({ type: 'result', value: tree }));
+    new DecisionTreeBuilder(max_depth, min_size, createTreeListener(onmessage)).build_tree(dataset, tree => onmessage({ type: 'result', value: tree }));
 }
 
 function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
@@ -179,4 +179,42 @@ function displayTestingTableWithPredictions(tree, datasetDescription) {
         dataset: addPredictions(datasetDescription.splittedDataset.test),
         createdRow: markRowIfItsPredictionIsWrong
     });
+}
+
+class TimedExecutor {
+    constructor(waitTimeMillis) {
+        this.waitTimeMillis = waitTimeMillis;
+        this.lastExecutionTime = new Date().getTime();
+        this.firstExecution = true;
+    }
+
+    execute(callback) {
+        const actualExecutionTime = new Date().getTime();
+        if (actualExecutionTime - this.lastExecutionTime >= this.waitTimeMillis || this.firstExecution) {
+            this.firstExecution = false;
+            this.lastExecutionTime = actualExecutionTime;
+            callback();
+        }
+    }
+}
+
+function createTreeListener(onmessage) {
+    const timedExecutor = new TimedExecutor(100);
+    let rootNode;
+    return {
+        onNodeAdded: node => {
+            if (!rootNode) {
+                rootNode = node;
+            }
+            timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
+        },
+        onEdgeAdded: (fromNode, toNode) => {
+            timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
+        },
+        onStartSplit: nodeId => {},
+        onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
+            onmessage({ type: 'inner-split', value: { nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
+        },
+        onEndSplit: nodeId => {}
+    }
 }
