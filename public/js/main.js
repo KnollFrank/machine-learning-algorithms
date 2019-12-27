@@ -144,7 +144,7 @@ function displayProgress({
     attributeNames
 }) {
     const text = document.querySelector('#progress-text-' + workerIndex);
-    text.textContent = `Node: ${nodeId}, Step: ${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]}), Number of entries in actual dataset: ${numberOfEntriesInDataset}`;
+    text.textContent = `Node: ${nodeId}, Step: ${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]}), size of dataset: ${numberOfEntriesInDataset}`;
 
     const progress = document.querySelector('#progress-build-decision-tree-' + workerIndex);
     progress.value = actualSplitIndex - startSplitIndex + 1;
