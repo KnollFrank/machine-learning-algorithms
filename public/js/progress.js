@@ -14,18 +14,26 @@ function appendProgressElements(parent, numWorkers) {
 
 function createProgressElement(workerIndex) {
     let div = getHtml('progressTemplate.html');
-    div.querySelector('span').setAttribute('id', 'progress-text-' + workerIndex);
-    div.querySelector('progress').setAttribute('id', 'progress-build-decision-tree-' + workerIndex);
+    div.querySelector('span').setAttribute('id', createProgressTextId(workerIndex));
+    div.querySelector('progress').setAttribute('id', createProgressId(workerIndex));
     return div;
 }
 
 function setProgressText(workerIndex, text) {
-    const textElement = document.querySelector('#progress-text-' + workerIndex);
+    const textElement = document.querySelector('#' + createProgressTextId(workerIndex));
     textElement.textContent = text;
 }
 
 function setProgress({ workerIndex, value, max }) {
-    const progress = document.querySelector('#progress-build-decision-tree-' + workerIndex);
-    progress.value = actualSplitIndex - startSplitIndex + 1;
-    progress.max = endSplitIndex - startSplitIndex + 1;
+    const progress = document.querySelector('#' + createProgressId(workerIndex));
+    progress.value = value;
+    progress.max = max;
+}
+
+function createProgressTextId(workerIndex) {
+    return 'progress-text-' + workerIndex;
+}
+
+function createProgressId(workerIndex) {
+    return 'progress-build-decision-tree-' + workerIndex;
 }
