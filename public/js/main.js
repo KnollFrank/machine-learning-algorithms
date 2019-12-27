@@ -106,7 +106,7 @@ function build_tree(datasetDescription) {
 
 function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
     const numWorkers = window.navigator.hardwareConcurrency;
-    createProgress(numWorkers);
+    createProgressElements('progress', numWorkers);
     new DecisionTreeBuilder(
             max_depth,
             min_size,
@@ -136,18 +136,6 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     return gNetwork;
 }
 
-function createProgress(numWorkers) {
-    let progress = document.querySelector('#progress');
-    progress.innerHTML = '';
-    appendProgressElements(progress, numWorkers);
-}
-
-function appendProgressElements(parent, numWorkers) {
-    for (let workerIndex = 1; workerIndex <= numWorkers; workerIndex++) {
-        parent.appendChild(createProgressElement(workerIndex));
-    }
-}
-
 function displayProgress({
     workerIndex,
     nodeId,
@@ -157,12 +145,12 @@ function displayProgress({
     numberOfEntriesInDataset,
     attributeNames
 }) {
-    const text = document.querySelector('#progress-text-' + workerIndex);
-    text.textContent = `Worker ${workerIndex}, Node: ${nodeId}, Step: ${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]}), size of dataset: ${numberOfEntriesInDataset}`;
-
-    const progress = document.querySelector('#progress-build-decision-tree-' + workerIndex);
-    progress.value = actualSplitIndex - startSplitIndex + 1;
-    progress.max = endSplitIndex - startSplitIndex + 1;
+    setProgressText(workerIndex, `Worker ${workerIndex}, Node: ${nodeId}, Step: ${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]}), size of dataset: ${numberOfEntriesInDataset}`);
+    setProgress({
+        workerIndex: workerIndex,
+        value: actualSplitIndex - startSplitIndex + 1,
+        max: endSplitIndex - startSplitIndex + 1
+    });
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
