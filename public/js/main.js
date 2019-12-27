@@ -211,11 +211,11 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
         attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
         dataset: addPredictions(datasetDescription.splittedDataset.test),
         createdRow: markRowIfItsPredictionIsWrong,
-        onRowClicked: row => predictAndHighlightInNetwork(tree, network, row, datasetDescription)
+        onRowClicked: row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription)
     });
 }
 
-function predictAndHighlightInNetwork(tree, network, row, datasetDescription) {
+function predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) {
     const independentValsFromRow = row.slice(0, datasetDescription.attributeNames.X.length);
     highlightPredictionInNetwork(predict(tree, independentValsFromRow), network);
 }
