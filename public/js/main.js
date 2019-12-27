@@ -105,10 +105,12 @@ function build_tree(datasetDescription) {
 }
 
 function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
+    const numWorkers = window.navigator.hardwareConcurrency;
+    createProgress(numWorkers);
     new DecisionTreeBuilder(
             max_depth,
             min_size,
-            window.navigator.hardwareConcurrency,
+            numWorkers,
             createTreeListener(onmessage))
         .build_tree(
             dataset,
@@ -132,6 +134,18 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     });
     gNetwork.edges.add(newEdges);
     return gNetwork;
+}
+
+function createProgress(numWorkers) {
+    let progress = document.querySelector('#progress');
+    progress.innerHTML = '';
+    appendProgressElements(progress, numWorkers);
+}
+
+function appendProgressElements(parent, numWorkers) {
+    for (let workerIndex = 1; workerIndex <= numWorkers; workerIndex++) {
+        parent.appendChild(createProgressElement(workerIndex));
+    }
 }
 
 function displayProgress({
