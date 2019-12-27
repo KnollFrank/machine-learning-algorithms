@@ -88,10 +88,8 @@ function build_tree(datasetDescription) {
     });
 }
 
-function build_tree_with_worker(data, onmessage) {
-    const worker = new Worker('js/decisionTreeWorker.js');
-    worker.onmessage = event => onmessage(event.data);
-    worker.postMessage(data);
+function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
+    new DecisionTreeBuilder(max_depth, min_size).build_tree(dataset, tree => onmessage({ type: 'result', value: tree }));
 }
 
 function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {

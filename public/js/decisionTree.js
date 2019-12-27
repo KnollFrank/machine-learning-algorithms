@@ -49,36 +49,28 @@ class DecisionTreeBuilder {
         this.treeListener = treeListener;
     }
 
-    build_tree(train, k) {
-        let continuationOrVal = this.start_build_tree(train, k);
-        while (typeof continuationOrVal === "function") {
-            continuationOrVal = continuationOrVal();
-        }
-        return continuationOrVal;
-    }
-
     // Build a decision tree
-    start_build_tree(train, k) {
-        return this.get_split(
+    build_tree(train, k) {
+        this.get_split(
             train,
             root => this.split(root, 1, root => k(prune(root))));
     }
 
     // Select the best split point for a dataset
     get_split(dataset, k) {
-        const numChunks = 4;
+        const numChunks = window.navigator.hardwareConcurrency;
         const nodeId = newId();
         const chunks = splitItemsIntoChunks({
             numItems: getNumberOfAttributes(dataset),
             maxNumChunks: numChunks
         });
-        return this.get_splits_for_chunks(
+        this.get_splits_for_chunks(
             chunks,
             nodeId,
             dataset,
             splits_for_chunks => {
                 const [b_index, b_value, b_score, b_groups] = getMinOfArray(splits_for_chunks, ([index1, value1, score1, groups1], [index2, value2, score2, groups2]) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
-                return k(this._emitOnNodeAdded({
+                k(this._emitOnNodeAdded({
                     id: nodeId,
                     index: b_index,
                     value: b_value,
@@ -90,13 +82,29 @@ class DecisionTreeBuilder {
     get_splits_for_chunks(chunks, nodeId, dataset, k) {
         this.treeListener.onStartSplit(nodeId);
         // FK-TODO: hier parallelisieren
-        const splits_for_chunks = chunks.map(chunk => this.get_split_for_chunk(chunk, nodeId, dataset));
-        this.treeListener.onEndSplit(nodeId);
-        return () => k(splits_for_chunks);
+        const splits_for_chunks = [];
+        for (let i = 0; i < chunks.length; i++) {
+            this.get_split_for_chunk(
+                chunks[i],
+                nodeId,
+                dataset,
+                chunk => {
+                    splits_for_chunks.push(chunk);
+                    if (splits_for_chunks.length == chunks.length) {
+                        this.treeListener.onEndSplit(nodeId);
+                        k(splits_for_chunks);
+                    }
+                });
+        }
     }
 
-    get_split_for_chunk(chunk, nodeId, dataset) {
-        return new Splitter(this.treeListener).get_split_for_chunk(chunk, nodeId, dataset);
+    get_split_for_chunk(chunk, nodeId, dataset, addChunk) {
+        // FIXME: ein Worker (splitterWorker.js) in einer Worker (decisionTreeWorker.js) klappt nicht
+        const worker = new Worker('js/splitterWorker.js');
+        worker.onmessage = event => {
+            addChunk(event.data);
+        };
+        worker.postMessage({ chunk, nodeId, dataset });
     }
 
     // Create child splits for a node or make terminal
@@ -109,7 +117,7 @@ class DecisionTreeBuilder {
             this._emitOnEdgeAdded(node, node.left);
             node.right = this.to_terminal(left.concat(right));
             this._emitOnEdgeAdded(node, node.right);
-            return k(node);
+            k(node);
         }
         // check for max depth
         else if (depth >= this.max_depth) {
@@ -117,23 +125,23 @@ class DecisionTreeBuilder {
             this._emitOnEdgeAdded(node, node.left);
             node.right = this.to_terminal(right);
             this._emitOnEdgeAdded(node, node.right);
-            return k(node);
+            k(node);
         } else {
             const processChild = (child, childName, k) => {
                 if (child.length <= this.min_size) {
                     node[childName] = this.to_terminal(child);
                     this._emitOnEdgeAdded(node, node[childName]);
-                    return k(node);
+                    k(node);
                 } else {
-                    return this.get_split(child, res => {
+                    this.get_split(child, res => {
                         node[childName] = res;
                         this._emitOnEdgeAdded(node, node[childName]);
-                        return this.split(node[childName], depth + 1, _ => k(node));
+                        this.split(node[childName], depth + 1, _ => k(node));
                     });
                 }
             }
 
-            return processChild(
+            processChild(
                 left,
                 'left',
                 _ => processChild(
