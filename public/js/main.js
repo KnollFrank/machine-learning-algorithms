@@ -158,7 +158,7 @@ function onDecisionTreeChanged(datasetDescription, tree) {
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
     print_tree(tree, datasetDescription.attributeNames.all);
     displayAccuracy(tree, datasetDescription.splittedDataset.test);
-    displayTestingTableWithPredictions(tree, datasetDescription);
+    displayTestingTableWithPredictions(tree, network, datasetDescription);
     displayDataInput(
         document.querySelector('#dataInputForm'),
         datasetDescription.attributeNames.X,
@@ -188,7 +188,7 @@ function computeAccuracy(tree, dataset) {
     return accuracy_percentage(actualClassVals(dataset), predicted);
 }
 
-function displayTestingTableWithPredictions(tree, datasetDescription) {
+function displayTestingTableWithPredictions(tree, network, datasetDescription) {
     function addPredictionAttribute(attributeNames) {
         const lastAttributeName = attributeNames[attributeNames.length - 1];
         return attributeNames.concat('prediction for ' + lastAttributeName);
@@ -210,7 +210,12 @@ function displayTestingTableWithPredictions(tree, datasetDescription) {
         tableContainer: $('#container-testDataSet'),
         attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
         dataset: addPredictions(datasetDescription.splittedDataset.test),
-        createdRow: markRowIfItsPredictionIsWrong
+        createdRow: markRowIfItsPredictionIsWrong,
+        onRowClicked: data => {
+            const vals = data.slice(0, datasetDescription.attributeNames.X.length);
+            const prediction = predict(tree, vals);
+            highlightPredictionInNetwork(prediction, network);
+        }
     });
 }
 

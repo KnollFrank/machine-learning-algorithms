@@ -1,13 +1,24 @@
-function displayDatasetAsTable({ tableContainer, attributeNames, dataset, createdRow }) {
+function displayDatasetAsTable({ tableContainer, attributeNames, dataset, createdRow, onRowClicked }) {
     const table = createTableElement();
     tableContainer.empty();
     tableContainer.append(table);
 
-    $('#' + table.id).DataTable({
+    let dataTable = $('#' + table.id).DataTable({
         data: dataset,
         columns: getColumns(attributeNames),
         createdRow: createdRow || (() => {})
     });
+
+    addRowClickedEventHandler(table.id, dataTable, onRowClicked);
+}
+
+function addRowClickedEventHandler(tableId, dataTable, onRowClicked) {
+    if (onRowClicked) {
+        $(`#${tableId} tbody`).on('click', 'tr', function() {
+            let data = dataTable.row(this).data();
+            onRowClicked(data);
+        });
+    }
 }
 
 // <table id="datasetTable" class="display" style="width:100%">
