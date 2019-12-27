@@ -36,3 +36,4 @@ FK-TODO:
 - nicht den GANZEN Datensatz in den Speicher laden, sondern nur Chunks (siehe Papa parse)
   - auch in der DataTable den Datensatz nur seitenweise laden
 - MNIST-Datensatz in der Tabelle nicht mit 28*28 Spalten anzeigen, sondern mit Bildern der Ziffern.
+  Ebenso unter "3. Vorhersage" keine Zahlenwerte eingeben lassen, sondern mit der Maus eine Ziffer malen lassen.
