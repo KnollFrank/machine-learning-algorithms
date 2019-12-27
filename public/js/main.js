@@ -44,12 +44,43 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
+    const canvasContainer = document.querySelector('#canvasContainer');
+    for (let i = 0; i < datasetDescription.splittedDataset.train.length; i++) {
+        const canvas = createCanvasElement();
+        drawImageIntoCanvas(datasetDescription.splittedDataset.train[i], canvas);
+        canvasContainer.appendChild(canvas);
+    }
+
     displayDatasetAsTable({
         tableContainer: $('#container-trainingDataSet'),
         attributeNames: datasetDescription.attributeNames.all,
         dataset: datasetDescription.splittedDataset.train
     });
     build_tree_onSubmit(datasetDescription);
+}
+
+function createCanvasElement() {
+    const canvas = getHtml('canvasTemplate.html');
+    canvas.setAttribute('id', 'canvas-' + newId());
+    return canvas;
+}
+
+function drawImageIntoCanvas(pixels, canvas) {
+    var ctx = canvas.getContext("2d");
+    var imgData = ctx.createImageData(28, 28);
+
+    for (let y = 0; y < 28; y++) {
+        for (let x = 0; x < 28; x++) {
+            const i = y * 28 + x;
+            const pixel = 255 - pixels[i];
+            imgData.data[i * 4 + 0] = pixel;
+            imgData.data[i * 4 + 1] = pixel;
+            imgData.data[i * 4 + 2] = pixel;
+            imgData.data[i * 4 + 3] = 255;
+        }
+    }
+
+    ctx.putImageData(imgData, 0, 0);
 }
 
 let submitEventListener;
