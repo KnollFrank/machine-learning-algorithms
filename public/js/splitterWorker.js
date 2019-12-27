@@ -6,14 +6,15 @@ importScripts('decisionTree.js');
 onmessage = e => postMessage({ type: 'result', value: get_split_for_chunk(e.data) });
 
 function get_split_for_chunk({ chunk, nodeId, dataset }) {
+    const { oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk } = chunk;
     return new Splitter({
         onNodeAdded: node => {},
         onEdgeAdded: (fromNode, toNode) => {},
         onStartSplit: nodeId => {},
-        onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
+        onInnerSplit: ({ nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
             postMessage({
                 type: 'inner-split',
-                value: { nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }
+                value: { nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }
             });
         },
         onEndSplit: nodeId => {}

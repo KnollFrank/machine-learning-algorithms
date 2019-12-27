@@ -89,6 +89,7 @@ class DecisionTreeBuilder {
         const splits_for_chunks = [];
         for (let i = 0; i < chunks.length; i++) {
             this.get_split_for_chunk(
+                i + 1,
                 chunks[i],
                 nodeId,
                 dataset,
@@ -102,13 +103,14 @@ class DecisionTreeBuilder {
         }
     }
 
-    get_split_for_chunk(chunk, nodeId, dataset, addChunk) {
+    get_split_for_chunk(workerIndex, chunk, nodeId, dataset, addChunk) {
         const worker = new Worker('js/splitterWorker.js');
         worker.onmessage = event => {
             const { type, value } = event.data;
             switch (type) {
                 case 'inner-split':
-                    this.treeListener.onInnerSplit(value);
+                    const { nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } = value;
+                    this.treeListener.onInnerSplit({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset });
                     break;
                 case 'result':
                     addChunk(value);
@@ -215,7 +217,7 @@ class Splitter {
         const class_values = getClassValsFromRows(dataset);
         let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
         for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
-            this.treeListener.onInnerSplit({ nodeId: nodeId, actualSplitIndex: index, endSplitIndex: getNumberOfAttributes(dataset) - 1, numberOfEntriesInDataset: dataset.length });
+            this.treeListener.onInnerSplit({ nodeId: nodeId, startSplitIndex: oneBasedStartIndexOfChunk - 1, actualSplitIndex: index, endSplitIndex: oneBasedEndIndexInclusiveOfChunk - 1, numberOfEntriesInDataset: dataset.length });
             for (const row of dataset) {
                 const groups = this.test_split(index, row[index], dataset);
                 const gini = this.gini_index(groups, class_values);

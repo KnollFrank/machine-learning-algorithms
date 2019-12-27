@@ -111,13 +111,13 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     return gNetwork;
 }
 
-function displayProgress({ nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) {
-    const text = document.querySelector('#progress-text');
-    text.textContent = `Node: ${nodeId}, Step: ${actualSplitIndex + 1}/${endSplitIndex + 1}, Number of entries in actual dataset: ${numberOfEntriesInDataset}`;
+function displayProgress({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) {
+    const text = document.querySelector('#progress-text-' + workerIndex);
+    text.textContent = `Node: ${nodeId}, Step: ${startSplitIndex} <= ${actualSplitIndex} <= ${endSplitIndex}, Number of entries in actual dataset: ${numberOfEntriesInDataset}`;
 
-    const progress = document.querySelector('#progress-build-decision-tree');
-    progress.value = actualSplitIndex;
-    progress.max = endSplitIndex;
+    const progress = document.querySelector('#progress-build-decision-tree-' + workerIndex);
+    progress.value = actualSplitIndex - startSplitIndex + 1;
+    progress.max = endSplitIndex - startSplitIndex + 1;
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
@@ -212,8 +212,8 @@ function createTreeListener(onmessage) {
             timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
         },
         onStartSplit: nodeId => {},
-        onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
-            onmessage({ type: 'inner-split', value: { nodeId, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
+        onInnerSplit: ({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
+            onmessage({ type: 'inner-split', value: { workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
         },
         onEndSplit: nodeId => {}
     }
