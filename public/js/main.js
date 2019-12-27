@@ -79,7 +79,23 @@ function build_tree(datasetDescription) {
                 gNetwork = addNewNodesAndEdgesToNetwork(datasetDescription, value, gNetwork);
                 break;
             case 'inner-split':
-                displayProgress(value, datasetDescription.attributeNames.X);
+                const {
+                    workerIndex,
+                    nodeId,
+                    startSplitIndex,
+                    actualSplitIndex,
+                    endSplitIndex,
+                    numberOfEntriesInDataset
+                } = value;
+                displayProgress({
+                    workerIndex,
+                    nodeId,
+                    startSplitIndex,
+                    actualSplitIndex,
+                    endSplitIndex,
+                    numberOfEntriesInDataset,
+                    attributeNames: datasetDescription.attributeNames.X
+                });
                 break;
             case 'result':
                 onDecisionTreeChanged(datasetDescription, value);
@@ -89,7 +105,14 @@ function build_tree(datasetDescription) {
 }
 
 function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
-    new DecisionTreeBuilder(max_depth, min_size, createTreeListener(onmessage)).build_tree(dataset, tree => onmessage({ type: 'result', value: tree }));
+    new DecisionTreeBuilder(
+            max_depth,
+            min_size,
+            window.navigator.hardwareConcurrency,
+            createTreeListener(onmessage))
+        .build_tree(
+            dataset,
+            tree => onmessage({ type: 'result', value: tree }));
 }
 
 function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
@@ -111,7 +134,15 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     return gNetwork;
 }
 
-function displayProgress({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }, attributeNames) {
+function displayProgress({
+    workerIndex,
+    nodeId,
+    startSplitIndex,
+    actualSplitIndex,
+    endSplitIndex,
+    numberOfEntriesInDataset,
+    attributeNames
+}) {
     const text = document.querySelector('#progress-text-' + workerIndex);
     text.textContent = `Node: ${nodeId}, Step: ${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]}), Number of entries in actual dataset: ${numberOfEntriesInDataset}`;
 

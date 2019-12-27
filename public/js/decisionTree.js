@@ -43,9 +43,10 @@ const dummyTreeListener = {
 
 class DecisionTreeBuilder {
 
-    constructor(max_depth, min_size, treeListener = dummyTreeListener) {
+    constructor(max_depth, min_size, numWorkers, treeListener = dummyTreeListener) {
         this.max_depth = max_depth;
         this.min_size = min_size;
+        this.numWorkers = numWorkers;
         this.treeListener = treeListener;
     }
 
@@ -58,11 +59,10 @@ class DecisionTreeBuilder {
 
     // Select the best split point for a dataset
     get_split(dataset, k) {
-        const numChunks = window.navigator.hardwareConcurrency;
         const nodeId = newId();
         const chunks = splitItemsIntoChunks({
             numItems: getNumberOfAttributes(dataset),
-            maxNumChunks: numChunks
+            maxNumChunks: this.numWorkers
         });
         this.get_splits_for_chunks(
             chunks,
