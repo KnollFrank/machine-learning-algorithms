@@ -46,9 +46,12 @@ function train_test_split(dataset, train_proportion) {
 function onDatasetChanged(datasetDescription) {
     const canvasContainer = document.querySelector('#canvasContainer');
     for (let i = 0; i < datasetDescription.splittedDataset.train.length; i++) {
-        const canvas = createCanvasElement();
+        const figure = createFigureElement();
+        const canvas = figure.querySelector('canvas');
+        const figcaption = figure.querySelector('figcaption');
+        figcaption.innerHTML = getClassValFromRow(datasetDescription.splittedDataset.train[i]);
         drawImageIntoCanvas(datasetDescription.splittedDataset.train[i], canvas);
-        canvasContainer.appendChild(canvas);
+        canvasContainer.appendChild(figure);
     }
 
     displayDatasetAsTable({
@@ -59,10 +62,10 @@ function onDatasetChanged(datasetDescription) {
     build_tree_onSubmit(datasetDescription);
 }
 
-function createCanvasElement() {
-    const canvas = getHtml('canvasTemplate.html');
-    canvas.setAttribute('id', 'canvas-' + newId());
-    return canvas;
+function createFigureElement() {
+    const figure = getHtml('canvasTemplate.html');
+    figure.setAttribute('id', 'figure-' + newId());
+    return figure;
 }
 
 function drawImageIntoCanvas(pixels, canvas) {

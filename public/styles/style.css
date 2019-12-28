@@ -74,3 +74,12 @@ h1 {
 .wrongPrediction {
     background-color: red !important;
 }
+
+#canvasContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+figure figcaption {
+    text-align: center;
+}
