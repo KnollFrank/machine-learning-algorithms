@@ -75,7 +75,7 @@ h1 {
     background-color: red !important;
 }
 
-#canvasContainer {
+#digitsContainer {
     display: flex;
     flex-wrap: wrap;
 }

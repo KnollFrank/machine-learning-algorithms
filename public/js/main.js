@@ -44,14 +44,13 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
-    const canvasContainer = document.querySelector('#canvasContainer');
+    // FKK: move to new file
+    const digitsContainer = document.querySelector('#digitsContainer');
     for (let i = 0; i < datasetDescription.splittedDataset.train.length; i++) {
-        const figure = createFigureElement();
-        const canvas = figure.querySelector('canvas');
-        const figcaption = figure.querySelector('figcaption');
-        figcaption.innerHTML = getClassValFromRow(datasetDescription.splittedDataset.train[i]);
-        drawImageIntoCanvas(datasetDescription.splittedDataset.train[i], canvas);
-        canvasContainer.appendChild(figure);
+        const digit = createDigitElement();
+        digit.querySelector('figcaption').innerHTML = getClassValFromRow(datasetDescription.splittedDataset.train[i]);
+        drawImageIntoCanvas(datasetDescription.splittedDataset.train[i], digit.querySelector('canvas'));
+        digitsContainer.appendChild(digit);
     }
 
     displayDatasetAsTable({
@@ -62,10 +61,10 @@ function onDatasetChanged(datasetDescription) {
     build_tree_onSubmit(datasetDescription);
 }
 
-function createFigureElement() {
-    const figure = getHtml('canvasTemplate.html');
-    figure.setAttribute('id', 'figure-' + newId());
-    return figure;
+function createDigitElement() {
+    const digit = getHtml('digitTemplate.html');
+    digit.setAttribute('id', 'digit-' + newId());
+    return digit;
 }
 
 function drawImageIntoCanvas(pixels, canvas) {
