@@ -75,11 +75,18 @@ h1 {
     background-color: red !important;
 }
 
-#digitsContainer {
+#container-digits-training,
+#container-digits-test {
     display: flex;
     flex-wrap: wrap;
 }
 
 figure figcaption {
     text-align: center;
+}
+
+figure figcaption.wrongPrediction {
+    color: red;
+    font-weight: bold;
+    background-color: inherit !important;
 }

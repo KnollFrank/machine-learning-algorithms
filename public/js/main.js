@@ -47,11 +47,12 @@ function train_test_split(dataset, train_proportion) {
 function onDatasetChanged(datasetDescription) {
     if (datasetDescription.fileName.toLowerCase().startsWith('mnist')) {
         // FKK: move to new file
-        const digitsContainer = document.querySelector('#digitsContainer');
-        for (let i = 0; i < datasetDescription.splittedDataset.train.length; i++) {
+        const digitsContainer = document.querySelector('#container-digits-training');
+        const rows = datasetDescription.splittedDataset.train;
+        for (let i = 0; i < rows.length; i++) {
             const digit = createDigitElement();
-            digit.querySelector('figcaption').innerHTML = getClassValFromRow(datasetDescription.splittedDataset.train[i]);
-            drawImageIntoCanvas(datasetDescription.splittedDataset.train[i], digit.querySelector('canvas'));
+            digit.querySelector('figcaption').innerHTML = getClassValFromRow(rows[i]);
+            drawImageIntoCanvas(rows[i], digit.querySelector('canvas'));
             digitsContainer.appendChild(digit);
         }
     } else {
@@ -242,7 +243,23 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
         }
     }
 
-    if (!datasetDescription.fileName.toLowerCase().startsWith('mnist')) {
+    if (datasetDescription.fileName.toLowerCase().startsWith('mnist')) {
+        // FKK: move to new file
+        const digitsContainer = document.querySelector('#container-digits-test');
+        const rows = datasetDescription.splittedDataset.test;
+        for (let i = 0; i < rows.length; i++) {
+            const digit = createDigitElement();
+            const figcaption = digit.querySelector('figcaption');
+            const actualDigit = getClassValFromRow(rows[i]);;
+            const predictedDigit = predict(tree, rows[i]).value;
+            if (actualDigit != predictedDigit) {
+                figcaption.classList.add('wrongPrediction');
+            }
+            figcaption.innerHTML = `actual: ${actualDigit}, predicted: ${predictedDigit}`;
+            drawImageIntoCanvas(rows[i], digit.querySelector('canvas'));
+            digitsContainer.appendChild(digit);
+        }
+    } else {
         displayDatasetAsTable({
             tableContainer: $('#container-testDataSet'),
             attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
