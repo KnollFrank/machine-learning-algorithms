@@ -52,7 +52,7 @@ function onDatasetChanged(datasetDescription) {
         for (let i = 0; i < rows.length; i++) {
             const digit = new Digit();
             digit.setFigcaption(getClassValFromRow(rows[i]));
-            digit.drawImage(rows[i]);
+            digit.setImage(rows[i]);
             digitsContainer.appendChild(digit.digitElement);
         }
     } else {
@@ -229,7 +229,7 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
 
             const digit = new Digit();
             digit.setFigcaption(`actual: ${actualDigit}, predicted: ${predictedDigit}`, actualDigit != predictedDigit ? 'wrongPrediction' : undefined);
-            digit.drawImage(rows[i]);
+            digit.setImage(rows[i]);
             digitsContainer.appendChild(digit.digitElement);
         }
     } else {

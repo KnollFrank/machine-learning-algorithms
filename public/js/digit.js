@@ -14,7 +14,7 @@ class Digit {
         }
     }
 
-    drawImage(pixels) {
+    setImage(pixels) {
         this._drawImageIntoCanvas(pixels, this.digitElement.querySelector('canvas'));
     }
 
