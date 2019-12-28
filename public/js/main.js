@@ -13,17 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
             download: true,
             header: false,
             complete: function(results) {
-                onDatasetChanged(getDatasetDescription(results.data));
+                onDatasetChanged(getDatasetDescription(dataFile.name, results.data));
             }
         });
     });
 });
 
-function getDatasetDescription(dataset) {
+function getDatasetDescription(fileName, dataset) {
     let attributeNames = dataset[0];
     // remove header (= column names) of dataset
     dataset.splice(0, 1);
     return {
+        fileName: fileName,
         attributeNames: {
             X: attributeNames.slice(0, -1),
             y: attributeNames[attributeNames.length - 1],
@@ -44,20 +45,22 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
-    // FKK: move to new file
-    const digitsContainer = document.querySelector('#digitsContainer');
-    for (let i = 0; i < datasetDescription.splittedDataset.train.length; i++) {
-        const digit = createDigitElement();
-        digit.querySelector('figcaption').innerHTML = getClassValFromRow(datasetDescription.splittedDataset.train[i]);
-        drawImageIntoCanvas(datasetDescription.splittedDataset.train[i], digit.querySelector('canvas'));
-        digitsContainer.appendChild(digit);
+    if (datasetDescription.fileName.toLowerCase().startsWith('mnist')) {
+        // FKK: move to new file
+        const digitsContainer = document.querySelector('#digitsContainer');
+        for (let i = 0; i < datasetDescription.splittedDataset.train.length; i++) {
+            const digit = createDigitElement();
+            digit.querySelector('figcaption').innerHTML = getClassValFromRow(datasetDescription.splittedDataset.train[i]);
+            drawImageIntoCanvas(datasetDescription.splittedDataset.train[i], digit.querySelector('canvas'));
+            digitsContainer.appendChild(digit);
+        }
+    } else {
+        displayDatasetAsTable({
+            tableContainer: $('#container-trainingDataSet'),
+            attributeNames: datasetDescription.attributeNames.all,
+            dataset: datasetDescription.splittedDataset.train
+        });
     }
-
-    displayDatasetAsTable({
-        tableContainer: $('#container-trainingDataSet'),
-        attributeNames: datasetDescription.attributeNames.all,
-        dataset: datasetDescription.splittedDataset.train
-    });
     build_tree_onSubmit(datasetDescription);
 }
 
@@ -239,13 +242,15 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
         }
     }
 
-    displayDatasetAsTable({
-        tableContainer: $('#container-testDataSet'),
-        attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
-        dataset: addPredictions(datasetDescription.splittedDataset.test),
-        createdRow: markRowIfItsPredictionIsWrong,
-        onRowClicked: row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription)
-    });
+    if (!datasetDescription.fileName.toLowerCase().startsWith('mnist')) {
+        displayDatasetAsTable({
+            tableContainer: $('#container-testDataSet'),
+            attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
+            dataset: addPredictions(datasetDescription.splittedDataset.test),
+            createdRow: markRowIfItsPredictionIsWrong,
+            onRowClicked: row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription)
+        });
+    }
 }
 
 function predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) {
