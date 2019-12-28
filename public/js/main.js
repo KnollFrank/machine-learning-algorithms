@@ -45,16 +45,8 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
-    if (datasetDescription.fileName.toLowerCase().startsWith('mnist')) {
-        // FKK: move to new file
-        const digitsContainer = document.querySelector('#container-digits-training');
-        const rows = datasetDescription.splittedDataset.train;
-        for (let i = 0; i < rows.length; i++) {
-            const digit = new Digit();
-            digit.setFigcaption(getClassValFromRow(rows[i]));
-            digit.setImage(rows[i]);
-            digitsContainer.appendChild(digit.digitElement);
-        }
+    if (isDigitDataset(datasetDescription)) {
+        displayDigitTrainDataset(datasetDescription);
     } else {
         displayDatasetAsTable({
             tableContainer: $('#container-trainingDataSet'),
@@ -63,6 +55,34 @@ function onDatasetChanged(datasetDescription) {
         });
     }
     build_tree_onSubmit(datasetDescription);
+}
+
+function isDigitDataset(datasetDescription) {
+    return datasetDescription.fileName.toLowerCase().startsWith('mnist');
+}
+
+function displayDigitTrainDataset(datasetDescription) {
+    const digitsContainer = document.querySelector('#container-digits-training');
+    const rows = datasetDescription.splittedDataset.train;
+    for (let i = 0; i < rows.length; i++) {
+        const digit = new Digit();
+        digit.setFigcaption(getClassValFromRow(rows[i]));
+        digit.setImage(rows[i]);
+        digitsContainer.appendChild(digit.digitElement);
+    }
+}
+
+function displayDigitTestDataset(datasetDescription, tree) {
+    const digitsContainer = document.querySelector('#container-digits-test');
+    const rows = datasetDescription.splittedDataset.test;
+    for (let i = 0; i < rows.length; i++) {
+        const actualDigit = getClassValFromRow(rows[i]);;
+        const predictedDigit = predict(tree, rows[i]).value;
+        const digit = new Digit();
+        digit.setFigcaption(`actual: ${actualDigit}, predicted: ${predictedDigit}`, actualDigit != predictedDigit ? 'wrongPrediction' : undefined);
+        digit.setImage(rows[i]);
+        digitsContainer.appendChild(digit.digitElement);
+    }
 }
 
 let submitEventListener;
@@ -219,19 +239,8 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
         }
     }
 
-    if (datasetDescription.fileName.toLowerCase().startsWith('mnist')) {
-        // FKK: move to new file
-        const digitsContainer = document.querySelector('#container-digits-test');
-        const rows = datasetDescription.splittedDataset.test;
-        for (let i = 0; i < rows.length; i++) {
-            const actualDigit = getClassValFromRow(rows[i]);;
-            const predictedDigit = predict(tree, rows[i]).value;
-
-            const digit = new Digit();
-            digit.setFigcaption(`actual: ${actualDigit}, predicted: ${predictedDigit}`, actualDigit != predictedDigit ? 'wrongPrediction' : undefined);
-            digit.setImage(rows[i]);
-            digitsContainer.appendChild(digit.digitElement);
-        }
+    if (isDigitDataset(datasetDescription)) {
+        displayDigitTestDataset(datasetDescription, tree);
     } else {
         displayDatasetAsTable({
             tableContainer: $('#container-testDataSet'),
