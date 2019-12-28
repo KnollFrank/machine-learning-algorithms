@@ -50,10 +50,10 @@ function onDatasetChanged(datasetDescription) {
         const digitsContainer = document.querySelector('#container-digits-training');
         const rows = datasetDescription.splittedDataset.train;
         for (let i = 0; i < rows.length; i++) {
-            const digit = createDigitElement();
-            digit.querySelector('figcaption').innerHTML = getClassValFromRow(rows[i]);
-            drawImageIntoCanvas(rows[i], digit.querySelector('canvas'));
-            digitsContainer.appendChild(digit);
+            const digit = new Digit();
+            digit.setFigcaption(getClassValFromRow(rows[i]));
+            digit.drawImage(rows[i]);
+            digitsContainer.appendChild(digit.digitElement);
         }
     } else {
         displayDatasetAsTable({
@@ -63,30 +63,6 @@ function onDatasetChanged(datasetDescription) {
         });
     }
     build_tree_onSubmit(datasetDescription);
-}
-
-function createDigitElement() {
-    const digit = getHtml('digitTemplate.html');
-    digit.setAttribute('id', 'digit-' + newId());
-    return digit;
-}
-
-function drawImageIntoCanvas(pixels, canvas) {
-    var ctx = canvas.getContext("2d");
-    var imgData = ctx.createImageData(28, 28);
-
-    for (let y = 0; y < 28; y++) {
-        for (let x = 0; x < 28; x++) {
-            const i = y * 28 + x;
-            const pixel = 255 - pixels[i];
-            imgData.data[i * 4 + 0] = pixel;
-            imgData.data[i * 4 + 1] = pixel;
-            imgData.data[i * 4 + 2] = pixel;
-            imgData.data[i * 4 + 3] = 255;
-        }
-    }
-
-    ctx.putImageData(imgData, 0, 0);
 }
 
 let submitEventListener;
@@ -248,16 +224,13 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
         const digitsContainer = document.querySelector('#container-digits-test');
         const rows = datasetDescription.splittedDataset.test;
         for (let i = 0; i < rows.length; i++) {
-            const digit = createDigitElement();
-            const figcaption = digit.querySelector('figcaption');
             const actualDigit = getClassValFromRow(rows[i]);;
             const predictedDigit = predict(tree, rows[i]).value;
-            if (actualDigit != predictedDigit) {
-                figcaption.classList.add('wrongPrediction');
-            }
-            figcaption.innerHTML = `actual: ${actualDigit}, predicted: ${predictedDigit}`;
-            drawImageIntoCanvas(rows[i], digit.querySelector('canvas'));
-            digitsContainer.appendChild(digit);
+
+            const digit = new Digit();
+            digit.setFigcaption(`actual: ${actualDigit}, predicted: ${predictedDigit}`, actualDigit != predictedDigit ? 'wrongPrediction' : undefined);
+            digit.drawImage(rows[i]);
+            digitsContainer.appendChild(digit.digitElement);
         }
     } else {
         displayDatasetAsTable({
