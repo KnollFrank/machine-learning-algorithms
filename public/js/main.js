@@ -191,19 +191,6 @@ function onDecisionTreeChanged(datasetDescription, tree) {
     }
 }
 
-function printImageData(imageData) {
-    for (let y = 0; y < imageData.height; y++) {
-        for (let x = 0; x < imageData.width; x++) {
-            const i = y * imageData.width + x;
-            const red = imageData.data[i * 4 + 0];
-            const green = imageData.data[i * 4 + 1];
-            const blue = imageData.data[i * 4 + 2];
-            const alpha = imageData.data[i * 4 + 3];
-            console.log('RGBA:', red, green, blue, alpha);
-        }
-    }
-}
-
 function getInputValueById(id) {
     return getInputValueBy('#' + id);
 }
