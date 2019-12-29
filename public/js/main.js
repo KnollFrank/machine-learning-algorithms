@@ -46,7 +46,7 @@ function train_test_split(dataset, train_proportion) {
 
 function onDatasetChanged(datasetDescription) {
     if (isDigitDataset(datasetDescription)) {
-        displayDigitTrainDataset(datasetDescription);
+        displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
         displayDatasetAsTable({
             tableContainer: $('#container-trainingDataSet'),
@@ -59,64 +59,6 @@ function onDatasetChanged(datasetDescription) {
 
 function isDigitDataset(datasetDescription) {
     return datasetDescription.fileName.toLowerCase().startsWith('mnist');
-}
-
-class DisplayDigitDatasetTemplate {
-
-    constructor() {}
-
-    displayDigitDataset(digitDataset, digitsContainerId) {
-        const digitsContainer = document.querySelector('#' + digitsContainerId);
-        for (let i = 0; i < digitDataset.length; i++) {
-            const digit = new Digit();
-            digit.setFigcaption(...this._getFigcaption(digitDataset[i]));
-            digit.setImage(digitDataset[i]);
-            digitsContainer.appendChild(digit.digitElement);
-        }
-    }
-
-    _getFigcaption(row) {
-        throw new Error('You have to build your own figcaption');
-    }
-}
-
-class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
-
-    constructor() {
-        super();
-    }
-
-    _getFigcaption(row) {
-        return [getClassValFromRow(row)];
-    }
-}
-
-function displayDigitTrainDataset(datasetDescription) {
-    new DisplayDigitTrainDataset()
-        .displayDigitDataset(
-            datasetDescription.splittedDataset.train,
-            'container-digits-training');
-}
-
-class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
-
-    constructor(tree) {
-        super();
-        this.tree = tree;
-    }
-
-    _getFigcaption(row) {
-        const actualDigit = getClassValFromRow(row);
-        const predictedDigit = predict(this.tree, row).value;
-        return [`actual: ${actualDigit}, predicted: ${predictedDigit}`, actualDigit != predictedDigit ? 'wrongPrediction' : undefined];
-    }
-}
-
-function displayDigitTestDataset(datasetDescription, tree) {
-    new DisplayDigitTestDataset(tree)
-        .displayDigitDataset(
-            datasetDescription.splittedDataset.test,
-            'container-digits-test');
 }
 
 let submitEventListener;
@@ -274,7 +216,7 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
     }
 
     if (isDigitDataset(datasetDescription)) {
-        displayDigitTestDataset(datasetDescription, tree);
+        displayDigitTestDataset(datasetDescription, tree, 'container-digits-test');
     } else {
         displayDatasetAsTable({
             tableContainer: $('#container-testDataSet'),

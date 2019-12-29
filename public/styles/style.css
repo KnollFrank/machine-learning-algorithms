@@ -75,7 +75,7 @@ h1 {
     background-color: red !important;
 }
 
-#container-digits-training,
+#container-digits-train,
 #container-digits-test {
     display: flex;
     flex-wrap: wrap;
