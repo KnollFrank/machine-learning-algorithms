@@ -4,6 +4,8 @@
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
 document.addEventListener('DOMContentLoaded', () => {
+    drawTool();
+
     document.querySelector('#csv-file').addEventListener('change', evt => {
         // const dataFile = 'data/data_banknote_authentication.csv';
         // const dataFile = 'data/processed.cleveland.csv';
@@ -173,6 +175,46 @@ function onDecisionTreeChanged(datasetDescription, tree) {
         datasetDescription.attributeNames.X,
         tree,
         network);
+}
+
+function drawTool() {
+    const canvas = document.getElementById('digit-canvas');
+    const ctx = canvas.getContext('2d');
+    const canvasx = $(canvas).offset().left;
+    const canvasy = $(canvas).offset().top;
+    let last_mousex = 0;
+    let last_mousey = 0;
+    let mousex = 0;
+    let mousey = 0;
+    let mousedown = false;
+
+    $(canvas).on('mousedown', function(e) {
+        last_mousex = mousex = parseInt(e.clientX - canvasx);
+        last_mousey = mousey = parseInt(e.clientY - canvasy);
+        mousedown = true;
+    });
+
+    $(canvas).on('mouseup', function(e) {
+        mousedown = false;
+    });
+
+    $(canvas).on('mousemove', function(e) {
+        mousex = parseInt(e.clientX - canvasx);
+        mousey = parseInt(e.clientY - canvasy);
+        if (mousedown) {
+            ctx.beginPath();
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 3;
+            ctx.moveTo(last_mousex, last_mousey);
+            ctx.lineTo(mousex, mousey);
+            ctx.lineJoin = ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+        last_mousex = mousex;
+        last_mousey = mousey;
+        $('#output').html('current: ' + mousex + ', ' + mousey + '<br/>last: ' + last_mousex + ', ' + last_mousey + '<br/>mousedown: ' + mousedown);
+    });
 }
 
 function getInputValueById(id) {

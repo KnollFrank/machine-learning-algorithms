@@ -90,3 +90,7 @@ figure figcaption.wrongPrediction {
     font-weight: bold;
     background-color: inherit !important;
 }
+
+#digit-canvas {
+    border: 1px solid grey;
+}
