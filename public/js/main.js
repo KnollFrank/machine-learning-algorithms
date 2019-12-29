@@ -180,12 +180,12 @@ function onDecisionTreeChanged(datasetDescription, tree) {
 function drawTool() {
     const canvas = document.getElementById('digit-canvas');
     const ctx = canvas.getContext('2d');
-    const canvasx = $(canvas).offset().left;
-    const canvasy = $(canvas).offset().top;
-    let last_mousex = 0;
-    let last_mousey = 0;
-    let mousex = 0;
-    let mousey = 0;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 3;
+    ctx.lineJoin = ctx.lineCap = 'round';
+    let last_mouse = { x: 0, y: 0 };
+    let mouse = { x: 0, y: 0 };
     let mousedown = false;
 
     // taken from https://stackoverflow.com/questions/17130395/real-mouse-position-in-canvas
@@ -201,9 +201,7 @@ function drawTool() {
     }
 
     $(canvas).on('mousedown', function(e) {
-        const pos = getMousePos(canvas, e);
-        last_mousex = mousex = pos.x;
-        last_mousey = mousey = pos.y;
+        last_mouse = mouse = getMousePos(canvas, e);
         mousedown = true;
     });
 
@@ -212,22 +210,15 @@ function drawTool() {
     });
 
     $(canvas).on('mousemove', function(e) {
-        const pos = getMousePos(canvas, e);
-        mousex = pos.x;
-        mousey = pos.y;
+        mouse = getMousePos(canvas, e);
         if (mousedown) {
             ctx.beginPath();
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 3;
-            ctx.moveTo(last_mousex, last_mousey);
-            ctx.lineTo(mousex, mousey);
-            ctx.lineJoin = ctx.lineCap = 'round';
+            ctx.moveTo(last_mouse.x, last_mouse.y);
+            ctx.lineTo(mouse.x, mouse.y);
             ctx.stroke();
         }
-        last_mousex = mousex;
-        last_mousey = mousey;
-        $('#output').html('current: ' + mousex + ', ' + mousey + '<br/>last: ' + last_mousex + ', ' + last_mousey + '<br/>mousedown: ' + mousedown);
+        last_mouse = mouse;
+        $('#output').html('current: ' + mouse.x + ', ' + mouse.y + '<br/>last: ' + last_mouse.x + ', ' + last_mouse.y + '<br/>mousedown: ' + mousedown);
     });
 }
 
