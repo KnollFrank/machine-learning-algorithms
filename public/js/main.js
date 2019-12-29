@@ -175,10 +175,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
         canvasDataInput.style.display = "block";
         textDataInput.style.display = "none";
 
-        const canvas = drawTool();
         displayCanvasDataInput(
             canvasDataInput,
-            canvas,
             tree,
             network);
     } else {
@@ -191,59 +189,6 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             tree,
             network);
     }
-}
-
-// FK-TODO: move drawTool() to new file
-function drawTool() {
-    const canvas = document.getElementById('digit-canvas');
-    const ctx = canvas.getContext('2d');
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 3;
-    ctx.lineJoin = ctx.lineCap = 'round';
-    let last_mouse = { x: 0, y: 0 };
-    let mouse = { x: 0, y: 0 };
-    let mousedown = false;
-
-    // taken from https://stackoverflow.com/questions/17130395/real-mouse-position-in-canvas
-    function getMousePos(canvas, evt) {
-        const rect = canvas.getBoundingClientRect(), // abs. size of element
-            scaleX = canvas.width / rect.width, // relationship bitmap vs. element for X
-            scaleY = canvas.height / rect.height; // relationship bitmap vs. element for Y
-
-        return {
-            x: (evt.clientX - rect.left) * scaleX, // scale mouse coordinates after they have
-            y: (evt.clientY - rect.top) * scaleY // been adjusted to be relative to element
-        }
-    }
-
-    $(canvas).on('mousedown', function(e) {
-        last_mouse = mouse = getMousePos(canvas, e);
-        mousedown = true;
-    });
-
-    $(canvas).on('mouseup', function(e) {
-        mousedown = false;
-    });
-
-    $(canvas).on('mousemove', function(e) {
-        mouse = getMousePos(canvas, e);
-        if (mousedown) {
-            ctx.beginPath();
-            ctx.moveTo(last_mouse.x, last_mouse.y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.stroke();
-        }
-        last_mouse = mouse;
-    });
-
-    // FK-TODO: clean up
-    document.getElementById("clear-button").addEventListener("click", function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    });
-
-    return canvas;
 }
 
 function printImageData(imageData) {

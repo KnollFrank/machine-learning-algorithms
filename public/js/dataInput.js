@@ -15,7 +15,12 @@ function displayTextDataInput(rootElement, attributeNames, tree, network) {
         });
 }
 
-function displayCanvasDataInput(rootElement, canvas, tree, network) {
+function displayCanvasDataInput(rootElement, tree, network) {
+    const canvas = rootElement.querySelector('#digit-canvas');
+    initializeDrawTool(
+        canvas,
+        rootElement.querySelector("#clear-button"));
+
     rootElement.querySelector('#predict-digit').addEventListener(
         "click",
         e => {
@@ -28,6 +33,55 @@ function displayCanvasDataInput(rootElement, canvas, tree, network) {
             rootElement.querySelector('.prediction').innerHTML = prediction.value;
             return false;
         });
+}
+
+// FK-TODO: beim Zeichnen einen Pencil-Mauszeiger anzeigen
+function initializeDrawTool(canvas, clearBtn) {
+    const ctx = canvas.getContext('2d');
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 3;
+    ctx.lineJoin = ctx.lineCap = 'round';
+    let last_mouse = { x: 0, y: 0 };
+    let mouse = { x: 0, y: 0 };
+    let mousedown = false;
+
+    // taken from https://stackoverflow.com/questions/17130395/real-mouse-position-in-canvas
+    function getMousePos(canvas, evt) {
+        const rect = canvas.getBoundingClientRect(), // abs. size of element
+            scaleX = canvas.width / rect.width, // relationship bitmap vs. element for X
+            scaleY = canvas.height / rect.height; // relationship bitmap vs. element for Y
+
+        return {
+            x: (evt.clientX - rect.left) * scaleX, // scale mouse coordinates after they have
+            y: (evt.clientY - rect.top) * scaleY // been adjusted to be relative to element
+        }
+    }
+
+    $(canvas).on('mousedown', function(e) {
+        last_mouse = mouse = getMousePos(canvas, e);
+        mousedown = true;
+    });
+
+    $(canvas).on('mouseup', function(e) {
+        mousedown = false;
+    });
+
+    $(canvas).on('mousemove', function(e) {
+        mouse = getMousePos(canvas, e);
+        if (mousedown) {
+            ctx.beginPath();
+            ctx.moveTo(last_mouse.x, last_mouse.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+        }
+        last_mouse = mouse;
+    });
+
+    clearBtn.addEventListener("click", function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
 }
 
 function highlightPredictionInNetwork(prediction, network) {
