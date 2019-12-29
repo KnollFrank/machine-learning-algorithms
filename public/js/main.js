@@ -218,7 +218,6 @@ function drawTool() {
             ctx.stroke();
         }
         last_mouse = mouse;
-        $('#output').html('current: ' + mouse.x + ', ' + mouse.y + '<br/>last: ' + last_mouse.x + ', ' + last_mouse.y + '<br/>mousedown: ' + mousedown);
     });
 }
 
