@@ -7,7 +7,7 @@ function createProgressElements(progressId, numWorkers) {
 }
 
 function appendProgressElements(parent, numWorkers) {
-    for (let workerIndex = 1; workerIndex <= numWorkers; workerIndex++) {
+    for (let workerIndex = 0; workerIndex < numWorkers; workerIndex++) {
         parent.appendChild(createProgressElement(workerIndex));
     }
 }

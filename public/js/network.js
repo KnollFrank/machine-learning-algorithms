@@ -101,14 +101,15 @@ const options = {
             color: '#2B7CE9'
         },
         width: 1
+    },
+    physics: {
+        enabled: true
     }
 };
 
 function displayNetwork(container, data) {
     destroyNetwork();
-
     network = new vis.Network(container, data, options);
-
     network.on('select', function(params) {
         document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
     });

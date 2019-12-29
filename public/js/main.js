@@ -114,12 +114,11 @@ function build_tree(datasetDescription) {
 }
 
 function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
-    const numWorkers = window.navigator.hardwareConcurrency;
-    createProgressElements('progress', numWorkers);
+    createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
             max_depth,
             min_size,
-            numWorkers,
+            splitterWorkers,
             createTreeListener(onmessage))
         .build_tree(
             dataset,

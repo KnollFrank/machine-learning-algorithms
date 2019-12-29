@@ -43,10 +43,10 @@ const dummyTreeListener = {
 
 class DecisionTreeBuilder {
 
-    constructor(max_depth, min_size, numWorkers, treeListener = dummyTreeListener) {
+    constructor(max_depth, min_size, splitterWorkers, treeListener = dummyTreeListener) {
         this.max_depth = max_depth;
         this.min_size = min_size;
-        this.numWorkers = numWorkers;
+        this.splitterWorkers = splitterWorkers;
         this.treeListener = treeListener;
     }
 
@@ -62,7 +62,7 @@ class DecisionTreeBuilder {
         const nodeId = newId();
         const chunks = splitItemsIntoChunks({
             numItems: getNumberOfAttributes(dataset),
-            maxNumChunks: this.numWorkers
+            maxNumChunks: this.splitterWorkers.length
         });
         this.get_splits_for_chunks(
             chunks,
@@ -89,7 +89,7 @@ class DecisionTreeBuilder {
         const splits_for_chunks = [];
         for (let i = 0; i < chunks.length; i++) {
             this.get_split_for_chunk(
-                i + 1,
+                i,
                 chunks[i],
                 nodeId,
                 dataset,
@@ -104,7 +104,7 @@ class DecisionTreeBuilder {
     }
 
     get_split_for_chunk(workerIndex, chunk, nodeId, dataset, addChunk) {
-        const worker = new Worker('js/splitterWorker.js');
+        const worker = this.splitterWorkers[workerIndex];
         worker.onmessage = event => {
             const { type, value } = event.data;
             switch (type) {
