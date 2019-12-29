@@ -1,5 +1,5 @@
 function displayTextDataInput(rootElement, attributeNames, tree, network) {
-    const dataInputFields = dataInputForm.querySelector('.dataInputFields');
+    const dataInputFields = rootElement.querySelector('.dataInputFields');
 
     dataInputFields.innerHTML = '';
     appendInputElements(dataInputFields, attributeNames);
@@ -10,7 +10,7 @@ function displayTextDataInput(rootElement, attributeNames, tree, network) {
             e.preventDefault();
             const prediction = predict(tree, getInputValuesByName(attributeNames));
             highlightPredictionInNetwork(prediction, network);
-            document.querySelector('#predicted').innerHTML = prediction.value;
+            rootElement.querySelector('.prediction').innerHTML = prediction.value;
             return false;
         });
 }
@@ -25,7 +25,7 @@ function displayCanvasDataInput(rootElement, canvas, tree, network) {
             const pixels = imageData2Pixels(imageData);
             const prediction = predict(tree, pixels);
             highlightPredictionInNetwork(prediction, network);
-            document.querySelector('#predicted').innerHTML = prediction.value;
+            rootElement.querySelector('.prediction').innerHTML = prediction.value;
             return false;
         });
 }
