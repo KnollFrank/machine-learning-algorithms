@@ -221,6 +221,11 @@ function drawTool() {
         last_mouse = mouse;
     });
 
+    // TODO: clean up
+    document.getElementById("clear-button").addEventListener("click", function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
     return canvas;
 }
 
