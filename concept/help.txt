@@ -16,6 +16,7 @@ Abhängigkeiten:
 - https://datatables.net/
 - vielleicht: https://github.com/deThread/dethread, https://github.com/deThread/dethread-demo-applications
 - https://socket.io/docs/client-api/
+- https://www.kaggle.com/oddrationale/mnist-in-csv
 
 Install:
 npm init
