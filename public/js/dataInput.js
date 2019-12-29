@@ -35,7 +35,6 @@ function displayCanvasDataInput(rootElement, tree, network) {
         });
 }
 
-// FK-TODO: beim Zeichnen einen Pencil-Mauszeiger anzeigen
 function initializeDrawTool(canvas, clearBtn) {
     const ctx = canvas.getContext('2d');
     ctx.globalAlpha = 1;

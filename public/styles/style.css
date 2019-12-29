@@ -92,5 +92,6 @@ figure figcaption.wrongPrediction {
 }
 
 #digit-canvas {
+    cursor: url('pencil.cur'), crosshair;
     border: 1px solid grey;
 }
