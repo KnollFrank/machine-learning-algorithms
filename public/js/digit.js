@@ -20,19 +20,31 @@ class Digit {
 
     _drawImageIntoCanvas(pixels, canvas) {
         var ctx = canvas.getContext("2d");
-        var imgData = ctx.createImageData(28, 28);
+        var imageData = ctx.createImageData(28, 28);
 
-        for (let y = 0; y < 28; y++) {
-            for (let x = 0; x < 28; x++) {
-                const i = y * 28 + x;
-                const pixel = 255 - pixels[i];
-                imgData.data[i * 4 + 0] = pixel;
-                imgData.data[i * 4 + 1] = pixel;
-                imgData.data[i * 4 + 2] = pixel;
-                imgData.data[i * 4 + 3] = 255;
+        // TODO: DRY with imageData2Pixels()
+        for (let y = 0; y < imageData.height; y++) {
+            for (let x = 0; x < imageData.width; x++) {
+                const i = y * imageData.width + x;
+                imageData.data[i * 4 + 0] = 0;
+                imageData.data[i * 4 + 1] = 0;
+                imageData.data[i * 4 + 2] = 0;
+                imageData.data[i * 4 + 3] = pixels[i];
             }
         }
 
-        ctx.putImageData(imgData, 0, 0);
+        ctx.putImageData(imageData, 0, 0);
     }
+}
+
+function imageData2Pixels(imageData) {
+    const pixels = [];
+    for (let y = 0; y < imageData.height; y++) {
+        for (let x = 0; x < imageData.width; x++) {
+            const i = y * imageData.width + x;
+            const alpha = imageData.data[i * 4 + 3];
+            pixels.push(alpha);
+        }
+    }
+    return pixels;
 }

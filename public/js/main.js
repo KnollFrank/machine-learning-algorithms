@@ -4,8 +4,6 @@
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
 document.addEventListener('DOMContentLoaded', () => {
-    drawTool();
-
     document.querySelector('#csv-file').addEventListener('change', evt => {
         // const dataFile = 'data/data_banknote_authentication.csv';
         // const dataFile = 'data/processed.cleveland.csv';
@@ -170,7 +168,9 @@ function onDecisionTreeChanged(datasetDescription, tree) {
     print_tree(tree, datasetDescription.attributeNames.all);
     displayAccuracy(tree, datasetDescription.splittedDataset.test);
     displayTestingTableWithPredictions(tree, network, datasetDescription);
+    const canvas = drawTool();
     displayDataInput(
+        canvas,
         document.querySelector('#dataInputForm'),
         datasetDescription.attributeNames.X,
         tree,
@@ -180,6 +180,7 @@ function onDecisionTreeChanged(datasetDescription, tree) {
 function drawTool() {
     const canvas = document.getElementById('digit-canvas');
     const ctx = canvas.getContext('2d');
+    ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 3;
@@ -219,6 +220,21 @@ function drawTool() {
         }
         last_mouse = mouse;
     });
+
+    return canvas;
+}
+
+function printImageData(imageData) {
+    for (let y = 0; y < imageData.height; y++) {
+        for (let x = 0; x < imageData.width; x++) {
+            const i = y * imageData.width + x;
+            const red = imageData.data[i * 4 + 0];
+            const green = imageData.data[i * 4 + 1];
+            const blue = imageData.data[i * 4 + 2];
+            const alpha = imageData.data[i * 4 + 3];
+            console.log('RGBA:', red, green, blue, alpha);
+        }
+    }
 }
 
 function getInputValueById(id) {

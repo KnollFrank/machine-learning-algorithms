@@ -1,14 +1,18 @@
-function displayDataInput(dataInputForm, attributeNames, tree, network) {
+function displayDataInput(canvas, dataInputForm, attributeNames, tree, network) {
     let dataInputFields = dataInputForm.querySelector('.dataInputFields');
 
     dataInputFields.innerHTML = '';
-    appendInputElements(dataInputFields, attributeNames);
+    // appendInputElements(dataInputFields, attributeNames);
 
     dataInputForm.addEventListener(
         "submit",
         e => {
             e.preventDefault();
-            const prediction = predict(tree, getInputValuesByName(attributeNames));
+            // const prediction = predict(tree, getInputValuesByName(attributeNames));
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData2Pixels(imageData);
+            const prediction = predict(tree, pixels);
             highlightPredictionInNetwork(prediction, network);
             document.querySelector('#predicted').innerHTML = prediction.value;
             return false;
