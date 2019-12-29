@@ -32,7 +32,6 @@ nodemon webserver.js
 node webserver.js
 
 FK-TODO:
-- Laden/Speichern eines Modells für Entscheidungsbäume (= Graph)
 - build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
 - nicht den GANZEN Datensatz in den Speicher laden, sondern nur Chunks (siehe Papa parse)
   - auch in der DataTable den Datensatz nur seitenweise laden
