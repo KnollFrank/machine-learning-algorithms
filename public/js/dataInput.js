@@ -1,14 +1,25 @@
-function displayDataInput(canvas, dataInputForm, attributeNames, tree, network) {
-    let dataInputFields = dataInputForm.querySelector('.dataInputFields');
+function displayTextDataInput(rootElement, attributeNames, tree, network) {
+    const dataInputFields = dataInputForm.querySelector('.dataInputFields');
 
     dataInputFields.innerHTML = '';
-    // appendInputElements(dataInputFields, attributeNames);
+    appendInputElements(dataInputFields, attributeNames);
 
-    dataInputForm.addEventListener(
+    rootElement.querySelector('#dataInputForm').addEventListener(
         "submit",
         e => {
             e.preventDefault();
-            // const prediction = predict(tree, getInputValuesByName(attributeNames));
+            const prediction = predict(tree, getInputValuesByName(attributeNames));
+            highlightPredictionInNetwork(prediction, network);
+            document.querySelector('#predicted').innerHTML = prediction.value;
+            return false;
+        });
+}
+
+function displayCanvasDataInput(rootElement, canvas, tree, network) {
+    rootElement.querySelector('#predict-digit').addEventListener(
+        "click",
+        e => {
+            e.preventDefault();
             const ctx = canvas.getContext('2d');
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const pixels = imageData2Pixels(imageData);

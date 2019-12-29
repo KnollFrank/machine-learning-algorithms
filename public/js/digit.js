@@ -22,7 +22,7 @@ class Digit {
         var ctx = canvas.getContext("2d");
         var imageData = ctx.createImageData(28, 28);
 
-        // TODO: DRY with imageData2Pixels()
+        // FK-TODO: DRY with imageData2Pixels()
         for (let y = 0; y < imageData.height; y++) {
             for (let x = 0; x < imageData.width; x++) {
                 const i = y * imageData.width + x;

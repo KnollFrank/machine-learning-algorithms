@@ -79,12 +79,17 @@
             </section>
             <section id="section-data-input">
                 <h2>3. Vorhersage:</h2>
-                <canvas id="digit-canvas" width="28" height="28"></canvas>
-                <input id="clear-button" type="button" value="clear">
-                <form id="dataInputForm">
-                    <div class="dataInputFields"></div>
-                    <input type="submit" value="vorhersagen">
-                </form>
+                <div id="canvas-data-input">
+                    <canvas id="digit-canvas" width="28" height="28"></canvas>
+                    <input id="clear-button" type="button" value="clear">
+                    <input id="predict-digit" type="submit" value="vorhersagen">
+                </div>
+                <div id="text-data-input">
+                    <form id="dataInputForm">
+                        <div class="dataInputFields"></div>
+                        <input type="submit" value="vorhersagen">
+                    </form>
+                </div>
                 <p>
                     Vorhersage: <span id="predicted"></span>
                 </p>

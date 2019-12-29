@@ -168,15 +168,32 @@ function onDecisionTreeChanged(datasetDescription, tree) {
     print_tree(tree, datasetDescription.attributeNames.all);
     displayAccuracy(tree, datasetDescription.splittedDataset.test);
     displayTestingTableWithPredictions(tree, network, datasetDescription);
-    const canvas = drawTool();
-    displayDataInput(
-        canvas,
-        document.querySelector('#dataInputForm'),
-        datasetDescription.attributeNames.X,
-        tree,
-        network);
+
+    const canvasDataInput = document.querySelector('#canvas-data-input');
+    const textDataInput = document.querySelector('#text-data-input');
+    if (isDigitDataset(datasetDescription)) {
+        canvasDataInput.style.display = "block";
+        textDataInput.style.display = "none";
+
+        const canvas = drawTool();
+        displayCanvasDataInput(
+            canvasDataInput,
+            canvas,
+            tree,
+            network);
+    } else {
+        canvasDataInput.style.display = "none";
+        textDataInput.style.display = "block";
+
+        displayTextDataInput(
+            textDataInput,
+            datasetDescription.attributeNames.X,
+            tree,
+            network);
+    }
 }
 
+// FK-TODO: move drawTool() to new file
 function drawTool() {
     const canvas = document.getElementById('digit-canvas');
     const ctx = canvas.getContext('2d');
@@ -221,7 +238,7 @@ function drawTool() {
         last_mouse = mouse;
     });
 
-    // TODO: clean up
+    // FK-TODO: clean up
     document.getElementById("clear-button").addEventListener("click", function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     });
