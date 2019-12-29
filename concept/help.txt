@@ -36,5 +36,4 @@ FK-TODO:
 - build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
 - nicht den GANZEN Datensatz in den Speicher laden, sondern nur Chunks (siehe Papa parse)
   - auch in der DataTable den Datensatz nur seitenweise laden
-- Beim MNIST-Datensatz unter "3. Vorhersage" keine Zahlenwerte eingeben lassen, sondern mit der Maus eine Ziffer malen lassen.
 - Nach dem Neuladen eines Datensatzes, die Hinterlassenschaften des vorigen Datensatzes - Network, Testdaten und "3. Vorhersage" - ausblenden bzw. entfernen.

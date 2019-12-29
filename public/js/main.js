@@ -55,6 +55,7 @@ function onDatasetChanged(datasetDescription) {
         });
     }
     build_tree_onSubmit(datasetDescription);
+    configure_load_tree(datasetDescription);
 }
 
 function isDigitDataset(datasetDescription) {
@@ -165,6 +166,7 @@ function onDecisionTreeChanged(datasetDescription, tree) {
     const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
     print_tree(tree, datasetDescription.attributeNames.all);
+    configure_save_tree(tree);
     displayAccuracy(tree, datasetDescription.splittedDataset.test);
     displayTestingTableWithPredictions(tree, network, datasetDescription);
 
@@ -188,6 +190,23 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             tree,
             network);
     }
+}
+
+const localStorageTreeKey = 'tree';
+
+function configure_load_tree(datasetDescription) {
+    const load_tree = document.querySelector('#load_tree');
+    load_tree.addEventListener('click', () => {
+        const tree = JSON.parse(localStorage.getItem(localStorageTreeKey))
+        onDecisionTreeChanged(datasetDescription, tree);
+    });
+}
+
+function configure_save_tree(tree) {
+    const save_tree = document.querySelector('#save_tree');
+    save_tree.addEventListener('click', () =>
+        localStorage.setItem(localStorageTreeKey, JSON.stringify(tree))
+    );
 }
 
 function getInputValueById(id) {
