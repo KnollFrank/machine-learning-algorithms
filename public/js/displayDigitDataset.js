@@ -48,7 +48,7 @@ class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
     _getFigcaption(row) {
         const actualDigit = getClassValFromRow(row);
         const predictedDigit = predict(this.tree, row).value;
-        return [`${actualDigit}, ${predictedDigit}`, actualDigit != predictedDigit ? 'wrongPrediction' : undefined];
+        return [predictedDigit, actualDigit != predictedDigit ? 'wrongPrediction' : undefined];
     }
 }
 
