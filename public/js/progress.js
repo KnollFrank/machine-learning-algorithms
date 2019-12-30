@@ -30,6 +30,7 @@ function setProgress_numberOfEntriesInDataset({ value, max }) {
     const meter = document.querySelector('#numberOfEntriesInDataset');
     meter.value = value;
     meter.max = max;
+    document.querySelector('#numberOfEntriesInDatasetText').textContent = `(${value}/${max})`;
 }
 
 function setProgress_workerId(workerIndex, text) {
