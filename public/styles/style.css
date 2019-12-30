@@ -82,11 +82,15 @@ h1 {
     flex-wrap: wrap;
 }
 
-figure figcaption {
+div.digit {
+    padding: 10px;
+}
+
+div.digit figcaption {
     text-align: center;
 }
 
-figure figcaption.wrongPrediction {
+div.digit figcaption.wrongPrediction {
     color: red;
     font-weight: bold;
     /* FK-TODO: kein !important verweenden, andere Lösung suchen */
