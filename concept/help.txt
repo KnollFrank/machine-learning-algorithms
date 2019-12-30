@@ -40,3 +40,5 @@ FK-TODO:
 - "3. Vorhersage" auf derselben Höhe darstellen wie das Network
 - Progressbars und Infos für die Worker geordneter und schöner darstellen.
 - Nach dem Neuladen eines Datensatzes, die Hinterlassenschaften des vorigen Datensatzes - Network, Testdaten und "3. Vorhersage" - ausblenden bzw. entfernen.
+- Vorhersage (Malbereich mit Buttons) für Digits verschönern
+- Anzeige der Testdaten für Digits verschönern
