@@ -99,7 +99,6 @@ function build_tree(datasetDescription) {
             case 'inner-split':
                 const {
                     workerIndex,
-                    nodeId,
                     startSplitIndex,
                     actualSplitIndex,
                     endSplitIndex,
@@ -107,7 +106,6 @@ function build_tree(datasetDescription) {
                 } = value;
                 displayProgress({
                     workerIndex,
-                    nodeId,
                     startSplitIndex,
                     actualSplitIndex,
                     endSplitIndex,
@@ -157,7 +155,6 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
 
 function displayProgress({
     workerIndex,
-    nodeId,
     startSplitIndex,
     actualSplitIndex,
     endSplitIndex,
@@ -165,7 +162,6 @@ function displayProgress({
     maxNumberOfEntriesInDataset,
     attributeNames
 }) {
-    setProgress_nodeId(nodeId);
     setProgress_numberOfEntriesInDataset({
         value: actualNumberOfEntriesInDataset,
         max: maxNumberOfEntriesInDataset
@@ -308,7 +304,7 @@ function createTreeListener(onmessage) {
         },
         onStartSplit: nodeId => {},
         onInnerSplit: ({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
-            onmessage({ type: 'inner-split', value: { workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
+            onmessage({ type: 'inner-split', value: { workerIndex, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
         },
         onEndSplit: nodeId => {}
     }

@@ -22,10 +22,6 @@ function createRow(workerIndex) {
     return div;
 }
 
-function setProgress_nodeId(nodeId) {
-    document.querySelector('#nodeId').textContent = nodeId;
-}
-
 function setProgress_numberOfEntriesInDataset({ value, max }) {
     const meter = document.querySelector('#numberOfEntriesInDataset');
     meter.value = value;
