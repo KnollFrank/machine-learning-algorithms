@@ -327,11 +327,31 @@ function print_tree(node, attributeNames, depth = 0) {
 }
 
 function getInnerNodeContent(node, attributeNames) {
-    return `Test = <b>"${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"</b>\ngini = ${toFixed4Digits(node.score)}\nAnzahl Datensätze = ${node.samples}`;
+    return `${getTestNodeText(node, attributeNames)}
+${getGiniNodeText(node)}
+${getAnzahlNodeText(node)}`;
 }
 
 function getTerminalNodeContent(node) {
-    return `Vorhersage = <b>${node.value}</b>\ngini = ${toFixed4Digits(node.score)}\nAnzahl Datensätze = ${node.samples}`;
+    return `${getVorhersageNodeText(node)}
+${getGiniNodeText(node)}
+${getAnzahlNodeText(node)}`;
+}
+
+function getTestNodeText(node, attributeNames) {
+    return `Test = <b>"${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"</b>`;
+}
+
+function getGiniNodeText(node) {
+    return `gini = ${toFixed4Digits(node.score)}`;
+}
+
+function getAnzahlNodeText(node) {
+    return `Anzahl Datensätze = ${node.samples}`;
+}
+
+function getVorhersageNodeText(node) {
+    return `Vorhersage = <b>${node.value}</b>`;
 }
 
 function toFixed4Digits(x) {
