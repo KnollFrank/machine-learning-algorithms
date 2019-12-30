@@ -171,7 +171,9 @@ function displayProgress({
         value: actualSplitIndex - startSplitIndex + 1,
         max: endSplitIndex - startSplitIndex + 1
     });
-    setProgress_attribute(workerIndex, `${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]})`);
+    setProgress_startAttribute(workerIndex, attributeNames[startSplitIndex]);
+    setProgress_actualAttribute(workerIndex, attributeNames[actualSplitIndex]);
+    setProgress_endAttribute(workerIndex, attributeNames[endSplitIndex]);
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
@@ -227,7 +229,9 @@ function getInputValueById(id) {
 }
 
 function getInputValueByName(name) {
-    return getInputValueBy(`input[name="${name}"]`);
+    return getInputValueBy(`
+    input[name = "${name}"]
+    `);
 }
 
 function getInputValueBy(selectors) {
@@ -236,7 +240,8 @@ function getInputValueBy(selectors) {
 
 function displayAccuracy(tree, dataset) {
     const accuracy = computeAccuracy(tree, dataset);
-    document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
+    document.querySelector('#accuracy').innerHTML = `
+    $ { Math.floor(accuracy) } % `;
 }
 
 function computeAccuracy(tree, dataset) {

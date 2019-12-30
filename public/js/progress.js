@@ -34,8 +34,16 @@ function setProgress_workerId(workerIndex, text) {
     getTableCellOfTableRow(workerIndex, 'div.workerId').innerHTML = text;
 }
 
-function setProgress_attribute(workerIndex, text) {
-    getTableCellOfTableRow(workerIndex, 'div.attribute').innerHTML = text;
+function setProgress_startAttribute(workerIndex, text) {
+    getTableCellOfTableRow(workerIndex, 'div.startAttribute').innerHTML = text;
+}
+
+function setProgress_actualAttribute(workerIndex, text) {
+    getTableCellOfTableRow(workerIndex, 'div.actualAttribute').innerHTML = text;
+}
+
+function setProgress_endAttribute(workerIndex, text) {
+    getTableCellOfTableRow(workerIndex, 'div.endAttribute').innerHTML = text;
 }
 
 function setProgress_progress({ workerIndex, value, max }) {
