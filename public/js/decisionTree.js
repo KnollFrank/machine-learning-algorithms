@@ -80,7 +80,8 @@ class DecisionTreeBuilder {
                     index: b_index,
                     value: b_value,
                     score: b_score,
-                    groups: b_groups
+                    groups: b_groups,
+                    samples: dataset.length,
                 }));
             });
     }
@@ -180,6 +181,7 @@ class DecisionTreeBuilder {
         return this._emitOnNodeAdded({
             id: newId(),
             value: this.getElementWithHighestOccurenceOf(outcomes),
+            samples: group.length,
             score: 0
         });
     }
@@ -325,7 +327,7 @@ function print_tree(node, attributeNames, depth = 0) {
 }
 
 function getNodeContent(node, attributeNames) {
-    return `Test: "${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"\ngini = ${toFixed2Digits(node.score)}`;
+    return `Test = "${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"\ngini = ${toFixed2Digits(node.score)}\nsamples = ${node.samples}`;
 }
 
 function toFixed2Digits(x) {
