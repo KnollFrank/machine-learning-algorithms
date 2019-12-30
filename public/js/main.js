@@ -50,8 +50,12 @@ function onDatasetChanged(datasetDescription) {
     $('#progress, #decisionTreeNetwork').hide();
     $('#section-data-input, #section-testdata').hide();
     if (isDigitDataset(datasetDescription)) {
+        $('#container-digits-train').show();
+        $('#container-trainingDataSet').hide();
         displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
+        $('#container-digits-train').hide();
+        $('#container-trainingDataSet').show();
         displayDatasetAsTable({
             tableContainer: $('#container-trainingDataSet'),
             attributeNames: datasetDescription.attributeNames.all,
@@ -256,8 +260,12 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
     }
 
     if (isDigitDataset(datasetDescription)) {
+        $('#container-digits-test').show();
+        $('#container-testDataSet').hide();
         displayDigitTestDataset(datasetDescription, tree, 'container-digits-test');
     } else {
+        $('#container-digits-test').hide();
+        $('#container-testDataSet').show();
         displayDatasetAsTable({
             tableContainer: $('#container-testDataSet'),
             attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
