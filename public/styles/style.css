@@ -108,6 +108,11 @@ figure figcaption.wrongPrediction {
     border-spacing: 0.5em;
 }
 
+.table-header {
+    display: table-header-group;
+    font-weight: bold;
+}
+
 .table-row {
     display: table-row;
 }

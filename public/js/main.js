@@ -165,13 +165,13 @@ function displayProgress({
 }) {
     setProgress_nodeId(nodeId);
     setProgress_numberOfEntriesInDataset(numberOfEntriesInDataset);
-    setProgress_workerId(workerIndex, workerIndex);
-    setProgress_attribute(workerIndex, `${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]})`);
+    setProgress_workerId(workerIndex, workerIndex + 1);
     setProgress_progress({
         workerIndex: workerIndex,
         value: actualSplitIndex - startSplitIndex + 1,
         max: endSplitIndex - startSplitIndex + 1
     });
+    setProgress_attribute(workerIndex, `${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]})`);
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {

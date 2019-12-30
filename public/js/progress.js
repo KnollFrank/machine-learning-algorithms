@@ -2,7 +2,8 @@
 
 function createProgressElements(progressId, numWorkers) {
     let progressTable = document.querySelector(`#${progressId} div.table`);
-    progressTable.innerHTML = '';
+    // FK-TODO: extract method
+    progressTable.querySelectorAll('div.table-row').forEach(tableRow => tableRow.remove());;
     appendProgressElements(progressTable, numWorkers);
 }
 
