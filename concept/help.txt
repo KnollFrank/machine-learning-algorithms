@@ -37,5 +37,6 @@ FK-TODO:
   - auch in der DataTable den Datensatz nur seitenweise laden
 - Bei Klick auf eine Vorhersage für eine Ziffer in den Testdaten den dazughörenden Pfad
   im Network markieren, analog zum Fall der Zeilen der Testdatentabelle.
-. "3. Vorhersage" auf derselben Höhe darstellen wie das Network
+- "3. Vorhersage" auf derselben Höhe darstellen wie das Network
+- Progressbars und Infos für die Worker geordneter und schöner darstellen.
 - Nach dem Neuladen eines Datensatzes, die Hinterlassenschaften des vorigen Datensatzes - Network, Testdaten und "3. Vorhersage" - ausblenden bzw. entfernen.

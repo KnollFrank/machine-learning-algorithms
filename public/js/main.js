@@ -4,6 +4,7 @@
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
 document.addEventListener('DOMContentLoaded', () => {
+    $('#section-traindata, #section-decision-tree, #section-data-input, #section-testdata').hide();
     document.querySelector('#csv-file').addEventListener('change', evt => {
         // const dataFile = 'data/data_banknote_authentication.csv';
         // const dataFile = 'data/processed.cleveland.csv';
@@ -45,6 +46,7 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
+    $('#section-traindata, #section-decision-tree').show();
     if (isDigitDataset(datasetDescription)) {
         displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
@@ -163,6 +165,7 @@ function displayProgress({
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
+    $('#section-data-input, #section-testdata').show();
     const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
     print_tree(tree, datasetDescription.attributeNames.all);

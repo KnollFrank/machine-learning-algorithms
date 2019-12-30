@@ -52,10 +52,11 @@
         <section>
             <h2>1. Eingabedatei auswählen:</h2>
             <input type="file" id="csv-file" name="files" />
-            <h3>Trainingsdaten</h3>
-            <div id="container-digits-train"></div>
-            <div id="container-trainingDataSet">
-            </div>
+            <section id="section-traindata">
+                <h3>Trainingsdaten</h3>
+                <div id="container-digits-train"></div>
+                <div id="container-trainingDataSet"></div>
+            </section>
         </section>
         <div id="dataInputAndDecisionTree">
             <section id="section-decision-tree">
@@ -101,13 +102,15 @@
                 </div>
             </section>
         </div>
-        <h2>4. Testdaten</h2>
-        <p>
-            Accuracy: <span id="accuracy"></span>
-        </p>
-        <div id="container-digits-test"></div>
-        <div id="container-testDataSet">
-        </div>
+        <section id="section-testdata">
+            <h2>4. Testdaten</h2>
+            <p>
+                Accuracy: <span id="accuracy"></span>
+            </p>
+            <div id="container-digits-test"></div>
+            <div id="container-testDataSet">
+            </div>
+        </section>
     </main>
 </body>
 
