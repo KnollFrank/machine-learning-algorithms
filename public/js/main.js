@@ -169,10 +169,10 @@ function displayProgress({
     setProgress_progress({
         workerIndex: workerIndex,
         value: actualSplitIndex - startSplitIndex + 1,
+        text: attributeNames[actualSplitIndex],
         max: endSplitIndex - startSplitIndex + 1
     });
     setProgress_startAttribute(workerIndex, attributeNames[startSplitIndex]);
-    setProgress_actualAttribute(workerIndex, attributeNames[actualSplitIndex]);
     setProgress_endAttribute(workerIndex, attributeNames[endSplitIndex]);
 }
 

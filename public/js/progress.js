@@ -46,10 +46,11 @@ function setProgress_endAttribute(workerIndex, text) {
     getTableCellOfTableRow(workerIndex, 'div.endAttribute').innerHTML = text;
 }
 
-function setProgress_progress({ workerIndex, value, max }) {
+function setProgress_progress({ workerIndex, value, text, max }) {
     const progress = getTableCellOfTableRow(workerIndex, 'div.progress progress');
     progress.value = value;
     progress.max = max;
+    getTableCellOfTableRow(workerIndex, 'div.progress span').textContent = text;
 }
 
 function getTableCellOfTableRow(workerIndex, subElementSelector) {
