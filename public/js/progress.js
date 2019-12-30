@@ -26,8 +26,10 @@ function setProgress_nodeId(nodeId) {
     document.querySelector('#nodeId').textContent = nodeId;
 }
 
-function setProgress_numberOfEntriesInDataset(numberOfEntriesInDataset) {
-    document.querySelector('#numberOfEntriesInDataset').textContent = numberOfEntriesInDataset;
+function setProgress_numberOfEntriesInDataset({ value, max }) {
+    const meter = document.querySelector('#numberOfEntriesInDataset');
+    meter.value = value;
+    meter.max = max;
 }
 
 function setProgress_workerId(workerIndex, text) {

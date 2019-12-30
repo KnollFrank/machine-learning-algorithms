@@ -111,7 +111,8 @@ function build_tree(datasetDescription) {
                     startSplitIndex,
                     actualSplitIndex,
                     endSplitIndex,
-                    numberOfEntriesInDataset,
+                    actualNumberOfEntriesInDataset: numberOfEntriesInDataset,
+                    maxNumberOfEntriesInDataset: datasetDescription.splittedDataset.train.length,
                     attributeNames: datasetDescription.attributeNames.X
                 });
                 break;
@@ -160,11 +161,15 @@ function displayProgress({
     startSplitIndex,
     actualSplitIndex,
     endSplitIndex,
-    numberOfEntriesInDataset,
+    actualNumberOfEntriesInDataset,
+    maxNumberOfEntriesInDataset,
     attributeNames
 }) {
     setProgress_nodeId(nodeId);
-    setProgress_numberOfEntriesInDataset(numberOfEntriesInDataset);
+    setProgress_numberOfEntriesInDataset({
+        value: actualNumberOfEntriesInDataset,
+        max: maxNumberOfEntriesInDataset
+    });
     setProgress_workerId(workerIndex, workerIndex + 1);
     setProgress_progress({
         workerIndex: workerIndex,
