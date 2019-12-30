@@ -6,6 +6,7 @@ class DisplayDigitDatasetTemplate {
 
     displayDigitDataset(digitDataset, digitsContainerId) {
         const digitsContainer = document.querySelector('#' + digitsContainerId);
+        digitsContainer.innerHTML = '';
         for (let i = 0; i < digitDataset.length; i++) {
             const digit = new Digit();
             digit.setFigcaption(...this._getFigcaption(digitDataset[i]));

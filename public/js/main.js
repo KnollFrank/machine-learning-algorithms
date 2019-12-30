@@ -163,8 +163,11 @@ function displayProgress({
     numberOfEntriesInDataset,
     attributeNames
 }) {
-    setProgressText(workerIndex, `Worker ${workerIndex + 1}, Node: ${nodeId}, Step: ${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]}), size of dataset: ${numberOfEntriesInDataset}`);
-    setProgress({
+    setProgress_nodeId(nodeId);
+    setProgress_numberOfEntriesInDataset(numberOfEntriesInDataset);
+    setProgress_workerId(workerIndex, workerIndex);
+    setProgress_attribute(workerIndex, `${startSplitIndex} (${attributeNames[startSplitIndex]}) <= ${actualSplitIndex} (${attributeNames[actualSplitIndex]}) <= ${endSplitIndex} (${attributeNames[endSplitIndex]})`);
+    setProgress_progress({
         workerIndex: workerIndex,
         value: actualSplitIndex - startSplitIndex + 1,
         max: endSplitIndex - startSplitIndex + 1

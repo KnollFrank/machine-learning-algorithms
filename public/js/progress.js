@@ -1,9 +1,9 @@
 'use strict';
 
 function createProgressElements(progressId, numWorkers) {
-    let progress = document.querySelector('#' + progressId);
-    progress.innerHTML = '';
-    appendProgressElements(progress, numWorkers);
+    let progressTable = document.querySelector(`#${progressId} div.table`);
+    progressTable.innerHTML = '';
+    appendProgressElements(progressTable, numWorkers);
 }
 
 function appendProgressElements(parent, numWorkers) {
@@ -14,26 +14,36 @@ function appendProgressElements(parent, numWorkers) {
 
 function createProgressElement(workerIndex) {
     let div = getHtml('progressTemplate.html');
-    div.querySelector('span').setAttribute('id', createProgressTextId(workerIndex));
-    div.querySelector('progress').setAttribute('id', createProgressId(workerIndex));
+    div.setAttribute('id', createTableRowId(workerIndex));
     return div;
 }
 
-function setProgressText(workerIndex, text) {
-    const textElement = document.querySelector('#' + createProgressTextId(workerIndex));
-    textElement.textContent = text;
+function setProgress_nodeId(nodeId) {
+    document.querySelector('#nodeId').textContent = nodeId;
 }
 
-function setProgress({ workerIndex, value, max }) {
-    const progress = document.querySelector('#' + createProgressId(workerIndex));
+function setProgress_numberOfEntriesInDataset(numberOfEntriesInDataset) {
+    document.querySelector('#numberOfEntriesInDataset').textContent = numberOfEntriesInDataset;
+}
+
+// FK-TODO: DRY with setProgress_attribute() and setProgress_progress()
+function setProgress_workerId(workerIndex, text) {
+    const tableRow = document.querySelector('#' + createTableRowId(workerIndex));
+    tableRow.querySelector('div.workerId').innerHTML = text;
+}
+
+function setProgress_attribute(workerIndex, text) {
+    const tableRow = document.querySelector('#' + createTableRowId(workerIndex));
+    tableRow.querySelector('div.attribute').innerHTML = text;
+}
+
+function setProgress_progress({ workerIndex, value, max }) {
+    const tableRow = document.querySelector('#' + createTableRowId(workerIndex));
+    const progress = tableRow.querySelector('div.progress progress');
     progress.value = value;
     progress.max = max;
 }
 
-function createProgressTextId(workerIndex) {
-    return 'progress-text-' + workerIndex;
-}
-
-function createProgressId(workerIndex) {
-    return 'progress-build-decision-tree-' + workerIndex;
+function createTableRowId(workerIndex) {
+    return 'worker-' + workerIndex;
 }

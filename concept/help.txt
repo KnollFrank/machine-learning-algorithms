@@ -32,13 +32,13 @@ nodemon webserver.js
 node webserver.js
 
 FK-TODO:
-- build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
-- nicht den GANZEN Datensatz in den Speicher laden, sondern nur Chunks (siehe Papa parse)
+[-] build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
+[-] nicht den GANZEN Datensatz in den Speicher laden, sondern nur Chunks (siehe Papa parse)
   - auch in der DataTable den Datensatz nur seitenweise laden
 - Bei Klick auf eine Vorhersage für eine Ziffer in den Testdaten den dazughörenden Pfad
   im Network markieren, analog zum Fall der Zeilen der Testdatentabelle.
 - "3. Vorhersage" auf derselben Höhe darstellen wie das Network
 - Progressbars und Infos für die Worker geordneter und schöner darstellen.
-- Nach dem Neuladen eines Datensatzes, die Hinterlassenschaften des vorigen Datensatzes - Network, Testdaten und "3. Vorhersage" - ausblenden bzw. entfernen.
 - Vorhersage (Malbereich mit Buttons) für Digits verschönern
 - Anzeige der Testdaten für Digits verschönern
+- Gini-Index und andere Infos in den Knoten des Network anzeigen?
