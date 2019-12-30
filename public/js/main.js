@@ -47,6 +47,8 @@ function train_test_split(dataset, train_proportion) {
 
 function onDatasetChanged(datasetDescription) {
     $('#section-traindata, #section-decision-tree').show();
+    $('#progress, #decisionTreeNetwork').hide();
+    $('#section-data-input, #section-testdata').hide();
     if (isDigitDataset(datasetDescription)) {
         displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
@@ -117,6 +119,7 @@ function build_tree(datasetDescription) {
 }
 
 function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
+    $('#progress, #decisionTreeNetwork').show();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
             max_depth,
@@ -165,7 +168,7 @@ function displayProgress({
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
-    $('#section-data-input, #section-testdata').show();
+    $('#decisionTreeNetwork, #section-data-input, #section-testdata').show();
     const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
     print_tree(tree, datasetDescription.attributeNames.all);

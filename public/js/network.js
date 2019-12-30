@@ -110,9 +110,6 @@ const options = {
 function displayNetwork(container, data) {
     destroyNetwork();
     network = new vis.Network(container, data, options);
-    network.on('select', function(params) {
-        document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
-    });
 }
 
 // see https://stackoverflow.com/questions/38768598/vis-js-setoptions-to-change-color-on-network-node and http://jsfiddle.net/9knw26nc/1/
