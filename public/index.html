@@ -50,17 +50,17 @@
     <main class="center">
         <h1>Entscheidungsbäume</h1>
         <section>
-            <h2>1. Eingabedatei auswählen:</h2>
+            <h2>1. Datensatz</h2>
             <input type="file" id="csv-file" name="files" />
             <section id="section-traindata">
-                <h3>Trainingsdaten</h3>
+                <h3>1.1 Trainingsdaten</h3>
                 <div id="container-digits-train"></div>
                 <div id="container-trainingDataSet"></div>
             </section>
         </section>
         <div id="dataInputAndDecisionTree">
             <section id="section-decision-tree">
-                <h2>2. Entscheidungsbaum berechnen:</h2>
+                <h2>2. Entscheidungsbaum</h2>
                 <form id="decisionTreeForm">
                     <div class="dataInputFields">
                         <div>
@@ -77,6 +77,7 @@
                     <input id="load_tree" type="button" value="laden">
                 </form>
                 <div id="progress">
+                    <h3>2.1 Fortschritt</h3>
                     <p>Berechnung des Knotens: <span id="nodeId"></span></p>
                     <p>Größe des aktuellen Datensatzes: <span id="numberOfEntriesInDataset"></span></p>
                     <div class="table">
@@ -88,10 +89,13 @@
                         </div>
                     </div>
                 </div>
-                <div id="decisionTreeNetwork"></div>
+                <section id="subsection-decision-tree">
+                    <h3>2.2 Entscheidungsbaum</h3>
+                    <div id="decisionTreeNetwork"></div>
+                </section>
             </section>
             <section id="section-data-input">
-                <h2>3. Vorhersage:</h2>
+                <h2>3. Vorhersage</h2>
                 <div id="canvas-data-input">
                     <canvas id="digit-canvas" width="28" height="28"></canvas>
                     <input id="clear-button" type="button" value="clear">

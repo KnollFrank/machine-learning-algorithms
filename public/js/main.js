@@ -47,7 +47,7 @@ function train_test_split(dataset, train_proportion) {
 
 function onDatasetChanged(datasetDescription) {
     $('#section-traindata, #section-decision-tree').show();
-    $('#progress, #decisionTreeNetwork').hide();
+    $('#progress, #subsection-decision-tree').hide();
     $('#section-data-input, #section-testdata').hide();
     if (isDigitDataset(datasetDescription)) {
         $('#container-digits-train').show();
@@ -123,7 +123,7 @@ function build_tree(datasetDescription) {
 }
 
 function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
-    $('#progress, #decisionTreeNetwork').show();
+    $('#progress, #subsection-decision-tree').show();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
             max_depth,
@@ -177,7 +177,7 @@ function displayProgress({
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
-    $('#decisionTreeNetwork, #section-data-input, #section-testdata').show();
+    $('#subsection-decision-tree, #section-data-input, #section-testdata').show();
     const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
     print_tree(tree, datasetDescription.attributeNames.all);
@@ -240,8 +240,7 @@ function getInputValueBy(selectors) {
 
 function displayAccuracy(tree, dataset) {
     const accuracy = computeAccuracy(tree, dataset);
-    document.querySelector('#accuracy').innerHTML = `
-    $ { Math.floor(accuracy) } % `;
+    document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
 }
 
 function computeAccuracy(tree, dataset) {
