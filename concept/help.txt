@@ -39,4 +39,3 @@ FK-TODO:
   im Network markieren, analog zum Fall der Zeilen der Testdatentabelle.
 - "3. Vorhersage" auf derselben Höhe darstellen wie das Network
 - Vorhersage (Malbereich mit Buttons) für Digits verschönern
-- Anzeige der Testdaten für Digits verschönern
