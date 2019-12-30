@@ -38,7 +38,5 @@ FK-TODO:
 - Bei Klick auf eine Vorhersage für eine Ziffer in den Testdaten den dazughörenden Pfad
   im Network markieren, analog zum Fall der Zeilen der Testdatentabelle.
 - "3. Vorhersage" auf derselben Höhe darstellen wie das Network
-- Progressbars und Infos für die Worker geordneter und schöner darstellen.
 - Vorhersage (Malbereich mit Buttons) für Digits verschönern
 - Anzeige der Testdaten für Digits verschönern
-- Gini-Index und andere Infos in den Knoten des Network anzeigen?
