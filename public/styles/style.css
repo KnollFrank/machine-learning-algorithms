@@ -106,7 +106,6 @@ figure figcaption.wrongPrediction {
 .table {
     display: table;
     border-collapse: separate;
-    border-spacing: 0.5em;
 }
 
 .table-header {
@@ -124,4 +123,6 @@ figure figcaption.wrongPrediction {
 
 .table-cell {
     display: table-cell;
+    padding: 5px;
+    border-left: 1px solid black;
 }
