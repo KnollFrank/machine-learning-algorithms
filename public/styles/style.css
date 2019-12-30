@@ -72,6 +72,7 @@ h1 {
 }
 
 .wrongPrediction {
+    /* FK-TODO: kein !important verweenden, andere Lösung suchen */
     background-color: red !important;
 }
 
@@ -88,7 +89,13 @@ figure figcaption {
 figure figcaption.wrongPrediction {
     color: red;
     font-weight: bold;
+    /* FK-TODO: kein !important verweenden, andere Lösung suchen */
     background-color: inherit !important;
+}
+
+#canvas-data-input,
+#text-data-input {
+    display: none;
 }
 
 #digit-canvas {
