@@ -79,6 +79,7 @@ class DecisionTreeBuilder {
                     id: nodeId,
                     index: b_index,
                     value: b_value,
+                    score: b_score,
                     groups: b_groups
                 }));
             });
@@ -178,7 +179,8 @@ class DecisionTreeBuilder {
         const outcomes = group.map(getClassValFromRow);
         return this._emitOnNodeAdded({
             id: newId(),
-            value: this.getElementWithHighestOccurenceOf(outcomes)
+            value: this.getElementWithHighestOccurenceOf(outcomes),
+            score: 0
         });
     }
 
@@ -323,7 +325,11 @@ function print_tree(node, attributeNames, depth = 0) {
 }
 
 function getNodeContent(node, attributeNames) {
-    return `${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}`;
+    return `Test: "${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"\ngini = ${toFixed2Digits(node.score)}`;
+}
+
+function toFixed2Digits(x) {
+    return Number.parseFloat(x).toFixed(2);
 }
 
 // Make a prediction with a decision tree
