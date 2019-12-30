@@ -23,7 +23,7 @@ class NetworkBuilder {
         }
         return isInnerNode(node) ?
             this.createNetworkNodesFromLeftAndRightNodeChild(node, depth) :
-            this.createNetworkNode(`${node.value}\ngini = ${toFixed2Digits(node.score)}\nsamples = ${node.samples}`, depth, node.id);
+            this.createNetworkNode(`class = <b>${node.value}</b>\ngini = ${toFixed4Digits(node.score)}\nsamples = ${node.samples}`, depth, node.id);
     }
 
     createNetworkNodesFromLeftAndRightNodeChild(node, depth) {
@@ -93,6 +93,10 @@ const options = {
         borderWidth: 1,
         color: {
             border: '#2B7CE9'
+        },
+        font: {
+            multi: 'html',
+            bold: '16px arial black'
         }
     },
     edges: {

@@ -327,11 +327,11 @@ function print_tree(node, attributeNames, depth = 0) {
 }
 
 function getNodeContent(node, attributeNames) {
-    return `Test = "${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"\ngini = ${toFixed2Digits(node.score)}\nsamples = ${node.samples}`;
+    return `Test = <b>"${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"</b>\ngini = ${toFixed4Digits(node.score)}\nsamples = ${node.samples}`;
 }
 
-function toFixed2Digits(x) {
-    return Number.parseFloat(x).toFixed(2);
+function toFixed4Digits(x) {
+    return Number.parseFloat(x).toFixed(4);
 }
 
 // Make a prediction with a decision tree
