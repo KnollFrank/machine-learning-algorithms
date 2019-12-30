@@ -72,7 +72,7 @@ h1 {
 }
 
 .wrongPrediction {
-    /* FK-TODO: kein !important verweenden, andere Lösung suchen */
+    /* FK-TODO: kein !important verwenden, andere Lösung suchen */
     background-color: red !important;
 }
 
