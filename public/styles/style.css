@@ -126,3 +126,7 @@ figure figcaption.wrongPrediction {
     padding: 5px;
     border-left: 1px solid black;
 }
+
+.table-cell:first-child {
+    border-left: none;
+}
