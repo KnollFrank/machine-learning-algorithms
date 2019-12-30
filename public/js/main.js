@@ -4,7 +4,7 @@
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
 document.addEventListener('DOMContentLoaded', () => {
-    $('#section-traindata, #section-decision-tree, #section-data-input, #section-testdata').hide();
+    $('#section-traindata, #section-decision-tree, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
         // const dataFile = 'data/data_banknote_authentication.csv';
         // const dataFile = 'data/processed.cleveland.csv';
@@ -46,16 +46,16 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
-    $('#section-traindata, #section-decision-tree').show();
-    $('#progress, #subsection-decision-tree').hide();
-    $('#section-data-input, #section-testdata').hide();
+    $('#section-traindata, #section-decision-tree').fadeIn();
+    $('#progress, #subsection-decision-tree').fadeOut();
+    $('#section-data-input, #section-testdata').fadeOut();
     if (isDigitDataset(datasetDescription)) {
-        $('#container-digits-train').show();
-        $('#container-trainingDataSet').hide();
+        $('#container-digits-train').fadeIn();
+        $('#container-trainingDataSet').fadeOut();
         displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
-        $('#container-digits-train').hide();
-        $('#container-trainingDataSet').show();
+        $('#container-digits-train').fadeOut();
+        $('#container-trainingDataSet').fadeIn();
         displayDatasetAsTable({
             tableContainer: $('#container-trainingDataSet'),
             attributeNames: datasetDescription.attributeNames.all,
@@ -115,6 +115,7 @@ function build_tree(datasetDescription) {
                 });
                 break;
             case 'result':
+                $('#progress').fadeOut();
                 onDecisionTreeChanged(datasetDescription, value);
                 break;
         }
@@ -122,7 +123,7 @@ function build_tree(datasetDescription) {
 }
 
 function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
-    $('#progress, #subsection-decision-tree').show();
+    $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
             max_depth,
@@ -178,7 +179,7 @@ function displayProgress({
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
-    $('#subsection-decision-tree, #section-data-input, #section-testdata').show();
+    $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
     const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
     print_tree(tree, datasetDescription.attributeNames.all);
@@ -268,12 +269,12 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
     }
 
     if (isDigitDataset(datasetDescription)) {
-        $('#container-digits-test').show();
-        $('#container-testDataSet').hide();
+        $('#container-digits-test').fadeIn();
+        $('#container-testDataSet').fadeOut();
         displayDigitTestDataset(datasetDescription, tree, 'container-digits-test');
     } else {
-        $('#container-digits-test').hide();
-        $('#container-testDataSet').show();
+        $('#container-digits-test').fadeOut();
+        $('#container-testDataSet').fadeIn();
         displayDatasetAsTable({
             tableContainer: $('#container-testDataSet'),
             attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
