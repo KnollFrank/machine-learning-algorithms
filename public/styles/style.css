@@ -105,12 +105,17 @@ figure figcaption.wrongPrediction {
 
 .table {
     display: table;
+    border-collapse: separate;
     border-spacing: 0.5em;
 }
 
 .table-header {
     display: table-header-group;
     font-weight: bold;
+}
+
+.table-header .table-cell {
+    border-bottom: 1px solid #000;
 }
 
 .table-row {
