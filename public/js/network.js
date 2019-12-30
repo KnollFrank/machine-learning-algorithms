@@ -23,14 +23,14 @@ class NetworkBuilder {
         }
         return isInnerNode(node) ?
             this.createNetworkNodesFromLeftAndRightNodeChild(node, depth) :
-            this.createNetworkNode(`Vorhersage = <b>${node.value}</b>\ngini = ${toFixed4Digits(node.score)}\nAnzahl Datensätze = ${node.samples}`, depth, node.id);
+            this.createNetworkNode(getTerminalNodeContent(node), depth, node.id);
     }
 
     createNetworkNodesFromLeftAndRightNodeChild(node, depth) {
         let leftNetwork = this._createNetwork(node.left, depth + 1);
         let rightNetwork = this._createNetwork(node.right, depth + 1);
 
-        let newNode = this.createNode(getNodeContent(node, this.attributeNames), depth, node.id);
+        let newNode = this.createNode(getInnerNodeContent(node, this.attributeNames), depth, node.id);
 
         const createOneLevelEdges = (fromNode, toNodes, label) =>
             toNodes

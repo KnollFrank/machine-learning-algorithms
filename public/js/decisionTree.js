@@ -318,7 +318,7 @@ function print_tree(node, attributeNames, depth = 0) {
     }
 
     if (isInnerNode(node)) {
-        console.log(`${' '.repeat(depth)}[${node.id}: ${getNodeContent(node, attributeNames)}]`);
+        console.log(`${' '.repeat(depth)}[${node.id}: ${getInnerNodeContent(node, attributeNames)}]`);
         print_tree(node.left, attributeNames, depth + 1);
         print_tree(node.right, attributeNames, depth + 1);
     } else {
@@ -326,8 +326,12 @@ function print_tree(node, attributeNames, depth = 0) {
     }
 }
 
-function getNodeContent(node, attributeNames) {
+function getInnerNodeContent(node, attributeNames) {
     return `Test = <b>"${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"</b>\ngini = ${toFixed4Digits(node.score)}\nAnzahl Datensätze = ${node.samples}`;
+}
+
+function getTerminalNodeContent(node) {
+    return `Vorhersage = <b>${node.value}</b>\ngini = ${toFixed4Digits(node.score)}\nAnzahl Datensätze = ${node.samples}`;
 }
 
 function toFixed4Digits(x) {
