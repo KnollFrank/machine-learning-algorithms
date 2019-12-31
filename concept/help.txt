@@ -32,12 +32,8 @@ nodemon webserver.js
 node webserver.js
 
 FK-TODO:
-[-] build_tree auf mehrere Browser aufteilen, jeder Browser berechnet einen Kindknoten.
-[-] nicht den GANZEN Datensatz in den Speicher laden, sondern nur Chunks (siehe Papa parse)
-  - auch in der DataTable den Datensatz nur seitenweise laden
 - Bei Klick auf eine Vorhersage für eine Ziffer in den Testdaten den dazughörenden Pfad
   im Network markieren, analog zum Fall der Zeilen der Testdatentabelle.
-- "3. Vorhersage" auf derselben Höhe darstellen wie das Network
 - Für die Knoten des Network eine vereinfachte Darstellung mit kurzer Darstellung anbieten:
   innere Knoten zeigen die Testbedingung an, Endknoten lediglich die Klasse.
   Zwischen vereinfachter und erweiterter Darstellung über einen Togglebutton hin und herschalten, z.B. mit https://www.w3schools.com/howto/howto_css_switch.asp
