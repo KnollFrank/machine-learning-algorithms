@@ -102,11 +102,6 @@ div.digit figcaption.wrongPrediction {
     display: none;
 }
 
-#digit-canvas {
-    cursor: url('pencil.cur'), crosshair;
-    border: 1px solid grey;
-}
-
 .table {
     display: table;
     border-collapse: separate;
@@ -137,6 +132,7 @@ div.digit figcaption.wrongPrediction {
 
 #digit-canvas-big {
     border: 15px solid rgba(152, 195, 252, 0.5);
+    cursor: crosshair;
     border-radius: 15px;
     transition: border-color .2s ease-in;
 }

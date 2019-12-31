@@ -7,7 +7,6 @@ Entscheidungsbäume
 - https://lamastex.github.io/scalable-data-science/sds/2/2/db/016_SupervisedClustering_DecisionTrees_HandWrittenDigitRecognition/
 - https://transcranial.github.io/keras-js/#/mnist-cnn
 - http://matt.might.net/articles/by-example-continuation-passing-style/
-- https://www.classes.cs.uchicago.edu/archive/2015/spring/12300-1/pa2.html
 
 C:\Users\Alfa\AppData\Local\Programs\Python\Python38-32\python.exe
 
@@ -40,3 +39,7 @@ FK-TODO:
   im Network markieren, analog zum Fall der Zeilen der Testdatentabelle.
 - "3. Vorhersage" auf derselben Höhe darstellen wie das Network
 - Vorhersage (Malbereich mit Buttons) für Digits verschönern
+- Für die Knoten des Network eine vereinfachte Darstellung mit kurzer Darstellung anbieten:
+  innere Knoten zeigen die Testbedingung an, Endknoten lediglich die Klasse.
+  Zwischen vereinfachter und erweiterter Darstellung über einen Togglebutton hin und herschalten, z.B. mit https://www.w3schools.com/howto/howto_css_switch.asp
+- K-Nearest Neighbors für MNIST implementieren (https://www.classes.cs.uchicago.edu/archive/2015/spring/12300-1/pa2.html)
