@@ -21,11 +21,11 @@ function displayCanvasDataInput(rootElement, tree, network) {
     initializeDrawTool(
         canvasBig,
         canvasSmall,
-        rootElement.querySelector("#clear-button"),
+        rootElement.querySelector("#new-prediction"),
         (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rootElement));
 }
 
-function initializeDrawTool(canvasBig, canvasSmall, clearBtn, onDigitDrawn) {
+function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDrawn) {
     const ctxBig = canvasBig.getContext('2d');
     ctxBig.globalAlpha = 1;
     ctxBig.globalCompositeOperation = 'source-over';
@@ -71,8 +71,13 @@ function initializeDrawTool(canvasBig, canvasSmall, clearBtn, onDigitDrawn) {
         fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    clearBtn.addEventListener("click", () => clearCanvas(canvasBig, canvasSmall));
+    newPredictionBtn.addEventListener("click", () => prepareNewPrediction(canvasBig, canvasSmall));
+    prepareNewPrediction(canvasBig, canvasSmall);
+}
+
+function prepareNewPrediction(canvasBig, canvasSmall) {
     clearCanvas(canvasBig, canvasSmall);
+    setPrediction('?');
 }
 
 function clearCanvas(canvasBig, canvasSmall) {
@@ -84,7 +89,11 @@ function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rootElement) {
     const pixels = getPixels(canvasBig, canvasSmall);
     const prediction = predict(tree, pixels);
     highlightPredictionInNetwork(prediction, network);
-    rootElement.querySelector('.prediction').innerHTML = prediction.value;
+    setPrediction(prediction.value);
+}
+
+function setPrediction(predictedValue) {
+    document.querySelector('#prediction-container .prediction').innerHTML = predictedValue;
 }
 
 function getPixels(canvasBig, canvasSmall) {
