@@ -43,7 +43,7 @@ function initializeDrawTool(canvasBig, canvasSmall, clearBtn) {
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 30;
+    ctx.lineWidth = 20;
     ctx.lineJoin = ctx.lineCap = 'round';
     let last_mouse = { x: 0, y: 0 };
     let mouse = { x: 0, y: 0 };
