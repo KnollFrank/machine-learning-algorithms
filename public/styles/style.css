@@ -136,8 +136,13 @@ div.digit figcaption.wrongPrediction {
 }
 
 #digit-canvas-big {
-    border: 15px solid lightblue;
+    border: 15px solid rgba(27,188,155,.3);
     border-radius: 15px;
+    transition: border-color .2s ease-in;
+}
+
+#digit-canvas-big:hover {
+    border-color: rgba(27,188,155,.6);
 }
 
 #digit-canvas-small {
