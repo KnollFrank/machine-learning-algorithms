@@ -26,12 +26,12 @@ function displayCanvasDataInput(rootElement, tree, network) {
 }
 
 function initializeDrawTool(canvasBig, canvasSmall, clearBtn, onDigitDrawn) {
-    const ctxBix = canvasBig.getContext('2d');
-    ctxBix.globalAlpha = 1;
-    ctxBix.globalCompositeOperation = 'source-over';
-    ctxBix.strokeStyle = 'black';
-    ctxBix.lineWidth = 20;
-    ctxBix.lineJoin = ctxBix.lineCap = 'round';
+    const ctxBig = canvasBig.getContext('2d');
+    ctxBig.globalAlpha = 1;
+    ctxBig.globalCompositeOperation = 'source-over';
+    ctxBig.strokeStyle = 'black';
+    ctxBig.lineWidth = 20;
+    ctxBig.lineJoin = ctxBig.lineCap = 'round';
     let last_mouse = { x: 0, y: 0 };
     let mouse = { x: 0, y: 0 };
     let mousedown = false;
@@ -62,19 +62,22 @@ function initializeDrawTool(canvasBig, canvasSmall, clearBtn, onDigitDrawn) {
     $(canvasBig).on('mousemove', function(e) {
         mouse = getMousePos(canvasBig, e);
         if (mousedown) {
-            ctxBix.beginPath();
-            ctxBix.moveTo(last_mouse.x, last_mouse.y);
-            ctxBix.lineTo(mouse.x, mouse.y);
-            ctxBix.stroke();
+            ctxBig.beginPath();
+            ctxBig.moveTo(last_mouse.x, last_mouse.y);
+            ctxBig.lineTo(mouse.x, mouse.y);
+            ctxBig.stroke();
         }
         last_mouse = mouse;
         fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    clearBtn.addEventListener("click", function() {
-        ctxBix.clearRect(0, 0, canvasBig.width, canvasBig.height);
-        canvasSmall.getContext('2d').clearRect(0, 0, canvasSmall.width, canvasSmall.height);
-    });
+    clearBtn.addEventListener("click", () => clearCanvas(canvasBig, canvasSmall));
+    clearCanvas(canvasBig, canvasSmall);
+}
+
+function clearCanvas(canvasBig, canvasSmall) {
+    canvasBig.getContext('2d').clearRect(0, 0, canvasBig.width, canvasBig.height);
+    canvasSmall.getContext('2d').clearRect(0, 0, canvasSmall.width, canvasSmall.height);
 }
 
 function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rootElement) {

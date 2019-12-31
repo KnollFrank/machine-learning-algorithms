@@ -231,9 +231,7 @@ function getInputValueById(id) {
 }
 
 function getInputValueByName(name) {
-    return getInputValueBy(`
-    input[name = "${name}"]
-    `);
+    return getInputValueBy(`input[name = "${name}"]`);
 }
 
 function getInputValueBy(selectors) {
