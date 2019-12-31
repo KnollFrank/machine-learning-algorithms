@@ -326,20 +326,38 @@ function print_tree(node, attributeNames, depth = 0) {
     }
 }
 
-function getInnerNodeContent(node, attributeNames) {
-    return `${getTestNodeText(node, attributeNames)}
+class EnhancedNodeContentFactory {
+
+    getInnerNodeContent(node, attributeNames) {
+        return `${getTestNodeText(node, attributeNames)}
 ${getGiniNodeText(node)}
 ${getAnzahlNodeText(node)}`;
+    }
+
+    getTerminalNodeContent(node) {
+        return `${getVorhersageNodeText(node)}
+${getGiniNodeText(node)}
+${getAnzahlNodeText(node)}`;
+    }
 }
 
-function getTerminalNodeContent(node) {
-    return `${getVorhersageNodeText(node)}
-${getGiniNodeText(node)}
-${getAnzahlNodeText(node)}`;
+class SimpleNodeContentFactory {
+
+    getInnerNodeContent(node, attributeNames) {
+        return getTestNodeConditionText(node, attributeNames);
+    }
+
+    getTerminalNodeContent(node) {
+        return node.value;
+    }
 }
 
 function getTestNodeText(node, attributeNames) {
-    return `Test = <b>"${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}"</b>`;
+    return `Test = <b>"${getTestNodeConditionText(node, attributeNames)}"</b>`;
+}
+
+function getTestNodeConditionText(node, attributeNames) {
+    return `${attributeNames[node.index]} ${isNumber(node.value) ? '<' : '='} ${node.value}`;
 }
 
 function getGiniNodeText(node) {

@@ -2,8 +2,9 @@
 
 class NetworkBuilder {
 
-    constructor(attributeNames) {
+    constructor(attributeNames, nodeContentFactory) {
         this.attributeNames = attributeNames;
+        this.nodeContentFactory = nodeContentFactory;
     }
 
     createNetwork(node, depth = 0) {
@@ -23,14 +24,14 @@ class NetworkBuilder {
         }
         return isInnerNode(node) ?
             this.createNetworkNodesFromLeftAndRightNodeChild(node, depth) :
-            this.createNetworkNode(getTerminalNodeContent(node), depth, node.id);
+            this.createNetworkNode(this.nodeContentFactory.getTerminalNodeContent(node), depth, node.id);
     }
 
     createNetworkNodesFromLeftAndRightNodeChild(node, depth) {
         let leftNetwork = this._createNetwork(node.left, depth + 1);
         let rightNetwork = this._createNetwork(node.right, depth + 1);
 
-        let newNode = this.createNode(getInnerNodeContent(node, this.attributeNames), depth, node.id);
+        let newNode = this.createNode(this.nodeContentFactory.getInnerNodeContent(node, this.attributeNames), depth, node.id);
 
         const createOneLevelEdges = (fromNode, toNodes, label) =>
             toNodes

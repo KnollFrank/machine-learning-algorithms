@@ -137,10 +137,10 @@ function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
 
 function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     if (!gNetwork) {
-        gNetwork = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+        gNetwork = createNetwork(datasetDescription, tree, new SimpleNodeContentFactory());
         displayNetwork(document.querySelector('#decisionTreeNetwork'), gNetwork);
     }
-    const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
+    const network = createNetwork(datasetDescription, tree, new SimpleNodeContentFactory());
 
     const newNodes = network.nodes.get({
         filter: node => gNetwork.nodes.get(node.id) === null
@@ -152,6 +152,10 @@ function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
     });
     gNetwork.edges.add(newEdges);
     return gNetwork;
+}
+
+function createNetwork(datasetDescription, tree, nodeContentFactory) {
+    return new NetworkBuilder(datasetDescription.attributeNames.X, nodeContentFactory).createNetwork(tree);
 }
 
 function displayProgress({
@@ -180,10 +184,17 @@ function displayProgress({
 
 function onDecisionTreeChanged(datasetDescription, tree) {
     $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
-    const network = new NetworkBuilder(datasetDescription.attributeNames.X).createNetwork(tree);
-    displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
-    print_tree(tree, datasetDescription.attributeNames.all);
+    const network = createAndDisplayNetwork(datasetDescription, tree, new SimpleNodeContentFactory());
+    // FK-FIXME:
+    // print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
+    // FK-TODO: refactor
+    document.querySelector('#simple-decisionTreeNetwork').addEventListener('click', () =>
+        createAndDisplayNetwork(datasetDescription, tree, new SimpleNodeContentFactory())
+    );
+    document.querySelector('#enhanced-decisionTreeNetwork').addEventListener('click', () =>
+        createAndDisplayNetwork(datasetDescription, tree, new EnhancedNodeContentFactory())
+    );
     displayAccuracy(tree, datasetDescription.splittedDataset.test);
     displayTestingTableWithPredictions(tree, network, datasetDescription);
 
@@ -210,6 +221,12 @@ function onDecisionTreeChanged(datasetDescription, tree) {
 }
 
 const localStorageTreeKey = 'tree';
+
+function createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory) {
+    const network = createNetwork(datasetDescription, tree, nodeContentFactory);
+    displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
+    return network;
+}
 
 function configure_load_tree(datasetDescription) {
     const load_tree = document.querySelector('#load_tree');
