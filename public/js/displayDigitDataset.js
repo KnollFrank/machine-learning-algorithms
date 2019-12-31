@@ -2,7 +2,9 @@
 
 class DisplayDigitDatasetTemplate {
 
-    constructor() {}
+    constructor(onDigitClickedReceiveRow) {
+        this.onDigitClickedReceiveRow = onDigitClickedReceiveRow;
+    }
 
     displayDigitDataset(digitDataset, digitsContainerId) {
         const digitsContainer = document.querySelector('#' + digitsContainerId);
@@ -11,6 +13,7 @@ class DisplayDigitDatasetTemplate {
             const digit = new Digit();
             digit.setFigcaption(...this._getFigcaption(digitDataset[i]));
             digit.setImage(digitDataset[i]);
+            digit.setOnClicked(() => this.onDigitClickedReceiveRow(digitDataset[i]));
             digitsContainer.appendChild(digit.digitElement);
         }
     }
@@ -23,7 +26,7 @@ class DisplayDigitDatasetTemplate {
 class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
 
     constructor() {
-        super();
+        super(row => {});
     }
 
     _getFigcaption(row) {
@@ -40,8 +43,8 @@ function displayDigitTrainDataset(datasetDescription, digitsContainerId) {
 
 class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
 
-    constructor(tree) {
-        super();
+    constructor(tree, onDigitClickedReceiveRow) {
+        super(onDigitClickedReceiveRow);
         this.tree = tree;
     }
 
@@ -52,8 +55,8 @@ class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
     }
 }
 
-function displayDigitTestDataset(datasetDescription, tree, digitsContainerId) {
-    new DisplayDigitTestDataset(tree)
+function displayDigitTestDataset({ datasetDescription, tree, digitsContainerId, onDigitClickedReceiveRow }) {
+    new DisplayDigitTestDataset(tree, onDigitClickedReceiveRow)
         .displayDigitDataset(
             datasetDescription.splittedDataset.test,
             digitsContainerId);

@@ -27,10 +27,13 @@ class Digit {
             imageData.data[it.color_index.green] = 0;
             imageData.data[it.color_index.blue] = 0;
             imageData.data[it.color_index.alpha] = pixels[it.pixelIndex];
-
         }
 
         ctx.putImageData(imageData, 0, 0);
+    }
+
+    setOnClicked(onClicked) {
+        this.digitElement.addEventListener('click', onClicked);
     }
 }
 

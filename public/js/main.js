@@ -269,7 +269,12 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
     if (isDigitDataset(datasetDescription)) {
         $('#container-digits-test').fadeIn();
         $('#container-testDataSet').fadeOut();
-        displayDigitTestDataset(datasetDescription, tree, 'container-digits-test');
+        displayDigitTestDataset({
+            datasetDescription: datasetDescription,
+            tree: tree,
+            digitsContainerId: 'container-digits-test',
+            onDigitClickedReceiveRow: row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription)
+        });
     } else {
         $('#container-digits-test').fadeOut();
         $('#container-testDataSet').fadeIn();

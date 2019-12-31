@@ -86,6 +86,11 @@ div.digit {
     padding: 10px;
 }
 
+#section-testdata div.digit:hover {
+    padding: 10px;
+    background: rgba(152, 195, 252, 0.5);
+}
+
 div.digit figcaption {
     text-align: center;
 }
