@@ -134,3 +134,13 @@ div.digit figcaption.wrongPrediction {
 .table-cell:first-child {
     border-left: none;
 }
+
+#digit-canvas-big {
+    border: 15px solid lightblue;
+    border-radius: 15px;
+}
+
+#digit-canvas-small {
+    border: 2px solid lightblue;
+    border-radius: 2px;
+}

@@ -16,17 +16,20 @@ function displayTextDataInput(rootElement, attributeNames, tree, network) {
 }
 
 function displayCanvasDataInput(rootElement, tree, network) {
-    const canvas = rootElement.querySelector('#digit-canvas');
+    const canvasBig = rootElement.querySelector('#digit-canvas-big');
+    const canvasSmall = document.querySelector('#digit-canvas-small');
     initializeDrawTool(
-        canvas,
+        canvasBig,
+        canvasSmall,
         rootElement.querySelector("#clear-button"));
 
     rootElement.querySelector('#predict-digit').addEventListener(
         "click",
         e => {
             e.preventDefault();
-            const ctx = canvas.getContext('2d');
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
+            const ctxSmall = canvasSmall.getContext('2d');
+            const imageData = ctxSmall.getImageData(0, 0, canvasSmall.width, canvasSmall.height);
             const pixels = imageData2Pixels(imageData);
             const prediction = predict(tree, pixels);
             highlightPredictionInNetwork(prediction, network);
@@ -35,12 +38,12 @@ function displayCanvasDataInput(rootElement, tree, network) {
         });
 }
 
-function initializeDrawTool(canvas, clearBtn) {
-    const ctx = canvas.getContext('2d');
+function initializeDrawTool(canvasBig, canvasSmall, clearBtn) {
+    const ctx = canvasBig.getContext('2d');
     ctx.globalAlpha = 1;
     ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 30;
     ctx.lineJoin = ctx.lineCap = 'round';
     let last_mouse = { x: 0, y: 0 };
     let mouse = { x: 0, y: 0 };
@@ -58,17 +61,19 @@ function initializeDrawTool(canvas, clearBtn) {
         }
     }
 
-    $(canvas).on('mousedown', function(e) {
-        last_mouse = mouse = getMousePos(canvas, e);
+    $(canvasBig).on('mousedown', function(e) {
+        last_mouse = mouse = getMousePos(canvasBig, e);
         mousedown = true;
+        fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    $(canvas).on('mouseup', function(e) {
+    $(canvasBig).on('mouseup', function(e) {
         mousedown = false;
+        fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    $(canvas).on('mousemove', function(e) {
-        mouse = getMousePos(canvas, e);
+    $(canvasBig).on('mousemove', function(e) {
+        mouse = getMousePos(canvasBig, e);
         if (mousedown) {
             ctx.beginPath();
             ctx.moveTo(last_mouse.x, last_mouse.y);
@@ -76,11 +81,32 @@ function initializeDrawTool(canvas, clearBtn) {
             ctx.stroke();
         }
         last_mouse = mouse;
+        fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
     clearBtn.addEventListener("click", function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // ctx.clearRect(0, 0, canvasBig.width, canvasBig.height);
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvasBig.width, canvasBig.height);
+        fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
+}
+
+function fitSrc2Dst({ srcCanvas, dstCanvas }) {
+    var srcCtx = srcCanvas.getContext('2d');
+    var imageData = srcCtx.getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+    var destCtx = dstCanvas.getContext('2d');
+
+    var newCanvas = $("<canvas>")
+        .attr("width", imageData.width)
+        .attr("height", imageData.height)[0];
+
+    newCanvas.getContext('2d').putImageData(imageData, 0, 0);
+
+    destCtx.save();
+    destCtx.scale(dstCanvas.width / srcCanvas.width, dstCanvas.height / srcCanvas.height);
+    destCtx.drawImage(newCanvas, 0, 0);
+    destCtx.restore();
 }
 
 function highlightPredictionInNetwork(prediction, network) {
