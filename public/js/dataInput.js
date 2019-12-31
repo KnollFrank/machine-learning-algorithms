@@ -85,10 +85,8 @@ function initializeDrawTool(canvasBig, canvasSmall, clearBtn) {
     });
 
     clearBtn.addEventListener("click", function() {
-        // ctx.clearRect(0, 0, canvasBig.width, canvasBig.height);
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvasBig.width, canvasBig.height);
-        fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
+        ctx.clearRect(0, 0, canvasBig.width, canvasBig.height);
+        canvasSmall.getContext('2d').clearRect(0, 0, canvasSmall.width, canvasSmall.height);
     });
 }
 
