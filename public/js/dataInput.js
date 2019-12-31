@@ -21,30 +21,17 @@ function displayCanvasDataInput(rootElement, tree, network) {
     initializeDrawTool(
         canvasBig,
         canvasSmall,
-        rootElement.querySelector("#clear-button"));
-
-    rootElement.querySelector('#predict-digit').addEventListener(
-        "click",
-        e => {
-            e.preventDefault();
-            fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
-            const ctxSmall = canvasSmall.getContext('2d');
-            const imageData = ctxSmall.getImageData(0, 0, canvasSmall.width, canvasSmall.height);
-            const pixels = imageData2Pixels(imageData);
-            const prediction = predict(tree, pixels);
-            highlightPredictionInNetwork(prediction, network);
-            rootElement.querySelector('.prediction').innerHTML = prediction.value;
-            return false;
-        });
+        rootElement.querySelector("#clear-button"),
+        (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rootElement));
 }
 
-function initializeDrawTool(canvasBig, canvasSmall, clearBtn) {
-    const ctx = canvasBig.getContext('2d');
-    ctx.globalAlpha = 1;
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 20;
-    ctx.lineJoin = ctx.lineCap = 'round';
+function initializeDrawTool(canvasBig, canvasSmall, clearBtn, onDigitDrawn) {
+    const ctxBix = canvasBig.getContext('2d');
+    ctxBix.globalAlpha = 1;
+    ctxBix.globalCompositeOperation = 'source-over';
+    ctxBix.strokeStyle = 'black';
+    ctxBix.lineWidth = 20;
+    ctxBix.lineJoin = ctxBix.lineCap = 'round';
     let last_mouse = { x: 0, y: 0 };
     let mouse = { x: 0, y: 0 };
     let mousedown = false;
@@ -69,25 +56,39 @@ function initializeDrawTool(canvasBig, canvasSmall, clearBtn) {
 
     $(canvasBig).on('mouseup', function(e) {
         mousedown = false;
-        fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
+        onDigitDrawn(canvasBig, canvasSmall);
     });
 
     $(canvasBig).on('mousemove', function(e) {
         mouse = getMousePos(canvasBig, e);
         if (mousedown) {
-            ctx.beginPath();
-            ctx.moveTo(last_mouse.x, last_mouse.y);
-            ctx.lineTo(mouse.x, mouse.y);
-            ctx.stroke();
+            ctxBix.beginPath();
+            ctxBix.moveTo(last_mouse.x, last_mouse.y);
+            ctxBix.lineTo(mouse.x, mouse.y);
+            ctxBix.stroke();
         }
         last_mouse = mouse;
         fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
     clearBtn.addEventListener("click", function() {
-        ctx.clearRect(0, 0, canvasBig.width, canvasBig.height);
+        ctxBix.clearRect(0, 0, canvasBig.width, canvasBig.height);
         canvasSmall.getContext('2d').clearRect(0, 0, canvasSmall.width, canvasSmall.height);
     });
+}
+
+function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rootElement) {
+    const pixels = getPixels(canvasBig, canvasSmall);
+    const prediction = predict(tree, pixels);
+    highlightPredictionInNetwork(prediction, network);
+    rootElement.querySelector('.prediction').innerHTML = prediction.value;
+}
+
+function getPixels(canvasBig, canvasSmall) {
+    fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
+    const ctxSmall = canvasSmall.getContext('2d');
+    const imageData = ctxSmall.getImageData(0, 0, canvasSmall.width, canvasSmall.height);
+    return imageData2Pixels(imageData);
 }
 
 function fitSrc2Dst({ srcCanvas, dstCanvas }) {
