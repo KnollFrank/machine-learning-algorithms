@@ -183,50 +183,45 @@ function displayProgress({
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
+    const configureEventListener = (selector, nodeContentFactory) =>
+        document.querySelector(selector).addEventListener(
+            'click',
+            () => _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory)
+        );
+
+    _onDecisionTreeChanged(datasetDescription, tree, new SimpleNodeContentFactory());
+    configureEventListener('#simple-decisionTreeNetwork', new SimpleNodeContentFactory());
+    configureEventListener('#enhanced-decisionTreeNetwork', new EnhancedNodeContentFactory());
+}
+
+function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
-    const network = createAndDisplayNetwork(datasetDescription, tree, new SimpleNodeContentFactory());
+    const network = createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory);
     // FK-FIXME:
     // print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
-    // FK-TODO: refactor
-    document.querySelector('#simple-decisionTreeNetwork').addEventListener('click', () =>
-        createAndDisplayNetwork(datasetDescription, tree, new SimpleNodeContentFactory())
-    );
-    document.querySelector('#enhanced-decisionTreeNetwork').addEventListener('click', () =>
-        createAndDisplayNetwork(datasetDescription, tree, new EnhancedNodeContentFactory())
-    );
     displayAccuracy(tree, datasetDescription.splittedDataset.test);
     displayTestingTableWithPredictions(tree, network, datasetDescription);
-
     const canvasDataInput = document.querySelector('#canvas-data-input');
     const textDataInput = document.querySelector('#text-data-input');
     if (isDigitDataset(datasetDescription)) {
         canvasDataInput.style.display = "block";
         textDataInput.style.display = "none";
-
-        displayCanvasDataInput(
-            canvasDataInput,
-            tree,
-            network);
+        displayCanvasDataInput(canvasDataInput, tree, network);
     } else {
         canvasDataInput.style.display = "none";
         textDataInput.style.display = "block";
-
-        displayTextDataInput(
-            textDataInput,
-            datasetDescription.attributeNames.X,
-            tree,
-            network);
+        displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network);
     }
 }
-
-const localStorageTreeKey = 'tree';
 
 function createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory) {
     const network = createNetwork(datasetDescription, tree, nodeContentFactory);
     displayNetwork(document.querySelector('#decisionTreeNetwork'), network);
     return network;
 }
+
+const localStorageTreeKey = 'tree';
 
 function configure_load_tree(datasetDescription) {
     const load_tree = document.querySelector('#load_tree');
