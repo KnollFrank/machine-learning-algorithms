@@ -32,7 +32,4 @@ nodemon webserver.js
 node webserver.js
 
 FK-TODO:
-- Für die Knoten des Network eine vereinfachte Darstellung mit kurzer Darstellung anbieten:
-  innere Knoten zeigen die Testbedingung an, Endknoten lediglich die Klasse.
-  Zwischen vereinfachter und erweiterter Darstellung über einen Togglebutton hin und herschalten, z.B. mit https://www.w3schools.com/howto/howto_css_switch.asp
 - K-Nearest Neighbors für MNIST implementieren (https://www.classes.cs.uchicago.edu/archive/2015/spring/12300-1/pa2.html)
