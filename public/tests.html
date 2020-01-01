@@ -69,7 +69,7 @@
     <div id="qunit-fixture"></div>
     <script src="https://code.jquery.com/qunit/qunit-2.9.2.js"></script>
     <script>
-        QUnit.skip("hello test", function (assert) {
+        QUnit.skip("hello test", function(assert) {
             const csv = `variance,skewness,curtosis,entropy,class
 3.6216,8.6661,-2.8073,-0.44699,0
 4.5459,8.1674,-2.4586,-1.4621,0
@@ -1491,7 +1491,7 @@
             assert.ok(1 == "1", "Passed!");
         });
 
-        QUnit.test("should not prune terminal node", function (assert) {
+        QUnit.test("should not prune terminal node", function(assert) {
             const jsonTree = `
             {
                 "id": 6,
@@ -1500,7 +1500,7 @@
             shouldPruneTree(assert, jsonTree, jsonTree);
         });
 
-        QUnit.test("should not prune", function (assert) {
+        QUnit.test("should not prune", function(assert) {
             const jsonTree = `
             {
                 "index": 0,
@@ -1537,7 +1537,7 @@
             shouldPruneTree(assert, jsonTree, jsonTree);
         });
 
-        QUnit.test("should prune right child", function (assert) {
+        QUnit.test("should prune right child", function(assert) {
             const jsonTree = `
             {
                 "index": 0,
@@ -1598,7 +1598,7 @@
             shouldPruneTree(assert, jsonTree, jsonTreeExpected);
         });
 
-        QUnit.test("should prune twice", function (assert) {
+        QUnit.test("should prune twice", function(assert) {
             const jsonTree = `
             {
                 "index": 0,
@@ -1641,7 +1641,7 @@
             shouldPruneTree(assert, jsonTree, jsonTreeExpected);
         });
 
-        QUnit.test("should prune left and right child", function (assert) {
+        QUnit.test("should prune left and right child", function(assert) {
             const jsonTree = `
             {
                 "index": 0,
@@ -1705,7 +1705,7 @@
             assert.deepEqual(prunedTree, JSON.parse(jsonTreeExpected));
         }
 
-        QUnit.test("should train_test_split dataset", function (assert) {
+        QUnit.test("should train_test_split dataset", function(assert) {
             assert.deepEqual(
                 train_test_split(
                     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -1723,7 +1723,7 @@
                 });
         });
 
-        QUnit.test("should split items into chunks", function (assert) {
+        QUnit.test("should split items into chunks", function(assert) {
             assert.deepEqual(
                 splitItemsIntoChunks({
                     numItems: 10,
@@ -1808,7 +1808,7 @@
                 "numItems: 2, maxNumChunks: 2");
         });
 
-        QUnit.test("should getMinOfArray", function (assert) {
+        QUnit.test("should getMinOfArray", function(assert) {
             assert.equal(
                 getMinOfArray([3, 2, 1], (a, b) => Math.min(a, b)),
                 1,
@@ -1820,7 +1820,7 @@
                 'getMinOfArray(["aaa", "aa", "a"], (a, b) => a.length < b.length ? a : b)');
         });
 
-        QUnit.test("k nearest neighbors", function (assert) {
+        QUnit.test("k nearest neighbors", function(assert) {
             // Given
             const X = [
                 [0],
@@ -1829,14 +1829,14 @@
                 [3]
             ];
             const y = [0, 0, 1, 1];
-            const knn = new KNN(3);
+            const knn = new KNN(1);
 
             // When
             knn.fit(X, y);
-            const prediction = knn.predict([1.1]);
 
             // Then
-            assert.equal(prediction, 0);
+            assert.equal(knn.predict([1.1]), 0, '1.1 ~ 1 -> 0');
+            assert.equal(knn.predict([1.9]), 1, '1.9 ~ 2 -> 1');
         });
     </script>
 </body>
