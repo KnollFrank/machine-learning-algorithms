@@ -183,15 +183,18 @@ function displayProgress({
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
-    const configureEventListener = (selector, nodeContentFactory) =>
-        document.querySelector(selector).addEventListener(
-            'click',
-            () => _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory)
-        );
-
     _onDecisionTreeChanged(datasetDescription, tree, new SimpleNodeContentFactory());
-    configureEventListener('#simple-decisionTreeNetwork', new SimpleNodeContentFactory());
-    configureEventListener('#enhanced-decisionTreeNetwork', new EnhancedNodeContentFactory());
+    document.querySelector('#decisionTreeNetwork-enhanced-switcher input[type=checkbox]').addEventListener(
+        'change',
+        function() {
+            // FK-TODO: DRY
+            if (this.checked) {
+                _onDecisionTreeChanged(datasetDescription, tree, new EnhancedNodeContentFactory());
+            } else {
+                _onDecisionTreeChanged(datasetDescription, tree, new SimpleNodeContentFactory());
+            }
+        }
+    );
 }
 
 function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
