@@ -151,3 +151,7 @@ div.digit figcaption.wrongPrediction {
     border-radius: 2px;
     display: none;
 }
+
+#decisionTreeNetwork-enhanced-switcher {
+    margin-bottom: 15px;
+}
