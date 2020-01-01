@@ -197,8 +197,7 @@ function onDecisionTreeChanged(datasetDescription, tree) {
 function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
     const network = createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory);
-    // FK-FIXME:
-    // print_tree(tree, datasetDescription.attributeNames.all);
+    print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
     displayAccuracy(tree, datasetDescription.splittedDataset.test);
     displayTestingTableWithPredictions(tree, network, datasetDescription);
