@@ -3,6 +3,8 @@
 // FK-TODO: verwende import export
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
+const ClassifierType = Object.freeze({ DECISION_TREE: 'DECISION_TREE', KNN: 'KNN' });
+
 document.addEventListener('DOMContentLoaded', () => {
     $('#section-traindata, #section-decision-tree, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
@@ -62,7 +64,7 @@ function onDatasetChanged(datasetDescription) {
             dataset: datasetDescription.splittedDataset.train
         });
     }
-    build_tree_onSubmit(datasetDescription);
+    build_classifier_onSubmit(datasetDescription);
     configure_load_tree(datasetDescription);
 }
 
@@ -72,23 +74,32 @@ function isDigitDataset(datasetDescription) {
 
 let submitEventListener;
 
-function build_tree_onSubmit(datasetDescription) {
+function build_classifier_onSubmit(datasetDescription) {
     let decisionTreeForm = document.querySelector('#decisionTreeForm');
     if (submitEventListener) {
         decisionTreeForm.removeEventListener("submit", submitEventListener);
     }
     submitEventListener = e => {
         e.preventDefault();
-        build_tree(datasetDescription);
-        /*const knn = new KNN(1);
-        knn.fit(
-            datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
-            datasetDescription.splittedDataset.train.map(getClassValFromRow));
-        const prediction = knn.predict(getIndependentValsFromRow(datasetDescription.splittedDataset.test[0], datasetDescription));
-        console.log('prediction:', prediction);*/
+        build_classifier(datasetDescription, ClassifierType.KNN);
         return false;
     }
     decisionTreeForm.addEventListener("submit", submitEventListener);
+}
+
+function build_classifier(datasetDescription, classifierType) {
+    switch (classifierType) {
+        case ClassifierType.DECISION_TREE:
+            build_tree(datasetDescription);
+            break;
+        case ClassifierType.KNN:
+            const knn = new KNN(1);
+            knn.fit(
+                datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
+                datasetDescription.splittedDataset.train.map(getClassValFromRow));
+            onClassifierBuilt(datasetDescription, knn, classifierType);
+            break;
+    }
 }
 
 function build_tree(datasetDescription) {
@@ -122,7 +133,7 @@ function build_tree(datasetDescription) {
                 break;
             case 'result':
                 $('#progress').fadeOut();
-                onDecisionTreeChanged(datasetDescription, value);
+                onClassifierBuilt(datasetDescription, value, ClassifierType.DECISION_TREE);
                 break;
         }
     });
@@ -188,6 +199,18 @@ function displayProgress({
     setProgress_endAttribute(workerIndex, attributeNames[endSplitIndex]);
 }
 
+function onClassifierBuilt(datasetDescription, classifier, classifierType) {
+    switch (classifierType) {
+        case ClassifierType.DECISION_TREE:
+            onDecisionTreeChanged(datasetDescription, classifier);
+            break;
+        case ClassifierType.KNN:
+            displayAccuracy(classifier, datasetDescription.splittedDataset.test, datasetDescription, classifierType);
+            // displayTestingTableWithPredictions(tree, network, datasetDescription);
+            break;
+    }
+}
+
 function onDecisionTreeChanged(datasetDescription, tree) {
     const switcher = document.querySelector('#decisionTreeNetwork-enhanced-switcher input[type=checkbox]');
     const __onDecisionTreeChanged = () =>
@@ -206,7 +229,7 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     const network = createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory);
     print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
-    displayAccuracy(tree, datasetDescription.splittedDataset.test);
+    displayAccuracy(tree, datasetDescription.splittedDataset.test, datasetDescription, ClassifierType.DECISION_TREE);
     displayTestingTableWithPredictions(tree, network, datasetDescription);
     const canvasDataInput = document.querySelector('#canvas-data-input');
     const textDataInput = document.querySelector('#text-data-input');
@@ -238,7 +261,7 @@ function configure_load_tree(datasetDescription) {
     const load_tree = document.querySelector('#load_tree');
     load_tree.addEventListener('click', () => {
         const tree = JSON.parse(localStorage.getItem(localStorageTreeKey))
-        onDecisionTreeChanged(datasetDescription, tree);
+        onClassifierBuilt(datasetDescription, tree, ClassifierType.DECISION_TREE);
     });
 }
 
@@ -261,13 +284,22 @@ function getInputValueBy(selectors) {
     return document.querySelector(selectors).value;
 }
 
-function displayAccuracy(tree, dataset) {
-    const accuracy = computeAccuracy(tree, dataset);
+function displayAccuracy(classifier, dataset, datasetDescription, classifierType) {
+    const accuracy = computeAccuracy(classifier, dataset, datasetDescription, classifierType);
     document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
 }
 
-function computeAccuracy(tree, dataset) {
-    const predicted = dataset.map(row => predict(tree, row).value);
+function computeAccuracy(classifier, dataset, datasetDescription, classifierType) {
+    let predicted;
+    // FK-TODO: extract method
+    switch (classifierType) {
+        case ClassifierType.DECISION_TREE:
+            predicted = dataset.map(row => predict(classifier, row).value);
+            break;
+        case ClassifierType.KNN:
+            predicted = dataset.map(row => classifier.predict(getIndependentValsFromRow(row, datasetDescription)));
+            break;
+    }
     return accuracy_percentage(actualClassVals(dataset), predicted);
 }
 
