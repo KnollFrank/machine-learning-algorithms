@@ -205,6 +205,7 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             onDecisionTreeChanged(datasetDescription, classifier);
             break;
         case ClassifierType.KNN:
+            $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
             displayAccuracy(classifier, datasetDescription.splittedDataset.test, datasetDescription, classifierType);
             // displayTestingTableWithPredictions(tree, network, datasetDescription);
             break;
