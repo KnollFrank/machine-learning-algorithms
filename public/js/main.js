@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function(results) {
+            complete: function (results) {
                 onDatasetChanged(getDatasetDescription(dataFile.name, results.data));
             }
         });
@@ -80,6 +80,12 @@ function build_tree_onSubmit(datasetDescription) {
     submitEventListener = e => {
         e.preventDefault();
         build_tree(datasetDescription);
+        /*const knn = new KNN(1);
+        knn.fit(
+            datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
+            datasetDescription.splittedDataset.train.map(getClassValFromRow));
+        const prediction = knn.predict(getIndependentValsFromRow(datasetDescription.splittedDataset.test[0], datasetDescription));
+        console.log('prediction:', prediction);*/
         return false;
     }
     decisionTreeForm.addEventListener("submit", submitEventListener);
@@ -126,10 +132,10 @@ function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
     $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
-            max_depth,
-            min_size,
-            splitterWorkers,
-            createTreeListener(onmessage))
+        max_depth,
+        min_size,
+        splitterWorkers,
+        createTreeListener(onmessage))
         .build_tree(
             dataset,
             tree => onmessage({ type: 'result', value: tree }));
@@ -189,8 +195,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             datasetDescription,
             tree,
             switcher.checked ?
-            new EnhancedNodeContentFactory() :
-            new SimpleNodeContentFactory());
+                new EnhancedNodeContentFactory() :
+                new SimpleNodeContentFactory());
     switcher.addEventListener('change', __onDecisionTreeChanged);
     __onDecisionTreeChanged();
 }
@@ -301,8 +307,9 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
 }
 
 function predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) {
-    const independentValsFromRow = row.slice(0, datasetDescription.attributeNames.X.length);
-    highlightPredictionInNetwork(predict(tree, independentValsFromRow), network);
+    highlightPredictionInNetwork(
+        predict(tree, getIndependentValsFromRow(row, datasetDescription)),
+        network);
 }
 
 function createTreeListener(onmessage) {
@@ -318,10 +325,10 @@ function createTreeListener(onmessage) {
         onEdgeAdded: (fromNode, toNode) => {
             timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
         },
-        onStartSplit: nodeId => {},
+        onStartSplit: nodeId => { },
         onInnerSplit: ({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
             onmessage({ type: 'inner-split', value: { workerIndex, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
         },
-        onEndSplit: nodeId => {}
+        onEndSplit: nodeId => { }
     }
 }
