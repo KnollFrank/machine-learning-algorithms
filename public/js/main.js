@@ -210,11 +210,16 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     displayTestingTableWithPredictions(tree, network, datasetDescription);
     const canvasDataInput = document.querySelector('#canvas-data-input');
     const textDataInput = document.querySelector('#text-data-input');
+    displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network);
+}
+
+function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network) {
     if (isDigitDataset(datasetDescription)) {
         canvasDataInput.style.display = "block";
         textDataInput.style.display = "none";
         displayCanvasDataInput(canvasDataInput, tree, network);
-    } else {
+    }
+    else {
         canvasDataInput.style.display = "none";
         textDataInput.style.display = "block";
         displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network);
