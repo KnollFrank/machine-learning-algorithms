@@ -206,10 +206,11 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             break;
         case ClassifierType.KNN:
             $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
+            const rowClassifier = getRowClassifier(ClassifierType.KNN, classifier, datasetDescription);
             displayAccuracy(
-                getRowClassifier(ClassifierType.KNN, classifier, datasetDescription),
+                rowClassifier,
                 datasetDescription.splittedDataset.test);
-            // displayTestingTableWithPredictions(classifier, network, datasetDescription);
+            displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, datasetDescription);
             break;
     }
 }
@@ -232,10 +233,11 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     const network = createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory);
     print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
+    const rowClassifier = getRowClassifier(ClassifierType.DECISION_TREE, tree, datasetDescription);
     displayAccuracy(
-        getRowClassifier(ClassifierType.DECISION_TREE, tree, datasetDescription),
+        rowClassifier,
         datasetDescription.splittedDataset.test);
-    displayTestingTableWithPredictions(tree, network, datasetDescription);
+    displayTestingTableWithPredictions(rowClassifier, ClassifierType.DECISION_TREE, network, datasetDescription);
     const canvasDataInput = document.querySelector('#canvas-data-input');
     const textDataInput = document.querySelector('#text-data-input');
     displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network);
@@ -306,13 +308,13 @@ function computeAccuracy(rowClassifier, dataset) {
     return accuracy_percentage(actualClassVals(dataset), dataset.map(rowClassifier));
 }
 
-function displayTestingTableWithPredictions(tree, network, datasetDescription) {
+function displayTestingTableWithPredictions(rowClassifier, classifierType, network, datasetDescription) {
     function addPredictionAttribute(attributeNames) {
         const lastAttributeName = attributeNames[attributeNames.length - 1];
         return attributeNames.concat('prediction for ' + lastAttributeName);
     }
 
-    const addPrediction2Row = row => row.concat(predict(tree, row).value);
+    const addPrediction2Row = row => row.concat(rowClassifier(row).value);
     const addPredictions = rows => rows.map(addPrediction2Row);
 
     function markRowIfItsPredictionIsWrong(row, data) {
@@ -327,21 +329,28 @@ function displayTestingTableWithPredictions(tree, network, datasetDescription) {
     if (isDigitDataset(datasetDescription)) {
         $('#container-digits-test').fadeIn();
         $('#container-testDataSet').fadeOut();
+        const onDigitClickedReceiveRow =
+            classifierType == ClassifierType.DECISION_TREE ?
+            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+            row => {};
         displayDigitTestDataset({
             datasetDescription: datasetDescription,
-            tree: tree,
+            rowClassifier: rowClassifier,
             digitsContainerId: 'container-digits-test',
-            onDigitClickedReceiveRow: row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription)
+            onDigitClickedReceiveRow: onDigitClickedReceiveRow
         });
     } else {
         $('#container-digits-test').fadeOut();
         $('#container-testDataSet').fadeIn();
+        const onRowClicked = classifierType == ClassifierType.DECISION_TREE ?
+            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+            row => {};
         displayDatasetAsTable({
             tableContainer: $('#container-testDataSet'),
             attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
             dataset: addPredictions(datasetDescription.splittedDataset.test),
             createdRow: markRowIfItsPredictionIsWrong,
-            onRowClicked: row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription)
+            onRowClicked: onRowClicked
         });
     }
 }

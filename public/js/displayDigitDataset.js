@@ -43,20 +43,20 @@ function displayDigitTrainDataset(datasetDescription, digitsContainerId) {
 
 class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
 
-    constructor(tree, onDigitClickedReceiveRow) {
+    constructor(rowClassifier, onDigitClickedReceiveRow) {
         super(onDigitClickedReceiveRow);
-        this.tree = tree;
+        this.rowClassifier = rowClassifier;
     }
 
     _getFigcaption(row) {
         const actualDigit = getClassValFromRow(row);
-        const predictedDigit = predict(this.tree, row).value;
+        const predictedDigit = this.rowClassifier(row);
         return [predictedDigit, actualDigit != predictedDigit ? 'wrongPrediction' : undefined];
     }
 }
 
-function displayDigitTestDataset({ datasetDescription, tree, digitsContainerId, onDigitClickedReceiveRow }) {
-    new DisplayDigitTestDataset(tree, onDigitClickedReceiveRow)
+function displayDigitTestDataset({ datasetDescription, rowClassifier, digitsContainerId, onDigitClickedReceiveRow }) {
+    new DisplayDigitTestDataset(rowClassifier, onDigitClickedReceiveRow)
         .displayDigitDataset(
             datasetDescription.splittedDataset.test,
             digitsContainerId);
