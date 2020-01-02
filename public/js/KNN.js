@@ -1,6 +1,7 @@
 'use strict';
 
 class KNN {
+
     constructor(k) {
         this.k = k;
     }
