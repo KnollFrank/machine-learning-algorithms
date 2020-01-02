@@ -345,7 +345,8 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
     } else {
         $('#container-digits-test').fadeOut();
         $('#container-testDataSet').fadeIn();
-        const onRowClicked = classifierType == ClassifierType.DECISION_TREE ?
+        const onRowClicked =
+            classifierType == ClassifierType.DECISION_TREE ?
             row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
             row => {};
         displayDatasetAsTable({

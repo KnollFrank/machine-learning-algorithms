@@ -1,5 +1,6 @@
 'use strict';
 
+// FK-TODO: verwende k-d trees
 class KNN {
 
     constructor(k) {
@@ -23,7 +24,7 @@ class KNN {
     getDistance(pointA, pointB) {
         return Math.sqrt(
             zip(pointA, pointB)
-                .map(([coordA, coordB]) => (coordA - coordB) ** 2)
-                .sum());
+            .map(([coordA, coordB]) => (coordA - coordB) ** 2)
+            .sum());
     }
 }
