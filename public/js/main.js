@@ -211,6 +211,9 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
                 rowClassifier,
                 datasetDescription.splittedDataset.test);
             displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
+            const canvasDataInput = document.querySelector('#canvas-data-input');
+            const textDataInput = document.querySelector('#text-data-input');
+            displayDataInput(datasetDescription, canvasDataInput, textDataInput, classifier, network, rowClassifier, ClassifierType.KNN);
             break;
     }
 }
@@ -240,14 +243,14 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     displayTestingTableWithPredictions(rowClassifier, ClassifierType.DECISION_TREE, network, tree, datasetDescription);
     const canvasDataInput = document.querySelector('#canvas-data-input');
     const textDataInput = document.querySelector('#text-data-input');
-    displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network);
+    displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowClassifier, ClassifierType.DECISION_TREE);
 }
 
-function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network) {
+function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowClassifier, classifierType) {
     if (isDigitDataset(datasetDescription)) {
         canvasDataInput.style.display = "block";
         textDataInput.style.display = "none";
-        displayCanvasDataInput(canvasDataInput, tree, network);
+        displayCanvasDataInput(canvasDataInput, tree, network, rowClassifier, classifierType);
     } else {
         canvasDataInput.style.display = "none";
         textDataInput.style.display = "block";

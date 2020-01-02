@@ -15,14 +15,14 @@ function displayTextDataInput(rootElement, attributeNames, tree, network) {
         });
 }
 
-function displayCanvasDataInput(rootElement, tree, network) {
+function displayCanvasDataInput(rootElement, tree, network, rowClassifier, classifierType) {
     const canvasBig = rootElement.querySelector('#digit-canvas-big');
     const canvasSmall = document.querySelector('#digit-canvas-small');
     initializeDrawTool(
         canvasBig,
         canvasSmall,
         rootElement.querySelector("#new-prediction"),
-        (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rootElement));
+        (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowClassifier, classifierType));
 }
 
 function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDrawn) {
@@ -85,11 +85,15 @@ function clearCanvas(canvasBig, canvasSmall) {
     canvasSmall.getContext('2d').clearRect(0, 0, canvasSmall.width, canvasSmall.height);
 }
 
-function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rootElement) {
+function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowClassifier, classifierType) {
     const pixels = getPixels(canvasBig, canvasSmall);
-    const prediction = predict(tree, pixels);
-    highlightPredictionInNetwork(prediction, network);
-    setPrediction(prediction.value);
+    if (classifierType == ClassifierType.DECISION_TREE) {
+        const prediction = predict(tree, pixels);
+        highlightPredictionInNetwork(prediction, network);
+        setPrediction(prediction.value);
+    } else {
+        setPrediction(rowClassifier(pixels));
+    }
 }
 
 function setPrediction(predictedValue) {
