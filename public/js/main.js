@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function (results) {
+            complete: function(results) {
                 onDatasetChanged(getDatasetDescription(dataFile.name, results.data));
             }
         });
@@ -143,10 +143,10 @@ function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
     $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
-        max_depth,
-        min_size,
-        splitterWorkers,
-        createTreeListener(onmessage))
+            max_depth,
+            min_size,
+            splitterWorkers,
+            createTreeListener(onmessage))
         .build_tree(
             dataset,
             tree => onmessage({ type: 'result', value: tree }));
@@ -207,7 +207,7 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
         case ClassifierType.KNN:
             $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
             displayAccuracy(classifier, datasetDescription.splittedDataset.test, datasetDescription, classifierType);
-            // displayTestingTableWithPredictions(tree, network, datasetDescription);
+            // displayTestingTableWithPredictions(classifier, network, datasetDescription);
             break;
     }
 }
@@ -219,8 +219,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             datasetDescription,
             tree,
             switcher.checked ?
-                new EnhancedNodeContentFactory() :
-                new SimpleNodeContentFactory());
+            new EnhancedNodeContentFactory() :
+            new SimpleNodeContentFactory());
     switcher.addEventListener('change', __onDecisionTreeChanged);
     __onDecisionTreeChanged();
 }
@@ -242,8 +242,7 @@ function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tr
         canvasDataInput.style.display = "block";
         textDataInput.style.display = "none";
         displayCanvasDataInput(canvasDataInput, tree, network);
-    }
-    else {
+    } else {
         canvasDataInput.style.display = "none";
         textDataInput.style.display = "block";
         displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network);
@@ -291,17 +290,17 @@ function displayAccuracy(classifier, dataset, datasetDescription, classifierType
 }
 
 function computeAccuracy(classifier, dataset, datasetDescription, classifierType) {
-    let predicted;
-    // FK-TODO: extract method
-    switch (classifierType) {
-        case ClassifierType.DECISION_TREE:
-            predicted = dataset.map(row => predict(classifier, row).value);
-            break;
-        case ClassifierType.KNN:
-            predicted = dataset.map(row => classifier.predict(getIndependentValsFromRow(row, datasetDescription)));
-            break;
+    function getRowClassifier(classifier, datasetDescription) {
+        switch (classifierType) {
+            case ClassifierType.DECISION_TREE:
+                return row => predict(classifier, row).value;
+            case ClassifierType.KNN:
+                return row => classifier.predict(getIndependentValsFromRow(row, datasetDescription));
+        }
     }
-    return accuracy_percentage(actualClassVals(dataset), predicted);
+
+    const predictRow = getRowClassifier(classifier, datasetDescription);
+    return accuracy_percentage(actualClassVals(dataset), dataset.map(predictRow));
 }
 
 function displayTestingTableWithPredictions(tree, network, datasetDescription) {
@@ -363,10 +362,10 @@ function createTreeListener(onmessage) {
         onEdgeAdded: (fromNode, toNode) => {
             timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
         },
-        onStartSplit: nodeId => { },
+        onStartSplit: nodeId => {},
         onInnerSplit: ({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
             onmessage({ type: 'inner-split', value: { workerIndex, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
         },
-        onEndSplit: nodeId => { }
+        onEndSplit: nodeId => {}
     }
 }
