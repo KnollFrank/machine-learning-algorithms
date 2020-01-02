@@ -2,7 +2,7 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function() {
+Array.prototype.sum = function () {
     return this.reduce((sum, el) => sum + el, 0);
 };
 
@@ -34,11 +34,11 @@ function splitItemsIntoChunks({
 }
 
 const dummyTreeListener = {
-    onNodeAdded: node => {},
-    onEdgeAdded: (fromNode, toNode) => {},
-    onStartSplit: nodeId => {},
-    onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => {},
-    onEndSplit: nodeId => {}
+    onNodeAdded: node => { },
+    onEdgeAdded: (fromNode, toNode) => { },
+    onStartSplit: nodeId => { },
+    onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => { },
+    onEndSplit: nodeId => { }
 };
 
 class DecisionTreeBuilder {
@@ -69,18 +69,16 @@ class DecisionTreeBuilder {
             nodeId,
             dataset,
             splits_for_chunks => {
-                const [b_index, b_value, b_score, b_groups] =
-                getMinOfArray(
-                    splits_for_chunks,
-                    (
-                        [index1, value1, score1, groups1], [index2, value2, score2, groups2]
-                    ) => score1 < score2 ? [index1, value1, score1, groups1] : [index2, value2, score2, groups2]);
+                const bestSplit =
+                    getMinOfArray(
+                        splits_for_chunks,
+                        (split1, split2) => split1.score < split2.score ? split1 : split2);
                 k(this._emitOnNodeAdded({
                     id: nodeId,
-                    index: b_index,
-                    value: b_value,
-                    score: b_score,
-                    groups: b_groups,
+                    index: bestSplit.index,
+                    value: bestSplit.value,
+                    score: bestSplit.score,
+                    groups: bestSplit.groups,
                     samples: dataset.length,
                 }));
             });
@@ -219,18 +217,33 @@ class Splitter {
 
     get_split_for_chunk({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }, nodeId, dataset) {
         const class_values = getClassValsFromRows(dataset);
-        let [b_index, b_value, b_score, b_groups] = [999, 999, 999, undefined];
+        const bestSplit = {
+            index: 999,
+            value: 999,
+            score: 999,
+            groups: undefined
+        }
         for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
-            this.treeListener.onInnerSplit({ nodeId: nodeId, startSplitIndex: oneBasedStartIndexOfChunk - 1, actualSplitIndex: index, endSplitIndex: oneBasedEndIndexInclusiveOfChunk - 1, numberOfEntriesInDataset: dataset.length });
+            this.treeListener.onInnerSplit(
+                {
+                    nodeId: nodeId,
+                    startSplitIndex: oneBasedStartIndexOfChunk - 1,
+                    actualSplitIndex: index,
+                    endSplitIndex: oneBasedEndIndexInclusiveOfChunk - 1,
+                    numberOfEntriesInDataset: dataset.length
+                });
             for (const row of dataset) {
                 const groups = this.test_split(index, row[index], dataset);
                 const gini = this.gini_index(groups, class_values);
-                if (gini < b_score) {
-                    [b_index, b_value, b_score, b_groups] = [index, row[index], gini, groups];
+                if (gini < bestSplit.score) {
+                    bestSplit.index = index;
+                    bestSplit.value = row[index];
+                    bestSplit.score = gini;
+                    bestSplit.groups = groups;
                 }
             }
         }
-        return [b_index, b_value, b_score, b_groups];
+        return bestSplit;
     }
 
     // Split a dataset based on an attribute and an attribute value
@@ -240,8 +253,8 @@ class Splitter {
         for (const row of dataset) {
             const splitCondition =
                 isNumber(value) ?
-                Number(row[index]) < Number(value) :
-                row[index] == value;
+                    Number(row[index]) < Number(value) :
+                    row[index] == value;
             if (splitCondition) {
                 left.push(row);
             } else {
@@ -255,26 +268,26 @@ class Splitter {
     gini_index(groups, classes) {
         const getP = group => class_val =>
             group
-            .map(getClassValFromRow)
-            .filter(classVal => classVal == class_val)
-            .length / group.length;
+                .map(getClassValFromRow)
+                .filter(classVal => classVal == class_val)
+                .length / group.length;
 
         const getScore = group =>
             classes
-            .map(getP(group))
-            .map(p => p * p)
-            .sum();
+                .map(getP(group))
+                .map(p => p * p)
+                .sum();
 
         const n_instances =
             groups
-            .map(group => group.length)
-            .sum();
+                .map(group => group.length)
+                .sum();
 
         const gini =
             groups
-            .filter(group => group.length != 0)
-            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-            .sum();
+                .filter(group => group.length != 0)
+                .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+                .sum();
 
         return gini;
     }
@@ -400,8 +413,8 @@ function predict(node, row) {
 
     const splitCondition =
         isNumber(node.value) ?
-        Number(row[node.index]) < Number(node.value) :
-        row[node.index] == node.value;
+            Number(row[node.index]) < Number(node.value) :
+            row[node.index] == node.value;
 
     let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
     return {
