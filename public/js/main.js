@@ -206,7 +206,9 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             break;
         case ClassifierType.KNN:
             $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
-            displayAccuracy(classifier, datasetDescription.splittedDataset.test, datasetDescription, classifierType);
+            displayAccuracy(
+                getRowClassifier(ClassifierType.KNN, classifier, datasetDescription),
+                datasetDescription.splittedDataset.test);
             // displayTestingTableWithPredictions(classifier, network, datasetDescription);
             break;
     }
@@ -230,7 +232,9 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     const network = createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory);
     print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
-    displayAccuracy(tree, datasetDescription.splittedDataset.test, datasetDescription, ClassifierType.DECISION_TREE);
+    displayAccuracy(
+        getRowClassifier(ClassifierType.DECISION_TREE, tree, datasetDescription),
+        datasetDescription.splittedDataset.test);
     displayTestingTableWithPredictions(tree, network, datasetDescription);
     const canvasDataInput = document.querySelector('#canvas-data-input');
     const textDataInput = document.querySelector('#text-data-input');
@@ -284,23 +288,22 @@ function getInputValueBy(selectors) {
     return document.querySelector(selectors).value;
 }
 
-function displayAccuracy(classifier, dataset, datasetDescription, classifierType) {
-    const accuracy = computeAccuracy(classifier, dataset, datasetDescription, classifierType);
+function displayAccuracy(rowClassifier, dataset) {
+    const accuracy = computeAccuracy(rowClassifier, dataset);
     document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
 }
 
-function computeAccuracy(classifier, dataset, datasetDescription, classifierType) {
-    function getRowClassifier(classifier, datasetDescription) {
-        switch (classifierType) {
-            case ClassifierType.DECISION_TREE:
-                return row => predict(classifier, row).value;
-            case ClassifierType.KNN:
-                return row => classifier.predict(getIndependentValsFromRow(row, datasetDescription));
-        }
+function getRowClassifier(classifierType, classifier, datasetDescription) {
+    switch (classifierType) {
+        case ClassifierType.DECISION_TREE:
+            return row => predict(classifier, row).value;
+        case ClassifierType.KNN:
+            return row => classifier.predict(getIndependentValsFromRow(row, datasetDescription));
     }
+}
 
-    const predictRow = getRowClassifier(classifier, datasetDescription);
-    return accuracy_percentage(actualClassVals(dataset), dataset.map(predictRow));
+function computeAccuracy(rowClassifier, dataset) {
+    return accuracy_percentage(actualClassVals(dataset), dataset.map(rowClassifier));
 }
 
 function displayTestingTableWithPredictions(tree, network, datasetDescription) {
