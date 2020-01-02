@@ -314,7 +314,7 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
         return attributeNames.concat('prediction for ' + lastAttributeName);
     }
 
-    const addPrediction2Row = row => row.concat(rowClassifier(row).value);
+    const addPrediction2Row = row => row.concat(rowClassifier(row));
     const addPredictions = rows => rows.map(addPrediction2Row);
 
     function markRowIfItsPredictionIsWrong(row, data) {
