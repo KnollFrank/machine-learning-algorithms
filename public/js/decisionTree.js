@@ -2,14 +2,6 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-Array.prototype.sum = function () {
-    return this.reduce((sum, el) => sum + el, 0);
-};
-
-function isNumber(n) {
-    return !isNaN(n);
-}
-
 function getMinOfArray(es, getMinElement) {
     return es.reduce(getMinElement);
 }

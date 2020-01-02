@@ -11,11 +11,18 @@ class KNN {
     }
 
     predict(x) {
-        const distances2x = [];
+        const distancesX2x = [];
         for (let i = 0; i < this.X.length; i++) {
-            distances2x.push({ index: i, distance: Math.sqrt((this.X[i] - x) ** 2) });
+            distancesX2x.push({ index: i, distance: this.getDistance(this.X[i], x) });
         }
-        distances2x.sort((a, b) => a.distance - b.distance);
-        return this.y[distances2x[0].index];
+        distancesX2x.sort((distance1, distance2) => distance1.distance - distance2.distance);
+        return this.y[distancesX2x[0].index];
+    }
+
+    getDistance(pointA, pointB) {
+        return Math.sqrt(
+            zip(pointA, pointB)
+                .map(([coordA, coordB]) => (coordA - coordB) ** 2)
+                .sum());
     }
 }

@@ -10,6 +10,7 @@
     <script src="js/jquery-3.4.1.js"></script>
     <script src="js/jquery.dataTables.js"></script>
     <script src="js/papaparse.min.js"></script>
+    <script src="js/jsHelper.js"></script>
     <script src="js/idGenerator.js"></script>
     <script src="js/inputTemplate.js"></script>
     <script src="js/progress.js"></script>
@@ -1835,8 +1836,8 @@
             knn.fit(X, y);
 
             // Then
-            assert.equal(knn.predict([1.1]), 0, '1.1 ~ 1 -> 0');
-            assert.equal(knn.predict([1.9]), 1, '1.9 ~ 2 -> 1');
+            assert.equal(knn.predict([1.1]), 0, '[1.1] ~ [1] -> 0');
+            assert.equal(knn.predict([1.9]), 1, '[1.9] ~ [2] -> 1');
         });
 
         QUnit.test("k=1 nearest neighbors, 2 dim", function(assert) {

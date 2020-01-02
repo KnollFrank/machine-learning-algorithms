@@ -1,21 +1,22 @@
 'use strict';
 
 importScripts('idGenerator.js');
+importScripts('jsHelper.js');
 importScripts('decisionTree.js');
 
 onmessage = e => postMessage({ type: 'result', value: get_split_for_chunk(e.data) });
 
 function get_split_for_chunk({ chunk, nodeId, dataset }) {
     return new Splitter({
-        onNodeAdded: node => {},
-        onEdgeAdded: (fromNode, toNode) => {},
-        onStartSplit: nodeId => {},
+        onNodeAdded: node => { },
+        onEdgeAdded: (fromNode, toNode) => { },
+        onStartSplit: nodeId => { },
         onInnerSplit: ({ nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
             postMessage({
                 type: 'inner-split',
                 value: { nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }
             });
         },
-        onEndSplit: nodeId => {}
+        onEndSplit: nodeId => { }
     }).get_split_for_chunk(chunk, nodeId, dataset);
 }
