@@ -246,6 +246,15 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
     }
 }
 
+function getRowClassifier(classifierType, classifier, datasetDescription) {
+    switch (classifierType) {
+        case ClassifierType.DECISION_TREE:
+            return row => predict(classifier, row).value;
+        case ClassifierType.KNN:
+            return row => classifier.predict(getIndependentValsFromRow(row, datasetDescription));
+    }
+}
+
 function onDecisionTreeChanged(datasetDescription, tree) {
     const switcher = document.querySelector('#decisionTreeNetwork-enhanced-switcher input[type=checkbox]');
     const __onDecisionTreeChanged = () =>
@@ -324,15 +333,6 @@ function getInputValueBy(selectors) {
 function displayAccuracy(rowClassifier, dataset) {
     const accuracy = computeAccuracy(rowClassifier, dataset);
     document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
-}
-
-function getRowClassifier(classifierType, classifier, datasetDescription) {
-    switch (classifierType) {
-        case ClassifierType.DECISION_TREE:
-            return row => predict(classifier, row).value;
-        case ClassifierType.KNN:
-            return row => classifier.predict(getIndependentValsFromRow(row, datasetDescription));
-    }
 }
 
 function computeAccuracy(rowClassifier, dataset) {

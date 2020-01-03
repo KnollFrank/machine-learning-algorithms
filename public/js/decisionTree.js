@@ -298,7 +298,7 @@ function accuracy_percentage(actual, predicted) {
     let correct = 0;
     for (let i = 0; i < actual.length; i++) {
         if (actual[i] == predicted[i]) {
-            correct += 1;
+            correct++;
         }
     }
     return correct / actual.length * 100.0;
