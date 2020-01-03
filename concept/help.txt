@@ -35,4 +35,5 @@ FK-TODO:
 - Beim Malen einer Ziffer in den canvas im Ergebnis in einen 20x20-Canvas malen lassen und ihn anschließend in einem
   28x28-Canvas zentrieren, denn so sind die MNIST-Ziffern erzeugt worden.
 - K-Nearest Neighbors für MNIST implementieren (https://www.classes.cs.uchicago.edu/archive/2015/spring/12300-1/pa2.html)
-- Train- und Trestdatensatz getrennt voneinander auswählbar machen über Dateidialog.
+- Train- und Testdatensatz getrennt voneinander auswählbar machen über Dateidialog.
+- Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
