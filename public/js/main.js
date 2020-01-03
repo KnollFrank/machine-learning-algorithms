@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function (results) {
+            complete: function(results) {
                 onDatasetChanged(
                     transformIfImage(getDatasetDescription(dataFile.name, results.data)),
                     classifierType);
@@ -54,26 +54,38 @@ function getDatasetDescription(fileName, dataset) {
     };
 }
 
+// FK-TODO: do not modify datasetDescription, instead create and return new datasetDescription
 function transformIfImage(datasetDescription) {
     if (!isDigitDataset(datasetDescription)) {
         return datasetDescription;
     }
 
-    toNumbers(datasetDescription);
-
-    const kernelWidthAndHeight = 1;
-
     const transform = row => {
         const scaledImage = getScaledImage(getIndependentValsFromRow(row, datasetDescription), kernelWidthAndHeight);
         return scaledImage.concat(getClassValFromRow(row));
     };
-    datasetDescription.splittedDataset.train = datasetDescription.splittedDataset.train.map(transform);
-    datasetDescription.splittedDataset.test = datasetDescription.splittedDataset.test.map(transform);
-    datasetDescription.attributeNames.X = createRowColLabels(28 / kernelWidthAndHeight, 28 / kernelWidthAndHeight);
-    datasetDescription.imageWidth = 28 / kernelWidthAndHeight;
-    datasetDescription.imageHeight = 28 / kernelWidthAndHeight;
-    console.log('transformed datasetDescription:', datasetDescription);
-    return datasetDescription;
+
+    const kernelWidthAndHeight = 1;
+
+    const transformedDatasetDescription = {
+        fileName: datasetDescription.fileName,
+        attributeNames: {
+            X: createRowColLabels(28 / kernelWidthAndHeight, 28 / kernelWidthAndHeight),
+            y: datasetDescription.attributeNames.y,
+            get all() {
+                return this.X.concat(this.y);
+            }
+        },
+        splittedDataset: {
+            train: datasetDescription.splittedDataset.train.map(strings2Numbers).map(transform),
+            test: datasetDescription.splittedDataset.test.map(strings2Numbers).map(transform)
+        },
+        imageWidth: 28 / kernelWidthAndHeight,
+        imageHeight: 28 / kernelWidthAndHeight
+    };
+
+    console.log('transformed datasetDescription:', transformedDatasetDescription);
+    return transformedDatasetDescription;
 }
 
 function createRowColLabels(numRows, numCols) {
@@ -86,13 +98,8 @@ function createRowColLabels(numRows, numCols) {
     return rowColLabels;
 }
 
-function toNumbers(datasetDescription) {
-    function strings2Numbers(strings) {
-        return strings.map(string => Number(string));
-    }
-
-    datasetDescription.splittedDataset.train = datasetDescription.splittedDataset.train.map(strings2Numbers);
-    datasetDescription.splittedDataset.test = datasetDescription.splittedDataset.test.map(strings2Numbers);
+function strings2Numbers(strings) {
+    return strings.map(string => Number(string));
 }
 
 function getScaledImage(image, kernelWidthAndHeight) {
@@ -104,6 +111,7 @@ function getScaledImage(image, kernelWidthAndHeight) {
 
     for (let y = 0; y + kernelWidthAndHeight <= height; y += kernelWidthAndHeight) {
         for (let x = 0; x + kernelWidthAndHeight <= width; x += kernelWidthAndHeight) {
+            // FK-TODO: extract method
             let sum = 0;
             for (let yk = y; yk < y + kernelWidthAndHeight; yk++) {
                 for (let xk = x; xk < x + kernelWidthAndHeight; xk++) {
@@ -160,8 +168,7 @@ function showSectionFor(classifierType) {
     if (classifierType == ClassifierType.DECISION_TREE) {
         $('#section-decision-tree').fadeIn();
         $('#section-KNN').fadeOut();
-    }
-    else {
+    } else {
         $('#section-decision-tree').fadeOut();
         $('#section-KNN').fadeIn();
     }
@@ -246,10 +253,10 @@ function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
     $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
-        max_depth,
-        min_size,
-        splitterWorkers,
-        createTreeListener(onmessage))
+            max_depth,
+            min_size,
+            splitterWorkers,
+            createTreeListener(onmessage))
         .build_tree(
             dataset,
             tree => onmessage({ type: 'result', value: tree }));
@@ -337,8 +344,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             datasetDescription,
             tree,
             switcher.checked ?
-                new EnhancedNodeContentFactory() :
-                new SimpleNodeContentFactory());
+            new EnhancedNodeContentFactory() :
+            new SimpleNodeContentFactory());
     switcher.addEventListener('change', __onDecisionTreeChanged);
     __onDecisionTreeChanged();
 }
@@ -447,8 +454,8 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
         $('#container-testDataSet').fadeOut();
         const onDigitClickedReceiveRow =
             classifierType == ClassifierType.DECISION_TREE ?
-                row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
-                row => { };
+            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+            row => {};
         displayDigitTestDataset({
             datasetDescription: datasetDescription,
             rowClassifier: rowClassifier,
@@ -460,8 +467,8 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
         $('#container-testDataSet').fadeIn();
         const onRowClicked =
             classifierType == ClassifierType.DECISION_TREE ?
-                row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
-                row => { };
+            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+            row => {};
         displayDatasetAsTable({
             tableContainer: $('#container-testDataSet'),
             attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
@@ -491,10 +498,10 @@ function createTreeListener(onmessage) {
         onEdgeAdded: (fromNode, toNode) => {
             timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
         },
-        onStartSplit: nodeId => { },
+        onStartSplit: nodeId => {},
         onInnerSplit: ({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
             onmessage({ type: 'inner-split', value: { workerIndex, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
         },
-        onEndSplit: nodeId => { }
+        onEndSplit: nodeId => {}
     }
 }
