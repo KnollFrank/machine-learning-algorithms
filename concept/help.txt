@@ -43,3 +43,7 @@ FK-TODO:
 - Train- und Testdatensatz getrennt voneinander auswählbar machen über Dateidialog.
 - Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
 - dethread und socket.io wieder entfernen?
+- http://yann.lecun.com/exdb/mnist/:
+  "With some classification methods (particuarly template-based methods, such as SVM and K-nearest neighbors),
+  the error rate improves when the digits are CENTERED BY BOUNDING BOX rather than center of mass. If you do this kind of pre-processing, you should report it in your publications."
+  - center digits by bounding box
