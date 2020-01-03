@@ -6,7 +6,7 @@
 const ClassifierType = Object.freeze({ DECISION_TREE: 'DECISION_TREE', KNN: 'KNN' });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const classifierType = ClassifierType.DECISION_TREE;
+    const classifierType = ClassifierType.KNN;
     setH1(classifierType);
     $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
@@ -60,13 +60,7 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription, classifierType) {
-    if (classifierType == ClassifierType.DECISION_TREE) {
-        $('#section-decision-tree').fadeIn();
-        $('#section-KNN').fadeOut();
-    } else {
-        $('#section-decision-tree').fadeOut();
-        $('#section-KNN').fadeIn();
-    }
+    showSectionFor(classifierType);
     $('#section-traindata').fadeIn();
     $('#progress, #subsection-decision-tree').fadeOut();
     $('#section-data-input, #section-testdata').fadeOut();
@@ -85,6 +79,17 @@ function onDatasetChanged(datasetDescription, classifierType) {
     }
     build_classifier_onSubmit(datasetDescription, classifierType);
     configure_load_tree(datasetDescription);
+}
+
+function showSectionFor(classifierType) {
+    if (classifierType == ClassifierType.DECISION_TREE) {
+        $('#section-decision-tree').fadeIn();
+        $('#section-KNN').fadeOut();
+    }
+    else {
+        $('#section-decision-tree').fadeOut();
+        $('#section-KNN').fadeIn();
+    }
 }
 
 function isDigitDataset(datasetDescription) {
