@@ -61,7 +61,7 @@ function transformIfImage(datasetDescription) {
 
     toNumbers(datasetDescription);
 
-    const kernelWidthAndHeight = 7;
+    const kernelWidthAndHeight = 4;
 
     const transform = row => {
         const scaledImage = getScaledImage(getIndependentValsFromRow(row, datasetDescription), kernelWidthAndHeight);
@@ -310,10 +310,10 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
         case ClassifierType.KNN:
             $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
             const rowClassifier = getRowClassifier(ClassifierType.KNN, classifier, datasetDescription);
-            displayAccuracy(
+            /*displayAccuracy(
                 rowClassifier,
-                datasetDescription.splittedDataset.test);
-            displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
+                datasetDescription.splittedDataset.test);*/
+            // displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
             const canvasDataInput = document.querySelector('#canvas-data-input');
             const textDataInput = document.querySelector('#text-data-input');
             displayDataInput(datasetDescription, canvasDataInput, textDataInput, classifier, network, rowClassifier, ClassifierType.KNN);
@@ -407,6 +407,7 @@ function getInputValueBy(selectors) {
 
 function displayAccuracy(rowClassifier, dataset) {
     const accuracy = computeAccuracy(rowClassifier, dataset);
+    console.log(`${Math.floor(accuracy)}%`);
     document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
 }
 
