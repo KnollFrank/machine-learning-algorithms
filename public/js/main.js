@@ -67,7 +67,7 @@ function onDatasetChanged(datasetDescription, classifierType) {
     if (isDigitDataset(datasetDescription)) {
         $('#container-digits-train').fadeIn();
         $('#container-trainingDataSet').fadeOut();
-        displayDigitTrainDataset(datasetDescription, 'container-digits-train');
+        // displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
         $('#container-digits-train').fadeOut();
         $('#container-trainingDataSet').fadeIn();
@@ -238,7 +238,7 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             displayAccuracy(
                 rowClassifier,
                 datasetDescription.splittedDataset.test);
-            displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
+            // displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
             const canvasDataInput = document.querySelector('#canvas-data-input');
             const textDataInput = document.querySelector('#text-data-input');
             displayDataInput(datasetDescription, canvasDataInput, textDataInput, classifier, network, rowClassifier, ClassifierType.KNN);
@@ -336,7 +336,16 @@ function displayAccuracy(rowClassifier, dataset) {
 }
 
 function computeAccuracy(rowClassifier, dataset) {
-    return accuracy_percentage(actualClassVals(dataset), dataset.map(rowClassifier));
+    const progress = document.querySelector('#accuracy-panel progress');
+    progress.max = dataset.length;
+    return accuracy_percentage(
+        actualClassVals(dataset),
+        dataset.map(
+            (row, index) => {
+                progress.value = index + 1;
+                console.log(`accuracy progress: ${index + 1}/${dataset.length}`);
+                return rowClassifier(row);
+            }));
 }
 
 function displayTestingTableWithPredictions(rowClassifier, classifierType, network, tree, datasetDescription) {
