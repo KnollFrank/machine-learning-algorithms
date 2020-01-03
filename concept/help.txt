@@ -35,12 +35,10 @@ FK-TODO:
 - Beim Malen einer Ziffer in den canvas im Ergebnis in einen 20x20-Canvas malen lassen und ihn anschließend in einem
   28x28-Canvas zentrieren, denn so sind die MNIST-Ziffern erzeugt worden.
 - K-Nearest Neighbors für MNIST implementieren:
-  - https://www.classes.cs.uchicago.edu/archive/2015/spring/12300-1/pa2.html
   - k-d tree verwenden: https://en.wikipedia.org/wiki/K-d_tree und https://github.com/mljs/knn/tree/master/src
     "As a general rule, if the dimensionality is k, the number of points in the data, N, should be N ≫ 2 ^ k."
-  - downsample 2, 4, 8
-  - scaled 2, 4, 7
-  - sum
+  - https://www.classes.cs.uchicago.edu/archive/2015/spring/12300-1/pa2.html
+    - scaled 2, 4, 7
   - priority-queue statt k-d tree
 - Train- und Testdatensatz getrennt voneinander auswählbar machen über Dateidialog.
 - Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
