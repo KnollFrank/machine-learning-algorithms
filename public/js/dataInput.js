@@ -1,4 +1,4 @@
-function displayTextDataInput(rootElement, attributeNames, tree, network) {
+function displayTextDataInput(rootElement, attributeNames, tree, network, rowClassifier, classifierType) {
     const dataInputFields = rootElement.querySelector('.dataInputFields');
 
     dataInputFields.innerHTML = '';
@@ -8,9 +8,14 @@ function displayTextDataInput(rootElement, attributeNames, tree, network) {
         "submit",
         e => {
             e.preventDefault();
-            const prediction = predict(tree, getInputValuesByName(attributeNames));
-            highlightPredictionInNetwork(prediction, network);
-            rootElement.querySelector('.prediction').innerHTML = prediction.value;
+            if (classifierType == ClassifierType.DECISION_TREE) {
+                const prediction = predict(tree, getInputValuesByName(attributeNames));
+                highlightPredictionInNetwork(prediction, network);
+                rootElement.querySelector('.prediction').innerHTML = prediction.value;
+            } else {
+                const prediction = rowClassifier(getInputValuesByName(attributeNames));
+                rootElement.querySelector('.prediction').innerHTML = prediction;
+            }
             return false;
         });
 }
@@ -48,18 +53,18 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
         }
     }
 
-    $(canvasBig).on('mousedown', function(e) {
+    $(canvasBig).on('mousedown', function (e) {
         last_mouse = mouse = getMousePos(canvasBig, e);
         mousedown = true;
         fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    $(canvasBig).on('mouseup', function(e) {
+    $(canvasBig).on('mouseup', function (e) {
         mousedown = false;
         onDigitDrawn(canvasBig, canvasSmall);
     });
 
-    $(canvasBig).on('mousemove', function(e) {
+    $(canvasBig).on('mousemove', function (e) {
         mouse = getMousePos(canvasBig, e);
         if (mousedown) {
             ctxBig.beginPath();

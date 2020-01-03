@@ -6,6 +6,8 @@
 const ClassifierType = Object.freeze({ DECISION_TREE: 'DECISION_TREE', KNN: 'KNN' });
 
 document.addEventListener('DOMContentLoaded', () => {
+    const classifierType = ClassifierType.DECISION_TREE;
+    setH1(classifierType);
     $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
         // const dataFile = 'data/data_banknote_authentication.csv';
@@ -16,11 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
             download: true,
             header: false,
             complete: function (results) {
-                onDatasetChanged(getDatasetDescription(dataFile.name, results.data));
+                onDatasetChanged(getDatasetDescription(dataFile.name, results.data), classifierType);
             }
         });
     });
 });
+
+function setH1(classifierType) {
+    document.querySelector('h1').textContent = getH1(classifierType);
+}
+
+function getH1(classifierType) {
+    return classifierType == ClassifierType.DECISION_TREE ?
+        'Entscheidungsbäume' :
+        'k nächste Nachbarn';
+}
 
 function getDatasetDescription(fileName, dataset) {
     let attributeNames = dataset[0];
@@ -47,8 +59,7 @@ function train_test_split(dataset, train_proportion) {
     };
 }
 
-function onDatasetChanged(datasetDescription) {
-    const classifierType = ClassifierType.KNN;
+function onDatasetChanged(datasetDescription, classifierType) {
     if (classifierType == ClassifierType.DECISION_TREE) {
         $('#section-decision-tree').fadeIn();
         $('#section-KNN').fadeOut();
@@ -266,7 +277,7 @@ function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tr
     } else {
         canvasDataInput.style.display = "none";
         textDataInput.style.display = "block";
-        displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network);
+        displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network, rowClassifier, classifierType);
     }
 }
 
