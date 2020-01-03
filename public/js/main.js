@@ -6,7 +6,7 @@
 const ClassifierType = Object.freeze({ DECISION_TREE: 'DECISION_TREE', KNN: 'KNN' });
 
 document.addEventListener('DOMContentLoaded', () => {
-    $('#section-traindata, #section-decision-tree, #section-data-input, #section-testdata').fadeOut();
+    $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
         // const dataFile = 'data/data_banknote_authentication.csv';
         // const dataFile = 'data/processed.cleveland.csv';
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function(results) {
+            complete: function (results) {
                 onDatasetChanged(getDatasetDescription(dataFile.name, results.data));
             }
         });
@@ -48,7 +48,15 @@ function train_test_split(dataset, train_proportion) {
 }
 
 function onDatasetChanged(datasetDescription) {
-    $('#section-traindata, #section-decision-tree').fadeIn();
+    const classifierType = ClassifierType.KNN;
+    if (classifierType == ClassifierType.DECISION_TREE) {
+        $('#section-decision-tree').fadeIn();
+        $('#section-KNN').fadeOut();
+    } else {
+        $('#section-decision-tree').fadeOut();
+        $('#section-KNN').fadeIn();
+    }
+    $('#section-traindata').fadeIn();
     $('#progress, #subsection-decision-tree').fadeOut();
     $('#section-data-input, #section-testdata').fadeOut();
     if (isDigitDataset(datasetDescription)) {
@@ -64,7 +72,7 @@ function onDatasetChanged(datasetDescription) {
             dataset: datasetDescription.splittedDataset.train
         });
     }
-    build_classifier_onSubmit(datasetDescription);
+    build_classifier_onSubmit(datasetDescription, classifierType);
     configure_load_tree(datasetDescription);
 }
 
@@ -74,17 +82,21 @@ function isDigitDataset(datasetDescription) {
 
 let submitEventListener;
 
-function build_classifier_onSubmit(datasetDescription) {
+function build_classifier_onSubmit(datasetDescription, classifierType) {
     let decisionTreeForm = document.querySelector('#decisionTreeForm');
     if (submitEventListener) {
         decisionTreeForm.removeEventListener("submit", submitEventListener);
     }
     submitEventListener = e => {
         e.preventDefault();
-        build_classifier(datasetDescription, ClassifierType.KNN);
+        build_classifier(datasetDescription, classifierType);
         return false;
     }
-    decisionTreeForm.addEventListener("submit", submitEventListener);
+    if (classifierType == ClassifierType.DECISION_TREE) {
+        decisionTreeForm.addEventListener("submit", submitEventListener);
+    } else {
+        document.querySelector('#calculate-KNN').addEventListener('click', submitEventListener);
+    }
 }
 
 function build_classifier(datasetDescription, classifierType) {
@@ -143,10 +155,10 @@ function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
     $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
-            max_depth,
-            min_size,
-            splitterWorkers,
-            createTreeListener(onmessage))
+        max_depth,
+        min_size,
+        splitterWorkers,
+        createTreeListener(onmessage))
         .build_tree(
             dataset,
             tree => onmessage({ type: 'result', value: tree }));
@@ -225,8 +237,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             datasetDescription,
             tree,
             switcher.checked ?
-            new EnhancedNodeContentFactory() :
-            new SimpleNodeContentFactory());
+                new EnhancedNodeContentFactory() :
+                new SimpleNodeContentFactory());
     switcher.addEventListener('change', __onDecisionTreeChanged);
     __onDecisionTreeChanged();
 }
@@ -334,8 +346,8 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
         $('#container-testDataSet').fadeOut();
         const onDigitClickedReceiveRow =
             classifierType == ClassifierType.DECISION_TREE ?
-            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
-            row => {};
+                row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+                row => { };
         displayDigitTestDataset({
             datasetDescription: datasetDescription,
             rowClassifier: rowClassifier,
@@ -347,8 +359,8 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
         $('#container-testDataSet').fadeIn();
         const onRowClicked =
             classifierType == ClassifierType.DECISION_TREE ?
-            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
-            row => {};
+                row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+                row => { };
         displayDatasetAsTable({
             tableContainer: $('#container-testDataSet'),
             attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
@@ -378,10 +390,10 @@ function createTreeListener(onmessage) {
         onEdgeAdded: (fromNode, toNode) => {
             timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
         },
-        onStartSplit: nodeId => {},
+        onStartSplit: nodeId => { },
         onInnerSplit: ({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
             onmessage({ type: 'inner-split', value: { workerIndex, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
         },
-        onEndSplit: nodeId => {}
+        onEndSplit: nodeId => { }
     }
 }
