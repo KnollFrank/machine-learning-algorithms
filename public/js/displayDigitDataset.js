@@ -27,8 +27,8 @@ class DisplayDigitDatasetTemplate {
 
 class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
 
-    constructor() {
-        super(row => { });
+    constructor(imageWidth, imageHeight) {
+        super(row => { }, imageWidth, imageHeight);
     }
 
     _getFigcaption(row) {
@@ -37,7 +37,7 @@ class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
 }
 
 function displayDigitTrainDataset(datasetDescription, digitsContainerId) {
-    new DisplayDigitTrainDataset()
+    new DisplayDigitTrainDataset(datasetDescription.imageWidth, datasetDescription.imageHeight)
         .displayDigitDataset(
             datasetDescription.splittedDataset.train,
             digitsContainerId);

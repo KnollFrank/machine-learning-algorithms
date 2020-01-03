@@ -61,7 +61,7 @@ function transformIfImage(datasetDescription) {
 
     toNumbers(datasetDescription);
 
-    const kernelWidthAndHeight = 4;
+    const kernelWidthAndHeight = 1;
 
     const transform = row => {
         const scaledImage = getScaledImage(getIndependentValsFromRow(row, datasetDescription), kernelWidthAndHeight);
@@ -142,7 +142,7 @@ function onDatasetChanged(datasetDescription, classifierType) {
     if (isDigitDataset(datasetDescription)) {
         $('#container-digits-train').fadeIn();
         $('#container-trainingDataSet').fadeOut();
-        // displayDigitTrainDataset(datasetDescription, 'container-digits-train');
+        displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
         $('#container-digits-train').fadeOut();
         $('#container-trainingDataSet').fadeIn();
@@ -310,10 +310,10 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
         case ClassifierType.KNN:
             $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
             const rowClassifier = getRowClassifier(ClassifierType.KNN, classifier, datasetDescription);
-            /*displayAccuracy(
+            displayAccuracy(
                 rowClassifier,
-                datasetDescription.splittedDataset.test);*/
-            // displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
+                datasetDescription.splittedDataset.test);
+            displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
             const canvasDataInput = document.querySelector('#canvas-data-input');
             const textDataInput = document.querySelector('#text-data-input');
             displayDataInput(datasetDescription, canvasDataInput, textDataInput, classifier, network, rowClassifier, ClassifierType.KNN);
