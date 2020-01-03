@@ -2,15 +2,17 @@
 
 class DisplayDigitDatasetTemplate {
 
-    constructor(onDigitClickedReceiveRow) {
+    constructor(onDigitClickedReceiveRow, imageWidth, imageHeight) {
         this.onDigitClickedReceiveRow = onDigitClickedReceiveRow;
+        this.imageWidth = imageWidth;
+        this.imageHeight = imageHeight;
     }
 
     displayDigitDataset(digitDataset, digitsContainerId) {
         const digitsContainer = document.querySelector('#' + digitsContainerId);
         digitsContainer.innerHTML = '';
         for (let i = 0; i < digitDataset.length; i++) {
-            const digit = new Digit();
+            const digit = new Digit(this.imageWidth, this.imageHeight);
             digit.setFigcaption(...this._getFigcaption(digitDataset[i]));
             digit.setImage(digitDataset[i]);
             digit.setOnClicked(() => this.onDigitClickedReceiveRow(digitDataset[i]));
@@ -26,7 +28,7 @@ class DisplayDigitDatasetTemplate {
 class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
 
     constructor() {
-        super(row => {});
+        super(row => { });
     }
 
     _getFigcaption(row) {
@@ -43,8 +45,8 @@ function displayDigitTrainDataset(datasetDescription, digitsContainerId) {
 
 class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
 
-    constructor(rowClassifier, onDigitClickedReceiveRow) {
-        super(onDigitClickedReceiveRow);
+    constructor(rowClassifier, onDigitClickedReceiveRow, imageWidth, imageHeight) {
+        super(onDigitClickedReceiveRow, imageWidth, imageHeight);
         this.rowClassifier = rowClassifier;
     }
 
@@ -56,7 +58,7 @@ class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
 }
 
 function displayDigitTestDataset({ datasetDescription, rowClassifier, digitsContainerId, onDigitClickedReceiveRow }) {
-    new DisplayDigitTestDataset(rowClassifier, onDigitClickedReceiveRow)
+    new DisplayDigitTestDataset(rowClassifier, onDigitClickedReceiveRow, datasetDescription.imageWidth, datasetDescription.imageHeight)
         .displayDigitDataset(
             datasetDescription.splittedDataset.test,
             digitsContainerId);

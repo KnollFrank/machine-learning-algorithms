@@ -1,9 +1,13 @@
 'use strict';
 
 class Digit {
-    constructor() {
+    constructor(imageWidth, imageHeight) {
+        this.imageWidth = imageWidth;
+        this.imageHeight = imageHeight;
         this.digitElement = getHtml('digitTemplate.html');
         this.digitElement.setAttribute('id', 'digit-' + newId());
+        this.digitElement.querySelector('canvas').width = imageWidth;
+        this.digitElement.querySelector('canvas').height = imageHeight;
     }
 
     setFigcaption(innerHTML, clazz) {
@@ -20,7 +24,7 @@ class Digit {
 
     _drawImageIntoCanvas(pixels, canvas) {
         const ctx = canvas.getContext("2d");
-        const imageData = ctx.createImageData(28, 28);
+        const imageData = ctx.createImageData(this.imageWidth, this.imageHeight);
 
         for (const it of iterateOverImageData(imageData)) {
             imageData.data[it.color_index.red] = 0;

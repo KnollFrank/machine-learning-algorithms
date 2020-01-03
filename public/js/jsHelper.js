@@ -1,7 +1,7 @@
 'use strict';
 
 Array.prototype.sum = function () {
-    return this.reduce((sum, el) => sum + el, 0);
+    return this.reduce((sum, el) => sum + Number(el), 0);
 };
 
 function isNumber(n) {

@@ -18,7 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
             download: true,
             header: false,
             complete: function (results) {
-                onDatasetChanged(getDatasetDescription(dataFile.name, results.data), classifierType);
+                onDatasetChanged(
+                    transformIfImage(getDatasetDescription(dataFile.name, results.data)),
+                    classifierType);
             }
         });
     });
@@ -43,12 +45,85 @@ function getDatasetDescription(fileName, dataset) {
         attributeNames: {
             X: attributeNames.slice(0, -1),
             y: attributeNames[attributeNames.length - 1],
+            // FK-TODO: all könnte auch einfach "all: attributeNames" geschrieben werden.
             get all() {
                 return this.X.concat(this.y);
             }
         },
         splittedDataset: train_test_split(dataset, 0.8)
     };
+}
+
+function transformIfImage(datasetDescription) {
+    if (!isDigitDataset(datasetDescription)) {
+        return datasetDescription;
+    }
+
+    toNumbers(datasetDescription);
+
+    const kernelWidthAndHeight = 7;
+
+    const transform = row => {
+        const scaledImage = getScaledImage(getIndependentValsFromRow(row, datasetDescription), kernelWidthAndHeight);
+        return scaledImage.concat(getClassValFromRow(row));
+    };
+    datasetDescription.splittedDataset.train = datasetDescription.splittedDataset.train.map(transform);
+    datasetDescription.splittedDataset.test = datasetDescription.splittedDataset.test.map(transform);
+    datasetDescription.attributeNames.X = createRowColLabels(28 / kernelWidthAndHeight, 28 / kernelWidthAndHeight);
+    datasetDescription.imageWidth = 28 / kernelWidthAndHeight;
+    datasetDescription.imageHeight = 28 / kernelWidthAndHeight;
+    console.log('transformed datasetDescription:', datasetDescription);
+    return datasetDescription;
+}
+
+function createRowColLabels(numRows, numCols) {
+    const rowColLabels = [];
+    for (let row = 1; row <= numRows; row++) {
+        for (let col = 1; col <= numCols; col++) {
+            rowColLabels.push(`${row}x${col}`);
+        }
+    }
+    return rowColLabels;
+}
+
+function toNumbers(datasetDescription) {
+    function strings2Numbers(strings) {
+        return strings.map(string => Number(string));
+    }
+
+    datasetDescription.splittedDataset.train = datasetDescription.splittedDataset.train.map(strings2Numbers);
+    datasetDescription.splittedDataset.test = datasetDescription.splittedDataset.test.map(strings2Numbers);
+}
+
+function getScaledImage(image, kernelWidthAndHeight) {
+    const width = 28;
+    const height = 28;
+    const scaledImage_width = width / kernelWidthAndHeight;
+    const scaledImage_height = height / kernelWidthAndHeight;
+    const scaledImage = Array(scaledImage_width * scaledImage_height).fill(0);
+
+    for (let y = 0; y + kernelWidthAndHeight <= height; y += kernelWidthAndHeight) {
+        for (let x = 0; x + kernelWidthAndHeight <= width; x += kernelWidthAndHeight) {
+            let sum = 0;
+            for (let yk = y; yk < y + kernelWidthAndHeight; yk++) {
+                for (let xk = x; xk < x + kernelWidthAndHeight; xk++) {
+                    sum += getPixel(image, width, xk, yk);
+                }
+            }
+            const averagePixelValueInKernel = Math.round(sum / (kernelWidthAndHeight ** 2));
+            putPixel(scaledImage, scaledImage_width, x / kernelWidthAndHeight, y / kernelWidthAndHeight, averagePixelValueInKernel);
+        }
+    }
+
+    return scaledImage;
+}
+
+function getPixel(image, width, x, y) {
+    return image[y * width + x];
+}
+
+function putPixel(image, width, x, y, pixel) {
+    image[y * width + x] = pixel;
 }
 
 function train_test_split(dataset, train_proportion) {
@@ -238,7 +313,7 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             displayAccuracy(
                 rowClassifier,
                 datasetDescription.splittedDataset.test);
-            // displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
+            displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
             const canvasDataInput = document.querySelector('#canvas-data-input');
             const textDataInput = document.querySelector('#text-data-input');
             displayDataInput(datasetDescription, canvasDataInput, textDataInput, classifier, network, rowClassifier, ClassifierType.KNN);
