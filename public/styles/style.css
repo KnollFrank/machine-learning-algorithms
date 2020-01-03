@@ -149,7 +149,7 @@ div.digit figcaption.wrongPrediction {
 #digit-canvas-small {
     border: 2px solid lightblue;
     border-radius: 2px;
-    display: none;
+    display: block;
 }
 
 #decisionTreeNetwork-enhanced-switcher {

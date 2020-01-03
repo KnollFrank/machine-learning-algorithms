@@ -20,9 +20,12 @@ function displayTextDataInput(rootElement, attributeNames, tree, network, rowCla
         });
 }
 
-function displayCanvasDataInput(rootElement, tree, network, rowClassifier, classifierType) {
+function displayCanvasDataInput(rootElement, tree, network, rowClassifier, classifierType, imageWidth, imageHeight) {
     const canvasBig = rootElement.querySelector('#digit-canvas-big');
     const canvasSmall = document.querySelector('#digit-canvas-small');
+    canvasSmall.width = imageWidth;
+    canvasSmall.height = imageHeight;
+    
     initializeDrawTool(
         canvasBig,
         canvasSmall,

@@ -362,7 +362,7 @@ function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tr
     if (isDigitDataset(datasetDescription)) {
         canvasDataInput.style.display = "block";
         textDataInput.style.display = "none";
-        displayCanvasDataInput(canvasDataInput, tree, network, rowClassifier, classifierType);
+        displayCanvasDataInput(canvasDataInput, tree, network, rowClassifier, classifierType, datasetDescription.imageWidth, datasetDescription.imageHeight);
     } else {
         canvasDataInput.style.display = "none";
         textDataInput.style.display = "block";
