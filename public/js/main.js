@@ -64,7 +64,7 @@ function transformIfIsDigitDataset(datasetDescription) {
         return scaledImage.concat(getClassValFromRow(row));
     };
 
-    const kernelWidthAndHeight = 1;
+    const kernelWidthAndHeight = 4;
 
     const transformedDatasetDescription = {
         fileName: datasetDescription.fileName,
@@ -110,26 +110,41 @@ function getScaledImage(image, kernelWidthAndHeight) {
 
     for (let y = 0; y + kernelWidthAndHeight <= height; y += kernelWidthAndHeight) {
         for (let x = 0; x + kernelWidthAndHeight <= width; x += kernelWidthAndHeight) {
-            // FK-TODO: extract method
-            let sum = 0;
-            for (let yk = y; yk < y + kernelWidthAndHeight; yk++) {
-                for (let xk = x; xk < x + kernelWidthAndHeight; xk++) {
-                    sum += getPixel(image, width, xk, yk);
-                }
-            }
-            const averagePixelValueInKernel = Math.round(sum / (kernelWidthAndHeight ** 2));
-            putPixel(scaledImage, scaledImage_width, x / kernelWidthAndHeight, y / kernelWidthAndHeight, averagePixelValueInKernel);
+            const getPixelWithinKernel =
+                (kernelX, kernelY) => getPixel({
+                    image: image,
+                    width: width,
+                    x: x + kernelX,
+                    y: y + kernelY
+                });
+            putPixel({
+                image: scaledImage,
+                width: scaledImage_width,
+                x: x / kernelWidthAndHeight,
+                y: y / kernelWidthAndHeight,
+                pixel: getAveragePixelValueWithinKernel(kernelWidthAndHeight, getPixelWithinKernel)
+            });
         }
     }
 
     return scaledImage;
 }
 
-function getPixel(image, width, x, y) {
+function getAveragePixelValueWithinKernel(kernelWidthAndHeight, getPixel) {
+    let sum = 0;
+    for (let y = 0; y < kernelWidthAndHeight; y++) {
+        for (let x = 0; x < kernelWidthAndHeight; x++) {
+            sum += getPixel(x, y);
+        }
+    }
+    return Math.round(sum / (kernelWidthAndHeight ** 2));;
+}
+
+function getPixel({ image, width, x, y }) {
     return image[y * width + x];
 }
 
-function putPixel(image, width, x, y, pixel) {
+function putPixel({ image, width, x, y, pixel }) {
     image[y * width + x] = pixel;
 }
 
