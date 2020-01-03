@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
             header: false,
             complete: function(results) {
                 onDatasetChanged(
-                    transformIfImage(getDatasetDescription(dataFile.name, results.data)),
+                    transformIfIsDigitDataset(getDatasetDescription(dataFile.name, results.data)),
                     classifierType);
             }
         });
@@ -54,8 +54,7 @@ function getDatasetDescription(fileName, dataset) {
     };
 }
 
-// FK-TODO: do not modify datasetDescription, instead create and return new datasetDescription
-function transformIfImage(datasetDescription) {
+function transformIfIsDigitDataset(datasetDescription) {
     if (!isDigitDataset(datasetDescription)) {
         return datasetDescription;
     }
