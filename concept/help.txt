@@ -31,6 +31,9 @@ nodemon webserver.js
 
 node webserver.js
 
+Ergebnisse für MNIST:
+mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 4: Accuracy: 94%
+
 FK-TODO:
 - Beim Malen einer Ziffer in den canvas im Ergebnis in einen 20x20-Canvas malen lassen und ihn anschließend in einem
   28x28-Canvas zentrieren, denn so sind die MNIST-Ziffern erzeugt worden.
