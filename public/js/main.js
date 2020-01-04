@@ -40,7 +40,7 @@ function getDatasetDescription(fileName, dataset) {
     let attributeNames = dataset[0];
     // remove header (= column names) of dataset
     dataset.splice(0, 1);
-    return {
+    const datasetDescription = {
         fileName: fileName,
         attributeNames: {
             X: attributeNames.slice(0, -1),
@@ -52,6 +52,13 @@ function getDatasetDescription(fileName, dataset) {
         },
         splittedDataset: train_test_split(dataset, 0.8)
     };
+
+    if (isDigitDataset(datasetDescription)) {
+        datasetDescription.imageWidth = 28;
+        datasetDescription.imageHeight = 28;
+    }
+
+    return datasetDescription;
 }
 
 function transformIfIsDigitDataset(datasetDescription) {
@@ -65,11 +72,13 @@ function transformIfIsDigitDataset(datasetDescription) {
     };
 
     const kernelWidthAndHeight = 4;
+    const imageWidth = datasetDescription.imageWidth / kernelWidthAndHeight;
+    const imageHeight = datasetDescription.imageHeight / kernelWidthAndHeight;
 
     const transformedDatasetDescription = {
         fileName: datasetDescription.fileName,
         attributeNames: {
-            X: createRowColLabels(28 / kernelWidthAndHeight, 28 / kernelWidthAndHeight),
+            X: createRowColLabels(imageHeight, imageWidth),
             y: datasetDescription.attributeNames.y,
             get all() {
                 return this.X.concat(this.y);
@@ -79,8 +88,8 @@ function transformIfIsDigitDataset(datasetDescription) {
             train: datasetDescription.splittedDataset.train.map(strings2Numbers).map(transform),
             test: datasetDescription.splittedDataset.test.map(strings2Numbers).map(transform)
         },
-        imageWidth: 28 / kernelWidthAndHeight,
-        imageHeight: 28 / kernelWidthAndHeight
+        imageWidth: imageWidth,
+        imageHeight: imageHeight
     };
 
     console.log('transformed datasetDescription:', transformedDatasetDescription);
@@ -188,6 +197,7 @@ function showSectionFor(classifierType) {
     }
 }
 
+// FK-TODO: make isDigitDataset a method of datasetDescription
 function isDigitDataset(datasetDescription) {
     return datasetDescription.fileName.toLowerCase().startsWith('mnist');
 }
