@@ -67,7 +67,12 @@ function transformIfIsDigitDataset(datasetDescription) {
     }
 
     const transform = row => {
-        const scaledImage = getScaledImage(getIndependentValsFromRow(row, datasetDescription), kernelWidthAndHeight);
+        const scaledImage = getScaledImage({
+            image: strings2Numbers(getIndependentValsFromRow(row, datasetDescription)),
+            width: datasetDescription.imageWidth,
+            height: datasetDescription.imageHeight,
+            kernelWidthAndHeight: kernelWidthAndHeight
+        });
         return scaledImage.concat(getClassValFromRow(row));
     };
 
@@ -85,8 +90,8 @@ function transformIfIsDigitDataset(datasetDescription) {
             }
         },
         splittedDataset: {
-            train: datasetDescription.splittedDataset.train.map(strings2Numbers).map(transform),
-            test: datasetDescription.splittedDataset.test.map(strings2Numbers).map(transform)
+            train: datasetDescription.splittedDataset.train.map(transform),
+            test: datasetDescription.splittedDataset.test.map(transform)
         },
         imageWidth: imageWidth,
         imageHeight: imageHeight
@@ -110,9 +115,7 @@ function strings2Numbers(strings) {
     return strings.map(string => Number(string));
 }
 
-function getScaledImage(image, kernelWidthAndHeight) {
-    const width = 28;
-    const height = 28;
+function getScaledImage({ image, width, height, kernelWidthAndHeight }) {
     const scaledImage_width = width / kernelWidthAndHeight;
     const scaledImage_height = height / kernelWidthAndHeight;
     const scaledImage = Array(scaledImage_width * scaledImage_height).fill(0);
