@@ -33,6 +33,7 @@ node webserver.js
 
 Ergebnisse für MNIST:
 mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 4: Accuracy: 94%
+mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 2: Accuracy: 97%
 
 FK-TODO:
 - Beim Malen einer Ziffer in den canvas im Ergebnis in einen 20x20-Canvas malen lassen und ihn anschließend in einem
@@ -50,3 +51,4 @@ FK-TODO:
   "With some classification methods (particuarly template-based methods, such as SVM and K-nearest neighbors),
   the error rate improves when the digits are CENTERED BY BOUNDING BOX rather than center of mass. If you do this kind of pre-processing, you should report it in your publications."
   - center digits by bounding box
+  - alle CPUs verwenden, um die Accuracy der Testdaten mit KNN verteilt auszurechnen.
