@@ -239,7 +239,7 @@ function build_classifier(datasetDescription, classifierType) {
             build_tree(datasetDescription);
             break;
         case ClassifierType.KNN:
-            const knn = new KNN(1);
+            const knn = new KNN(3);
             knn.fit(
                 datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
                 datasetDescription.splittedDataset.train.map(getClassValFromRow));
