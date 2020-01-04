@@ -66,6 +66,8 @@ function transformIfIsDigitDataset(datasetDescription) {
         return datasetDescription;
     }
 
+    const kernelWidthAndHeight = 4;
+
     const transform = row => {
         const scaledImage = getScaledImage({
             image: {
@@ -78,7 +80,8 @@ function transformIfIsDigitDataset(datasetDescription) {
         return scaledImage.pixels.concat(getClassValFromRow(row));
     };
 
-    const kernelWidthAndHeight = 4;
+    // FK-TODO: das Wissen über die Breite und Höhe des transformierten Bildes ist an dieser Stelle eigentlich nicht verfügbar,
+    //          sondern nur aus dem Funktionsergebnis von getScaledImage() ablesbar
     const transformedImageWidth = datasetDescription.imageWidth / kernelWidthAndHeight;
     const transformedImageHeight = datasetDescription.imageHeight / kernelWidthAndHeight;
 
