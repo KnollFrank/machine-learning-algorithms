@@ -73,6 +73,8 @@ function transformIfIsDigitDataset(datasetDescription) {
     const kernelWidthAndHeight = 4;
 
     const transform = row => {
+        const strings2Numbers = strings => strings.map(string => Number(string));
+
         const scaledImage = getScaledImage({
             image: {
                 pixels: strings2Numbers(getIndependentValsFromRow(row, datasetDescription)),
@@ -119,10 +121,6 @@ function createRowColLabels(numRows, numCols) {
         }
     }
     return rowColLabels;
-}
-
-function strings2Numbers(strings) {
-    return strings.map(string => Number(string));
 }
 
 function getScaledImage({ image, kernelWidthAndHeight }) {
