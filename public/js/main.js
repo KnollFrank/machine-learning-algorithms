@@ -134,13 +134,17 @@ function getScaledImage({ image, kernelWidthAndHeight }) {
             const getPixelWithinKernel =
                 (kernelX, kernelY) => getPixel({
                     image: image,
-                    x: x + kernelX,
-                    y: y + kernelY
+                    point: {
+                        x: x + kernelX,
+                        y: y + kernelY
+                    }
                 });
             putPixel({
                 image: scaledImage,
-                x: x / kernelWidthAndHeight,
-                y: y / kernelWidthAndHeight,
+                point: {
+                    x: x / kernelWidthAndHeight,
+                    y: y / kernelWidthAndHeight
+                },
                 pixel: getAveragePixelValueWithinKernel(kernelWidthAndHeight, getPixelWithinKernel)
             });
         }
@@ -159,11 +163,11 @@ function getAveragePixelValueWithinKernel(kernelWidthAndHeight, getPixel) {
     return Math.round(sum / (kernelWidthAndHeight ** 2));;
 }
 
-function getPixel({ image: { pixels, width }, x, y }) {
+function getPixel({ image: { pixels, width }, point: { x, y } }) {
     return pixels[y * width + x];
 }
 
-function putPixel({ image: { pixels, width }, x, y, pixel }) {
+function putPixel({ image: { pixels, width }, point: { x, y }, pixel }) {
     pixels[y * width + x] = pixel;
 }
 
