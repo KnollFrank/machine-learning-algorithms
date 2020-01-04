@@ -1823,85 +1823,100 @@
         });
 
         QUnit.test("k=1 nearest neighbors, 1 dim", function(assert) {
-            // Given
-            const X = [
-                [0],
-                [1],
-                [2],
-                [3]
-            ];
-            const y = [0, 0, 1, 1];
-            const knn = new KNN(1);
+            function checkKNN(KNNFactory, testDescr) {
+                // Given
+                const X = [
+                    [0],
+                    [1],
+                    [2],
+                    [3]
+                ];
+                const y = [0, 0, 1, 1];
+                const knn = KNNFactory(1);
 
-            // When
-            knn.fit(X, y);
+                // When
+                knn.fit(X, y);
 
-            // Then
-            assert.equal(knn.predict([1.1]), 0, '[1.1] ~ [1] -> 0');
-            assert.equal(knn.predict([1.9]), 1, '[1.9] ~ [2] -> 1');
+                // Then
+                assert.equal(knn.predict([1.1]), 0, testDescr + '[1.1] ~ [1] -> 0');
+                assert.equal(knn.predict([1.9]), 1, testDescr + '[1.9] ~ [2] -> 1');
+            }
+
+            checkKNN(k => new KNN(k), 'KNN: ');
+            checkKNN(k => new KNNUsingKDTree(k), 'KNNUsingKDTree: ');
         });
 
         QUnit.test("k=1 nearest neighbors, 2 dim", function(assert) {
-            // Given
-            const X = [
-                [1, 0],
-                [0, 1],
-                [-1, 0],
-                [0, -1]
-            ];
-            const y = ['a', 'a', 'b', 'b'];
-            const knn = new KNN(1);
+            function checkKNN(KNNFactory, testDescr) {
+                // Given
+                const X = [
+                    [1, 0],
+                    [0, 1],
+                    [-1, 0],
+                    [0, -1]
+                ];
+                const y = ['a', 'a', 'b', 'b'];
+                const knn = KNNFactory(1);
 
-            // When
-            knn.fit(X, y);
+                // When
+                knn.fit(X, y);
 
-            // Then
-            assert.equal(knn.predict([1.1, 1.1]), 'a', "[1.1, 1.1] ~ [1, 0] -> 'a'");
-            assert.equal(knn.predict([-0.9, 0.1]), 'b', "[-0.9, 0.1] ~ [-1, 0] -> 'b'");
+                // Then
+                assert.equal(knn.predict([1.1, 1.1]), 'a', testDescr + "[1.1, 1.1] ~ [1, 0] -> 'a'");
+                assert.equal(knn.predict([-0.9, 0.1]), 'b', testDescr + "[-0.9, 0.1] ~ [-1, 0] -> 'b'");
+            }
+
+            checkKNN(k => new KNN(k), 'KNN: ');
+            checkKNN(k => new KNNUsingKDTree(k), 'KNNUsingKDTree: ');
         });
 
         QUnit.test("nearest neighbors, k={3, 5}", function(assert) {
-            // Given
-            //      /--------- radius = 2
-            //     /     B
-            //    /    ----- radius = 1
-            //   /    /  A
-            //  /    /
-            // | B  | B  X
-            //  \    \  
-            //   \    \  A
-            //    \    ----- radius = 1
-            //     \ --------- radius = 2
-            const X = [
-                [0, 0.5],
-                [0, -0.5],
-                [-0.5, 0],
-                [-1.5, 0],
-                [0, 1.5]
-            ];
-            const y = ['A', 'A', 'B', 'B', 'B'];
-
-            {
+            function checkKNN(KNNFactory, testDescr) {
                 // Given
-                const knn = new KNN(3);
+                //      /--------- radius = 2
+                //     /     B
+                //    /    ----- radius = 1
+                //   /    /  A
+                //  /    /
+                // | B  | B  X
+                //  \    \  
+                //   \    \  A
+                //    \    ----- radius = 1
+                //     \ --------- radius = 2
+                const X = [
+                    [0, 0.5],
+                    [0, -0.5],
+                    [-0.5, 0],
+                    [-1.5, 0],
+                    [0, 1.5]
+                ];
+                const y = ['A', 'A', 'B', 'B', 'B'];
 
-                // When
-                knn.fit(X, y);
+                {
+                    // Given
+                    const knn = KNNFactory(3);
 
-                // Then
-                assert.equal(knn.predict([0, 0]), 'A', "A, A, B => A");
+                    // When
+                    knn.fit(X, y);
+
+                    // Then
+                    assert.equal(knn.predict([0, 0]), 'A', testDescr + "A, A, B => A");
+                }
+
+                {
+                    // Given
+                    const knn = KNNFactory(5);
+
+                    // When
+                    knn.fit(X, y);
+
+                    // Then
+                    assert.equal(knn.predict([0, 0]), 'B', testDescr + "A, A, B, B, B => B");
+                }
             }
 
-            {
-                // Given
-                const knn = new KNN(5);
-
-                // When
-                knn.fit(X, y);
-
-                // Then
-                assert.equal(knn.predict([0, 0]), 'B', "A, A, B, B, B => B");
-            }
+            checkKNN(k => new KNN(k), 'KNN: ');
+            checkKNN(k => new KNNUsingKDTree(k), 'KNNUsingKDTree: ');
         });
     </script>
 </body>
