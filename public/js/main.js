@@ -70,12 +70,13 @@ function transformIfIsDigitDataset(datasetDescription) {
         return datasetDescription;
     }
 
-    const kernelWidthAndHeight = 4;
+    // FK-TODO: kernelWidthAndHeight über UI einstellbar machen
+    const kernelWidthAndHeight = 7;
 
-    const transform = row => {
+    const getScaledImageForRow = row => {
         const strings2Numbers = strings => strings.map(string => Number(string));
 
-        const scaledImage = getScaledImage({
+        return getScaledImage({
             image: {
                 pixels: strings2Numbers(getIndependentValsFromRow(row, datasetDescription)),
                 width: datasetDescription.imageWidth,
@@ -83,18 +84,15 @@ function transformIfIsDigitDataset(datasetDescription) {
             },
             kernelWidthAndHeight: kernelWidthAndHeight
         });
-        return scaledImage.pixels.concat(getClassValFromRow(row));
     };
 
-    // FK-TODO: das Wissen über die Breite und Höhe des transformierten Bildes ist an dieser Stelle eigentlich nicht verfügbar,
-    //          sondern nur aus dem Funktionsergebnis von getScaledImage() ablesbar
-    const transformedImageWidth = datasetDescription.imageWidth / kernelWidthAndHeight;
-    const transformedImageHeight = datasetDescription.imageHeight / kernelWidthAndHeight;
+    const transform = row => getScaledImageForRow(row).pixels.concat(getClassValFromRow(row));
+    const someTransformedImage = getScaledImageForRow(datasetDescription.splittedDataset.train[0])
 
     const transformedDatasetDescription = {
         fileName: datasetDescription.fileName,
         attributeNames: {
-            X: createRowColLabels(transformedImageHeight, transformedImageWidth),
+            X: createRowColLabels(someTransformedImage.height, someTransformedImage.width),
             y: datasetDescription.attributeNames.y,
             get all() {
                 return this.X.concat(this.y);
@@ -105,8 +103,8 @@ function transformIfIsDigitDataset(datasetDescription) {
             test: datasetDescription.splittedDataset.test.map(transform)
         },
         isDigitDataset: datasetDescription.isDigitDataset,
-        imageWidth: transformedImageWidth,
-        imageHeight: transformedImageHeight
+        imageWidth: someTransformedImage.width,
+        imageHeight: someTransformedImage.height
     };
 
     console.log('transformed datasetDescription:', transformedDatasetDescription);
@@ -239,7 +237,7 @@ function build_classifier(datasetDescription, classifierType) {
             build_tree(datasetDescription);
             break;
         case ClassifierType.KNN:
-            const knn = new KNN(3);
+            const knn = new KNNUsingKDTree(3);
             knn.fit(
                 datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
                 datasetDescription.splittedDataset.train.map(getClassValFromRow));
