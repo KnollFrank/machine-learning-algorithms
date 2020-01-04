@@ -26,12 +26,36 @@ function splitItemsIntoChunks({
 }
 
 const dummyTreeListener = {
-    onNodeAdded: node => { },
-    onEdgeAdded: (fromNode, toNode) => { },
-    onStartSplit: nodeId => { },
-    onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => { },
-    onEndSplit: nodeId => { }
+    onNodeAdded: node => {},
+    onEdgeAdded: (fromNode, toNode) => {},
+    onStartSplit: nodeId => {},
+    onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => {},
+    onEndSplit: nodeId => {}
 };
+
+// https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
+function getElementWithHighestOccurence(array) {
+    if (array.length == 0) {
+        return null;
+    }
+    let modeMap = {};
+    let maxEl = array[0],
+        maxCount = 1;
+    for (let i = 0; i < array.length; i++) {
+        let el = array[i];
+        if (modeMap[el] == null) {
+            modeMap[el] = 1;
+        } else {
+            modeMap[el]++;
+        }
+        if (modeMap[el] > maxCount) {
+            maxEl = el;
+            maxCount = modeMap[el];
+        }
+    }
+
+    return maxEl;
+}
 
 class DecisionTreeBuilder {
 
@@ -170,34 +194,10 @@ class DecisionTreeBuilder {
         const outcomes = group.map(getClassValFromRow);
         return this._emitOnNodeAdded({
             id: newId(),
-            value: this.getElementWithHighestOccurenceOf(outcomes),
+            value: getElementWithHighestOccurence(outcomes),
             samples: group.length,
             score: 0
         });
-    }
-
-    // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array
-    getElementWithHighestOccurenceOf(array) {
-        if (array.length == 0) {
-            return null;
-        }
-        let modeMap = {};
-        let maxEl = array[0],
-            maxCount = 1;
-        for (let i = 0; i < array.length; i++) {
-            let el = array[i];
-            if (modeMap[el] == null) {
-                modeMap[el] = 1;
-            } else {
-                modeMap[el]++;
-            }
-            if (modeMap[el] > maxCount) {
-                maxEl = el;
-                maxCount = modeMap[el];
-            }
-        }
-
-        return maxEl;
     }
 }
 
@@ -216,14 +216,13 @@ class Splitter {
             groups: undefined
         }
         for (let index = oneBasedStartIndexOfChunk - 1; index <= oneBasedEndIndexInclusiveOfChunk - 1; index++) {
-            this.treeListener.onInnerSplit(
-                {
-                    nodeId: nodeId,
-                    startSplitIndex: oneBasedStartIndexOfChunk - 1,
-                    actualSplitIndex: index,
-                    endSplitIndex: oneBasedEndIndexInclusiveOfChunk - 1,
-                    numberOfEntriesInDataset: dataset.length
-                });
+            this.treeListener.onInnerSplit({
+                nodeId: nodeId,
+                startSplitIndex: oneBasedStartIndexOfChunk - 1,
+                actualSplitIndex: index,
+                endSplitIndex: oneBasedEndIndexInclusiveOfChunk - 1,
+                numberOfEntriesInDataset: dataset.length
+            });
             for (const row of dataset) {
                 const groups = this.test_split(index, row[index], dataset);
                 const gini = this.gini_index(groups, class_values);
@@ -245,8 +244,8 @@ class Splitter {
         for (const row of dataset) {
             const splitCondition =
                 isNumber(value) ?
-                    Number(row[index]) < Number(value) :
-                    row[index] == value;
+                Number(row[index]) < Number(value) :
+                row[index] == value;
             if (splitCondition) {
                 left.push(row);
             } else {
@@ -260,26 +259,26 @@ class Splitter {
     gini_index(groups, classes) {
         const getP = group => class_val =>
             group
-                .map(getClassValFromRow)
-                .filter(classVal => classVal == class_val)
-                .length / group.length;
+            .map(getClassValFromRow)
+            .filter(classVal => classVal == class_val)
+            .length / group.length;
 
         const getScore = group =>
             classes
-                .map(getP(group))
-                .map(p => p * p)
-                .sum();
+            .map(getP(group))
+            .map(p => p * p)
+            .sum();
 
         const n_instances =
             groups
-                .map(group => group.length)
-                .sum();
+            .map(group => group.length)
+            .sum();
 
         const gini =
             groups
-                .filter(group => group.length != 0)
-                .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-                .sum();
+            .filter(group => group.length != 0)
+            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+            .sum();
 
         return gini;
     }
@@ -412,8 +411,8 @@ function predict(node, row) {
 
     const splitCondition =
         isNumber(node.value) ?
-            Number(row[node.index]) < Number(node.value) :
-            row[node.index] == node.value;
+        Number(row[node.index]) < Number(node.value) :
+        row[node.index] == node.value;
 
     let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
     return {

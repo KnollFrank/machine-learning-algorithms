@@ -18,7 +18,8 @@ class KNN {
             distancesX2x.push({ index: i, distance: this.getSquaredEuclideanDistance(this.X[i], x) });
         }
         distancesX2x.sort((distance1, distance2) => distance1.distance - distance2.distance);
-        return this.y[distancesX2x[0].index];
+        const k_nearest_y2x = distancesX2x.slice(0, this.k).map(({ index }) => this.y[index]);
+        return getElementWithHighestOccurence(k_nearest_y2x);
     }
 
     getSquaredEuclideanDistance(pointA, pointB) {

@@ -1888,7 +1888,7 @@
                 knn.fit(X, y);
 
                 // Then
-                assert.equal(knn.predict([0, 0]), 'A', "k = 3");
+                assert.equal(knn.predict([0, 0]), 'A', "A, A, B => A");
             }
 
             {
@@ -1899,7 +1899,7 @@
                 knn.fit(X, y);
 
                 // Then
-                assert.equal(knn.predict([0, 0]), 'B', "k = 5");
+                assert.equal(knn.predict([0, 0]), 'B', "A, A, B, B, B => B");
             }
         });
     </script>
