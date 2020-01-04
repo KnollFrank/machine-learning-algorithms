@@ -68,12 +68,14 @@ function transformIfIsDigitDataset(datasetDescription) {
 
     const transform = row => {
         const scaledImage = getScaledImage({
-            image: strings2Numbers(getIndependentValsFromRow(row, datasetDescription)),
-            width: datasetDescription.imageWidth,
-            height: datasetDescription.imageHeight,
+            image: {
+                pixels: strings2Numbers(getIndependentValsFromRow(row, datasetDescription)),
+                width: datasetDescription.imageWidth,
+                height: datasetDescription.imageHeight
+            },
             kernelWidthAndHeight: kernelWidthAndHeight
         });
-        return scaledImage.concat(getClassValFromRow(row));
+        return scaledImage.pixels.concat(getClassValFromRow(row));
     };
 
     const kernelWidthAndHeight = 4;
@@ -115,23 +117,25 @@ function strings2Numbers(strings) {
     return strings.map(string => Number(string));
 }
 
-function getScaledImage({ image, width, height, kernelWidthAndHeight }) {
-    const scaledImage_width = width / kernelWidthAndHeight;
-    const scaledImage_height = height / kernelWidthAndHeight;
-    const scaledImage = Array(scaledImage_width * scaledImage_height).fill(0);
+function getScaledImage({ image, kernelWidthAndHeight }) {
+    const scaledImage_width = image.width / kernelWidthAndHeight;
+    const scaledImage_height = image.height / kernelWidthAndHeight;
+    const scaledImage = {
+        pixels: Array(scaledImage_width * scaledImage_height).fill(0),
+        width: scaledImage_width,
+        height: scaledImage_height
+    };
 
-    for (let y = 0; y + kernelWidthAndHeight <= height; y += kernelWidthAndHeight) {
-        for (let x = 0; x + kernelWidthAndHeight <= width; x += kernelWidthAndHeight) {
+    for (let y = 0; y + kernelWidthAndHeight <= image.height; y += kernelWidthAndHeight) {
+        for (let x = 0; x + kernelWidthAndHeight <= image.width; x += kernelWidthAndHeight) {
             const getPixelWithinKernel =
                 (kernelX, kernelY) => getPixel({
                     image: image,
-                    width: width,
                     x: x + kernelX,
                     y: y + kernelY
                 });
             putPixel({
                 image: scaledImage,
-                width: scaledImage_width,
                 x: x / kernelWidthAndHeight,
                 y: y / kernelWidthAndHeight,
                 pixel: getAveragePixelValueWithinKernel(kernelWidthAndHeight, getPixelWithinKernel)
@@ -152,12 +156,12 @@ function getAveragePixelValueWithinKernel(kernelWidthAndHeight, getPixel) {
     return Math.round(sum / (kernelWidthAndHeight ** 2));;
 }
 
-function getPixel({ image, width, x, y }) {
-    return image[y * width + x];
+function getPixel({ image: { pixels, width }, x, y }) {
+    return pixels[y * width + x];
 }
 
-function putPixel({ image, width, x, y, pixel }) {
-    image[y * width + x] = pixel;
+function putPixel({ image: { pixels, width }, x, y, pixel }) {
+    pixels[y * width + x] = pixel;
 }
 
 function train_test_split(dataset, train_proportion) {
