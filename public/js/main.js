@@ -461,6 +461,8 @@ function computeAccuracy(rowClassifier, dataset) {
             (row, index) => {
                 progress.value = index + 1;
                 console.log(`accuracy progress: ${index + 1}/${dataset.length}`);
+                // FK-TODO: das Ergebnis von "rowClassifier(row)" Zwischenspeichern für
+                //          die Dartsellung der Testdaten.
                 return rowClassifier(row);
             }));
 }
