@@ -1,2 +1,3 @@
 data/mnist-in-csv
 node_modules/
+data/mnist_train_60000.csv
