@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Entscheidungsbäume QUnit-Tests</title>
-    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.9.2.css">
+    <link rel="stylesheet" href="styles/qunit-2.9.2.css">
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/jquery-3.4.1.js"></script>
     <script src="js/jquery.dataTables.js"></script>
@@ -21,6 +21,7 @@
     <script src="js/timedExecutor.js"></script>
     <script src="js/main.js"></script>
     <script src="js/vis-4.21.0/dist/vis.js"></script>
+    <script src="js/KDTree.js"></script>
     <script src="js/KNN.js"></script>
     <link rel="stylesheet" href="styles/jquery.dataTables.css">
     <link rel="stylesheet" href="styles/style.css">
@@ -68,7 +69,7 @@
     </section>
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
-    <script src="https://code.jquery.com/qunit/qunit-2.9.2.js"></script>
+    <script src="js/qunit-2.9.2.js"></script>
     <script>
         QUnit.skip("hello test", function(assert) {
             const csv = `variance,skewness,curtosis,entropy,class
