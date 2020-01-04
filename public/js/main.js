@@ -50,10 +50,14 @@ function getDatasetDescription(fileName, dataset) {
                 return this.X.concat(this.y);
             }
         },
-        splittedDataset: train_test_split(dataset, 0.8)
+        splittedDataset: train_test_split(dataset, 0.8),
+        isDigitDataset: function() {
+            return this.fileName.toLowerCase().startsWith('mnist');
+        }
+
     };
 
-    if (isDigitDataset(datasetDescription)) {
+    if (datasetDescription.isDigitDataset()) {
         datasetDescription.imageWidth = 28;
         datasetDescription.imageHeight = 28;
     }
@@ -62,7 +66,7 @@ function getDatasetDescription(fileName, dataset) {
 }
 
 function transformIfIsDigitDataset(datasetDescription) {
-    if (!isDigitDataset(datasetDescription)) {
+    if (!datasetDescription.isDigitDataset()) {
         return datasetDescription;
     }
 
@@ -98,6 +102,7 @@ function transformIfIsDigitDataset(datasetDescription) {
             train: datasetDescription.splittedDataset.train.map(transform),
             test: datasetDescription.splittedDataset.test.map(transform)
         },
+        isDigitDataset: datasetDescription.isDigitDataset,
         imageWidth: transformedImageWidth,
         imageHeight: transformedImageHeight
     };
@@ -184,7 +189,7 @@ function onDatasetChanged(datasetDescription, classifierType) {
     $('#section-traindata').fadeIn();
     $('#progress, #subsection-decision-tree').fadeOut();
     $('#section-data-input, #section-testdata').fadeOut();
-    if (isDigitDataset(datasetDescription)) {
+    if (datasetDescription.isDigitDataset()) {
         $('#container-digits-train').fadeIn();
         $('#container-trainingDataSet').fadeOut();
         displayDigitTrainDataset(datasetDescription, 'container-digits-train');
@@ -209,11 +214,6 @@ function showSectionFor(classifierType) {
         $('#section-decision-tree').fadeOut();
         $('#section-KNN').fadeIn();
     }
-}
-
-// FK-TODO: make isDigitDataset a method of datasetDescription
-function isDigitDataset(datasetDescription) {
-    return datasetDescription.fileName.toLowerCase().startsWith('mnist');
 }
 
 let submitEventListener;
@@ -404,7 +404,7 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
 }
 
 function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowClassifier, classifierType) {
-    if (isDigitDataset(datasetDescription)) {
+    if (datasetDescription.isDigitDataset()) {
         canvasDataInput.style.display = "block";
         textDataInput.style.display = "none";
         displayCanvasDataInput(canvasDataInput, tree, network, rowClassifier, classifierType, datasetDescription.imageWidth, datasetDescription.imageHeight);
@@ -487,7 +487,7 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
         }
     }
 
-    if (isDigitDataset(datasetDescription)) {
+    if (datasetDescription.isDigitDataset()) {
         $('#container-digits-test').fadeIn();
         $('#container-testDataSet').fadeOut();
         const onDigitClickedReceiveRow =
