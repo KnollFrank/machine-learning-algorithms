@@ -77,13 +77,13 @@ function transformIfIsDigitDataset(datasetDescription) {
     };
 
     const kernelWidthAndHeight = 4;
-    const imageWidth = datasetDescription.imageWidth / kernelWidthAndHeight;
-    const imageHeight = datasetDescription.imageHeight / kernelWidthAndHeight;
+    const transformedImageWidth = datasetDescription.imageWidth / kernelWidthAndHeight;
+    const transformedImageHeight = datasetDescription.imageHeight / kernelWidthAndHeight;
 
     const transformedDatasetDescription = {
         fileName: datasetDescription.fileName,
         attributeNames: {
-            X: createRowColLabels(imageHeight, imageWidth),
+            X: createRowColLabels(transformedImageHeight, transformedImageWidth),
             y: datasetDescription.attributeNames.y,
             get all() {
                 return this.X.concat(this.y);
@@ -93,8 +93,8 @@ function transformIfIsDigitDataset(datasetDescription) {
             train: datasetDescription.splittedDataset.train.map(transform),
             test: datasetDescription.splittedDataset.test.map(transform)
         },
-        imageWidth: imageWidth,
-        imageHeight: imageHeight
+        imageWidth: transformedImageWidth,
+        imageHeight: transformedImageHeight
     };
 
     console.log('transformed datasetDescription:', transformedDatasetDescription);
