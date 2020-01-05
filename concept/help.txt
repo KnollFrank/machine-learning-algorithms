@@ -14,7 +14,6 @@ Abhängigkeiten:
 - https://www.papaparse.com/
 - https://visjs.org/ oder https://almende.github.io/vis/
 - https://datatables.net/
-- vielleicht: https://github.com/deThread/dethread, https://github.com/deThread/dethread-demo-applications
 - https://socket.io/docs/client-api/
 - https://www.kaggle.com/oddrationale/mnist-in-csv
 - https://en.wikipedia.org/wiki/K-d_tree
@@ -27,7 +26,6 @@ npm init
 npm install express
 npm install socket.io
 npm install formidable
-npm install --S dethread
 
 Um Dateiänderungen im laufenden Node.js-Betrieb aufzunehmen:
 npm install -g nodemon
@@ -48,7 +46,6 @@ FK-TODO:
   "As a general rule, if the dimensionality is k, the number of points in the data, N, should be N ≫ 2 ^ k."
 - Train- und Testdatensatz getrennt voneinander auswählbar machen über Dateidialog.
 - Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
-- dethread entfernen?
 - "With some classification methods (particuarly template-based methods, such as SVM and K-nearest neighbors),
   the error rate improves when the digits are CENTERED BY BOUNDING BOX rather than center of mass. If you do this kind of pre-processing, you should report it in your publications."
   - center digits by bounding box
