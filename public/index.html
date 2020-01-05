@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Entscheidungsbäume</title>
-    <script src="/socket.io/socket.io.js"></script>
     <script src="js/jquery-3.4.1.js"></script>
     <script src="js/jquery.dataTables.js"></script>
     <script src="js/papaparse.min.js"></script>
@@ -30,24 +29,6 @@
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="js/vis-4.21.0/dist/vis-network.min.css" />
     <link rel="stylesheet" href="styles/switch.css">
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const socket = io.connect();
-
-            socket.on('nachricht', data => {
-                data = JSON.parse(data);
-                console.log('nachricht empfangen:', data);
-            });
-
-            socket.on('clientInit', clientInit => console.log('clientInit:', clientInit));
-            socket.emit('clientReady');
-            socket.on('startTask', task => {
-                console.log('startTask:', task);
-                socket.emit('finishTask', task);
-            });
-            // socket.emit('processComplete', 'fkk-result');
-        });
-    </script>
 </head>
 
 <body>

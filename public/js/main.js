@@ -484,6 +484,7 @@ function displayAccuracy(rowClassifier, dataset) {
     document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
 }
 
+// FK-TODO: computeAccuracy in einem Worker durchführen, um den Hauptprozess nicht zu verlangsamen.
 function computeAccuracy(rowClassifier, dataset) {
     const progress = document.querySelector('#accuracy-panel progress');
     progress.max = dataset.length;
