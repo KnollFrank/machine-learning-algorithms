@@ -13,8 +13,7 @@ const ClassifierType = Object.freeze({
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const params = (new URL(document.location)).searchParams;
-    const classifierType = ClassifierType.from(params.get('classifier'));
+    const classifierType = getClassifierTypeFromDocumentsURL();
     setH1(classifierType);
     $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
@@ -33,6 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+function getClassifierTypeFromDocumentsURL() {
+    const params = (new URL(document.location)).searchParams;
+    return ClassifierType.from(params.get('classifier'));
+}
 
 function setH1(classifierType) {
     document.querySelector('h1').textContent = getH1(classifierType);
