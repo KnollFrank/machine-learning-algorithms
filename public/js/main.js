@@ -9,7 +9,7 @@ const ClassifierType = Object.freeze({
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const classifierType = ClassifierType.KNNUsingKDTree;
+    const classifierType = ClassifierType.KNN;
     setH1(classifierType);
     $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
@@ -70,7 +70,7 @@ function transformIfIsDigitDataset(datasetDescription) {
     }
 
     // FK-TODO: kernelWidthAndHeight über UI einstellbar machen
-    const kernelWidthAndHeight = 4;
+    const kernelWidthAndHeight = 1;
 
     const getScaledImageForRow = row => {
         const strings2Numbers = strings => strings.map(string => Number(string));
@@ -209,7 +209,7 @@ function onDatasetChanged(datasetDescription, classifierType) {
     if (datasetDescription.isDigitDataset()) {
         $('#container-digits-train').fadeIn();
         $('#container-trainingDataSet').fadeOut();
-        // displayDigitTrainDataset(datasetDescription, 'container-digits-train');
+        displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
         $('#container-digits-train').fadeOut();
         $('#container-trainingDataSet').fadeIn();
