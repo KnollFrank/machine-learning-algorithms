@@ -58,6 +58,3 @@ FK-TODO:
   Dazu die Beschreibungen der Datensätze aus dem Internet herunterladen, in einer Datei speichern
   und in der JS-Anwendung laden und anzeigen.
 - große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging).
-- Bei KNN für den Abschnitt "3. Vorhersage" die gesamte Bildschirmbreite ausnutzen,
-  weil wir in diesem Fall keinen Platz für den Entscheidungsbaum brauchen.
-  
