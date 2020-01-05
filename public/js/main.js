@@ -242,27 +242,40 @@ function showSectionFor(classifierType) {
     }
 }
 
-let submitEventListener;
+let submitEventListener4decisionTreeForm;
+let submitEventListener4knnForm;
 
 function build_classifier_onSubmit(datasetDescription, classifierType) {
-    const decisionTreeForm = document.querySelector('#decisionTreeForm');
-    if (submitEventListener) {
-        decisionTreeForm.removeEventListener("submit", submitEventListener);
-    }
-    submitEventListener = e => {
-        e.preventDefault();
-        build_classifier(datasetDescription, classifierType);
-        return false;
-    };
     // FK-TODO: DRY
     if (classifierType == ClassifierType.DECISION_TREE) {
-        decisionTreeForm.addEventListener('submit', submitEventListener);
+        const decisionTreeForm = document.querySelector('#decisionTreeForm');
+
+        if (submitEventListener4decisionTreeForm) {
+            decisionTreeForm.removeEventListener('submit', submitEventListener4decisionTreeForm);
+        }
+
+        submitEventListener4decisionTreeForm = e => {
+            e.preventDefault();
+            build_classifier(datasetDescription, classifierType);
+            return false;
+        };
+
+        decisionTreeForm.addEventListener('submit', submitEventListener4decisionTreeForm);
     } else {
         const knnForm = document.querySelector('#knnForm');
-        knnForm.addEventListener('submit', e => {
+
+        if (submitEventListener4knnForm) {
+            knnForm.removeEventListener('submit', submitEventListener4knnForm);
+        }
+
+        submitEventListener4knnForm = e => {
+            e.preventDefault();
             document.querySelector('#section-KNN h2').textContent = `2. ${getKFormParam()} nächste Nachbarn`;
-            submitEventListener(e);
-        });
+            build_classifier(datasetDescription, classifierType);
+            return false;
+        };
+
+        knnForm.addEventListener('submit', submitEventListener4knnForm);
     }
 }
 
