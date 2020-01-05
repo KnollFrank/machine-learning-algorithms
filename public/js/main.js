@@ -3,10 +3,13 @@
 // FK-TODO: verwende import export
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
-const ClassifierType = Object.freeze({ DECISION_TREE: 'DECISION_TREE', KNN: 'KNN' });
+const ClassifierType = Object.freeze({
+    DECISION_TREE: 'DECISION_TREE',
+    KNN: 'KNN'
+});
 
 document.addEventListener('DOMContentLoaded', () => {
-    const classifierType = ClassifierType.KNN;
+    const classifierType = ClassifierType.KNNUsingKDTree;
     setH1(classifierType);
     $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
@@ -17,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function(results) {
+            complete: function (results) {
                 onDatasetChanged(
                     transformIfIsDigitDataset(getDatasetDescription(dataFile.name, results.data)),
                     classifierType);
@@ -45,16 +48,12 @@ function getDatasetDescription(fileName, dataset) {
         attributeNames: {
             X: attributeNames.slice(0, -1),
             y: attributeNames[attributeNames.length - 1],
-            // FK-TODO: all könnte auch einfach "all: attributeNames" geschrieben werden.
-            get all() {
-                return this.X.concat(this.y);
-            }
+            all: attributeNames
         },
         splittedDataset: train_test_split(dataset, 0.8),
-        isDigitDataset: function() {
+        isDigitDataset: function () {
             return this.fileName.toLowerCase().startsWith('mnist');
         }
-
     };
 
     if (datasetDescription.isDigitDataset()) {
@@ -71,7 +70,7 @@ function transformIfIsDigitDataset(datasetDescription) {
     }
 
     // FK-TODO: kernelWidthAndHeight über UI einstellbar machen
-    const kernelWidthAndHeight = 7;
+    const kernelWidthAndHeight = 4;
 
     const getScaledImageForRow = row => {
         const strings2Numbers = strings => strings.map(string => Number(string));
@@ -121,7 +120,10 @@ function createRowColLabels(numRows, numCols) {
     return rowColLabels;
 }
 
-function getScaledImage({ image, kernelWidthAndHeight }) {
+function getScaledImage({
+    image,
+    kernelWidthAndHeight
+}) {
     const scaledImage_width = image.width / kernelWidthAndHeight;
     const scaledImage_height = image.height / kernelWidthAndHeight;
     const scaledImage = {
@@ -164,11 +166,30 @@ function getAveragePixelValueWithinKernel(kernelWidthAndHeight, getPixel) {
     return Math.round(sum / (kernelWidthAndHeight ** 2));;
 }
 
-function getPixel({ image: { pixels, width }, point: { x, y } }) {
+function getPixel({
+    image: {
+        pixels,
+        width
+    },
+    point: {
+        x,
+        y
+    }
+}) {
     return pixels[y * width + x];
 }
 
-function putPixel({ image: { pixels, width }, point: { x, y }, pixel }) {
+function putPixel({
+    image: {
+        pixels,
+        width
+    },
+    point: {
+        x,
+        y
+    },
+    pixel
+}) {
     pixels[y * width + x] = pixel;
 }
 
@@ -188,7 +209,7 @@ function onDatasetChanged(datasetDescription, classifierType) {
     if (datasetDescription.isDigitDataset()) {
         $('#container-digits-train').fadeIn();
         $('#container-trainingDataSet').fadeOut();
-        displayDigitTrainDataset(datasetDescription, 'container-digits-train');
+        // displayDigitTrainDataset(datasetDescription, 'container-digits-train');
     } else {
         $('#container-digits-train').fadeOut();
         $('#container-trainingDataSet').fadeIn();
@@ -252,7 +273,10 @@ function build_tree(datasetDescription) {
         dataset: datasetDescription.splittedDataset.train,
         max_depth: getInputValueById('max_depth'),
         min_size: getInputValueById('min_size')
-    }, ({ type: type, value: value }) => {
+    }, ({
+        type: type,
+        value: value
+    }) => {
         switch (type) {
             case 'info':
                 gNetwork = addNewNodesAndEdgesToNetwork(datasetDescription, value, gNetwork);
@@ -283,7 +307,11 @@ function build_tree(datasetDescription) {
     });
 }
 
-function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
+function build_tree_with_worker({
+    dataset,
+    max_depth,
+    min_size
+}, onmessage) {
     $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
@@ -293,7 +321,10 @@ function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
             createTreeListener(onmessage))
         .build_tree(
             dataset,
-            tree => onmessage({ type: 'result', value: tree }));
+            tree => onmessage({
+                type: 'result',
+                value: tree
+            }));
 }
 
 function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
@@ -529,14 +560,36 @@ function createTreeListener(onmessage) {
             if (!rootNode) {
                 rootNode = node;
             }
-            timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
+            timedExecutor.execute(() => onmessage({
+                type: 'info',
+                value: rootNode
+            }));
         },
         onEdgeAdded: (fromNode, toNode) => {
-            timedExecutor.execute(() => onmessage({ type: 'info', value: rootNode }));
+            timedExecutor.execute(() => onmessage({
+                type: 'info',
+                value: rootNode
+            }));
         },
         onStartSplit: nodeId => {},
-        onInnerSplit: ({ workerIndex, nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
-            onmessage({ type: 'inner-split', value: { workerIndex, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset } });
+        onInnerSplit: ({
+            workerIndex,
+            nodeId,
+            startSplitIndex,
+            actualSplitIndex,
+            endSplitIndex,
+            numberOfEntriesInDataset
+        }) => {
+            onmessage({
+                type: 'inner-split',
+                value: {
+                    workerIndex,
+                    startSplitIndex,
+                    actualSplitIndex,
+                    endSplitIndex,
+                    numberOfEntriesInDataset
+                }
+            });
         },
         onEndSplit: nodeId => {}
     }

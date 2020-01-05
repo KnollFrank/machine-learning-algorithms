@@ -3,7 +3,6 @@
 function getHtml(url) {
     let capturedHtml;
 
-    // FK-TODO: mit fetch-API umsetzen
     $.ajax({
         url: url,
         dataType: 'html',
