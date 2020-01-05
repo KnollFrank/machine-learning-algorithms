@@ -245,7 +245,7 @@ function showSectionFor(classifierType) {
 let submitEventListener;
 
 function build_classifier_onSubmit(datasetDescription, classifierType) {
-    let decisionTreeForm = document.querySelector('#decisionTreeForm');
+    const decisionTreeForm = document.querySelector('#decisionTreeForm');
     if (submitEventListener) {
         decisionTreeForm.removeEventListener("submit", submitEventListener);
     }
@@ -253,11 +253,13 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
         e.preventDefault();
         build_classifier(datasetDescription, classifierType);
         return false;
-    }
+    };
+    // FK-TODO: DRY
     if (classifierType == ClassifierType.DECISION_TREE) {
-        decisionTreeForm.addEventListener("submit", submitEventListener);
+        decisionTreeForm.addEventListener('submit', submitEventListener);
     } else {
-        document.querySelector('#calculate-KNN').addEventListener('click', submitEventListener);
+        const knnForm = document.querySelector('#knnForm');
+        knnForm.addEventListener('submit', submitEventListener);
     }
 }
 
