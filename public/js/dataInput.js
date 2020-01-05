@@ -23,6 +23,13 @@ function displayTextDataInput(rootElement, attributeNames, tree, network, rowCla
 }
 
 function displayCanvasDataInput(rootElement, tree, network, rowClassifier, classifierType, imageWidth, imageHeight) {
+    if (classifierType == ClassifierType.DECISION_TREE) {
+        rootElement.classList.add('decision-tree');
+        rootElement.classList.remove('knn');
+    } else {
+        rootElement.classList.add('knn');
+        rootElement.classList.remove('decision-tree');
+    }
     const canvasBig = rootElement.querySelector('#digit-canvas-big');
     const canvasSmall = document.querySelector('#digit-canvas-small');
     canvasSmall.width = imageWidth;

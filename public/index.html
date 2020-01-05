@@ -112,14 +112,16 @@
             <section id="section-data-input">
                 <h2>3. Vorhersage</h2>
                 <div id="canvas-data-input">
-                    <p>Zeichne in diesen Bereich eine Ziffer zwischen 0 und 9:</p>
-                    <canvas id="digit-canvas-big" width="200" height="200"></canvas>
-                    <p>
-                        <input id="new-prediction" type="button" value="neue Ziffer">
-                    </p>
-                    <canvas id="digit-canvas-small" width="28" height="28"></canvas>
+                    <div>
+                        <p>Zeichne in diesen Bereich eine Ziffer zwischen 0 und 9:</p>
+                        <canvas id="digit-canvas-big" width="200" height="200"></canvas>
+                        <p>
+                            <input id="new-prediction" type="button" value="neue Ziffer">
+                        </p>
+                        <canvas id="digit-canvas-small" width="28" height="28"></canvas>
+                    </div>
                     <div id="prediction-container">
-                        Ich glaube, Du hast folgende Ziffer geschrieben:
+                        <p>Ich glaube, Du hast folgende Ziffer geschrieben:</p>
                         <div class="resultOfPrediction prediction"></div>
                     </div>
                 </div>

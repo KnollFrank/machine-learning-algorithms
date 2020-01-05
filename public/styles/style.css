@@ -30,8 +30,18 @@ h1 {
 
 #dataInputAndDecisionTree {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
+}
+
+
+/* FK-TODO: simplify */
+
+#dataInputAndDecisionTree.decision-tree {
+    flex-direction: column;
+}
+
+#dataInputAndDecisionTree.knn {
+    flex-direction: column;
 }
 
 #dataInputAndDecisionTree #section-data-input {
@@ -106,9 +116,28 @@ div.digit figcaption.wrongPrediction {
     background-color: inherit !important;
 }
 
-#canvas-data-input,
 #text-data-input {
     display: none;
+}
+
+#canvas-data-input {
+    display: flex;
+    flex-direction: row;
+}
+
+
+/* FK-TODO: simplify */
+
+#canvas-data-input.decision-tree {
+    flex-direction: row;
+}
+
+#canvas-data-input.knn {
+    flex-direction: row;
+}
+
+#canvas-data-input>div {
+    flex-basis: 40%;
 }
 
 .table {
