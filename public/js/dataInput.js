@@ -11,9 +11,11 @@ function displayTextDataInput(rootElement, attributeNames, tree, network, rowCla
             if (classifierType == ClassifierType.DECISION_TREE) {
                 const prediction = predict(tree, getInputValuesByName(attributeNames));
                 highlightPredictionInNetwork(prediction, network);
+                // FK-TODO: DRY with setPrediction()
                 rootElement.querySelector('.prediction').innerHTML = prediction.value;
             } else {
                 const prediction = rowClassifier(getInputValuesByName(attributeNames));
+                // FK-TODO: DRY with setPrediction()
                 rootElement.querySelector('.prediction').innerHTML = prediction;
             }
             return false;
@@ -25,7 +27,7 @@ function displayCanvasDataInput(rootElement, tree, network, rowClassifier, class
     const canvasSmall = document.querySelector('#digit-canvas-small');
     canvasSmall.width = imageWidth;
     canvasSmall.height = imageHeight;
-    
+
     initializeDrawTool(
         canvasBig,
         canvasSmall,
@@ -56,18 +58,18 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
         }
     }
 
-    $(canvasBig).on('mousedown', function (e) {
+    $(canvasBig).on('mousedown', function(e) {
         last_mouse = mouse = getMousePos(canvasBig, e);
         mousedown = true;
         fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    $(canvasBig).on('mouseup', function (e) {
+    $(canvasBig).on('mouseup', function(e) {
         mousedown = false;
         onDigitDrawn(canvasBig, canvasSmall);
     });
 
-    $(canvasBig).on('mousemove', function (e) {
+    $(canvasBig).on('mousemove', function(e) {
         mouse = getMousePos(canvasBig, e);
         if (mousedown) {
             ctxBig.beginPath();
@@ -85,7 +87,7 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
 
 function prepareNewPrediction(canvasBig, canvasSmall) {
     clearCanvas(canvasBig, canvasSmall);
-    setPrediction('?');
+    setPrediction('');
 }
 
 function clearCanvas(canvasBig, canvasSmall) {

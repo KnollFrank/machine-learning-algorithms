@@ -139,6 +139,17 @@ div.digit figcaption.wrongPrediction {
     border-left: none;
 }
 
+.resultOfPrediction {
+    border: 15px solid rgba(204, 204, 204, 0.5);
+    cursor: crosshair;
+    border-radius: 15px;
+    width: 230px;
+    height: 230px;
+    font-size: 15vw;
+    text-align: center;
+    margin-top: 10px;
+}
+
 #digit-canvas-big {
     border: 15px solid rgba(204, 204, 204, 0.5);
     cursor: crosshair;
@@ -153,7 +164,7 @@ div.digit figcaption.wrongPrediction {
 #digit-canvas-small {
     border: 2px solid lightblue;
     border-radius: 2px;
-    display: block;
+    display: none;
 }
 
 #decisionTreeNetwork-enhanced-switcher {
