@@ -35,7 +35,7 @@ Ergebnisse für MNIST:
 mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 7: Accuracy: 81%
 mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 4: Accuracy: 94%
 mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 2: Accuracy: 97%
-mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 1: Accuracy:
+mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 1: Accuracy: 96%
 
 mnist_train_60000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 7: Accuracy: 81%
 
