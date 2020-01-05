@@ -28,30 +28,6 @@ h1 {
     margin-top: 20px;
 }
 
-#dataInputAndDecisionTree {
-    display: flex;
-    justify-content: space-between;
-}
-
-
-/* FK-TODO: simplify */
-
-#dataInputAndDecisionTree.decision-tree {
-    flex-direction: column;
-}
-
-#dataInputAndDecisionTree.knn {
-    flex-direction: column;
-}
-
-#dataInputAndDecisionTree #section-data-input {
-    flex-basis: 20%;
-}
-
-#dataInputAndDecisionTree #section-decision-tree {
-    flex-basis: 75%;
-}
-
 #decisionTreeNetwork {
     width: 100%;
     height: 600px;
@@ -122,17 +98,6 @@ div.digit figcaption.wrongPrediction {
 
 #canvas-data-input {
     display: flex;
-    flex-direction: row;
-}
-
-
-/* FK-TODO: simplify */
-
-#canvas-data-input.decision-tree {
-    flex-direction: row;
-}
-
-#canvas-data-input.knn {
     flex-direction: row;
 }
 

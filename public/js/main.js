@@ -256,13 +256,9 @@ function onDatasetChanged(datasetDescription, classifierType) {
 
 function showSectionFor(classifierType) {
     if (classifierType == ClassifierType.DECISION_TREE) {
-        document.querySelector('#dataInputAndDecisionTree').classList.add('decision-tree');
-        document.querySelector('#dataInputAndDecisionTree').classList.remove('knn');
         $('#section-decision-tree').fadeIn();
         $('#section-KNN').fadeOut();
     } else {
-        document.querySelector('#dataInputAndDecisionTree').classList.add('knn');
-        document.querySelector('#dataInputAndDecisionTree').classList.remove('decision-tree');
         $('#section-decision-tree').fadeOut();
         $('#section-KNN').fadeIn();
     }
