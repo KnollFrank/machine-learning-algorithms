@@ -242,40 +242,39 @@ function showSectionFor(classifierType) {
     }
 }
 
-let submitEventListener4decisionTreeForm;
-let submitEventListener4knnForm;
+class SubmitEventListenerHolder {
+
+    setEventListener(form, eventListener) {
+        if (this.eventListener) {
+            form.removeEventListener('submit', this.eventListener);
+        }
+        this.eventListener = eventListener;
+        form.addEventListener('submit', eventListener);
+    }
+}
+
+const submitEventListenerHolder4decisionTreeForm = new SubmitEventListenerHolder();
+const submitEventListenerHolder4knnForm = new SubmitEventListenerHolder();
 
 function build_classifier_onSubmit(datasetDescription, classifierType) {
-    // FK-TODO: DRY
     if (classifierType == ClassifierType.DECISION_TREE) {
-        const decisionTreeForm = document.querySelector('#decisionTreeForm');
-
-        if (submitEventListener4decisionTreeForm) {
-            decisionTreeForm.removeEventListener('submit', submitEventListener4decisionTreeForm);
-        }
-
-        submitEventListener4decisionTreeForm = e => {
-            e.preventDefault();
-            build_classifier(datasetDescription, classifierType);
-            return false;
-        };
-
-        decisionTreeForm.addEventListener('submit', submitEventListener4decisionTreeForm);
+        submitEventListenerHolder4decisionTreeForm.setEventListener(
+            document.querySelector('#decisionTreeForm'),
+            e => {
+                e.preventDefault();
+                build_classifier(datasetDescription, classifierType);
+                return false;
+            });
     } else {
-        const knnForm = document.querySelector('#knnForm');
-
-        if (submitEventListener4knnForm) {
-            knnForm.removeEventListener('submit', submitEventListener4knnForm);
-        }
-
-        submitEventListener4knnForm = e => {
-            e.preventDefault();
-            document.querySelector('#section-KNN h2').textContent = `2. ${getKFormParam()} nächste Nachbarn`;
-            build_classifier(datasetDescription, classifierType);
-            return false;
-        };
-
-        knnForm.addEventListener('submit', submitEventListener4knnForm);
+        submitEventListenerHolder4knnForm.setEventListener(
+            document.querySelector('#knnForm'),
+            e => {
+                e.preventDefault();
+                document.querySelector('#section-KNN h2').textContent = `2. ${getKFormParam()} nächste Nachbarn`;
+                build_classifier(datasetDescription, classifierType);
+                return false;
+            }
+        );
     }
 }
 
