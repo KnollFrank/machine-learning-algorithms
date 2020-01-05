@@ -460,12 +460,12 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
 
 function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowClassifier, classifierType) {
     if (datasetDescription.isDigitDataset()) {
-        canvasDataInput.style.display = "block";
-        textDataInput.style.display = "none";
+        $(canvasDataInput).show();
+        $(textDataInput).hide();
         displayCanvasDataInput(canvasDataInput, tree, network, rowClassifier, classifierType, datasetDescription.imageWidth, datasetDescription.imageHeight);
     } else {
-        canvasDataInput.style.display = "none";
-        textDataInput.style.display = "block";
+        $(canvasDataInput).hide();
+        $(textDataInput).show();
         displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network, rowClassifier, classifierType);
     }
 }
