@@ -5,12 +5,16 @@
 
 const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
-    KNN: 'KNN'
+    KNN: 'KNN',
+    from: function(name) {
+        name = name ? name.toUpperCase() : "";
+        return [this.DECISION_TREE, this.KNN].includes(name) ? name : this.DECISION_TREE;
+    }
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // FK-TODO: ClassifierType über UI einstellbar machen
-    const classifierType = ClassifierType.KNN;
+    const params = (new URL(document.location)).searchParams;
+    const classifierType = ClassifierType.from(params.get('classifier'));
     setH1(classifierType);
     $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     document.querySelector('#csv-file').addEventListener('change', evt => {
@@ -21,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Papa.parse(dataFile, {
             download: true,
             header: false,
-            complete: function (results) {
+            complete: function(results) {
                 onDatasetChanged(
                     transformIfIsDigitDataset(getDatasetDescription(dataFile.name, results.data)),
                     classifierType);
@@ -52,7 +56,7 @@ function getDatasetDescription(fileName, dataset) {
             all: attributeNames
         },
         splittedDataset: train_test_split(dataset, 0.8),
-        isDigitDataset: function () {
+        isDigitDataset: function() {
             return this.fileName.toLowerCase().startsWith('mnist');
         }
     };

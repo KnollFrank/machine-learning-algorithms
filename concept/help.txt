@@ -33,6 +33,10 @@ nodemon webserver.js
 
 node webserver.js
 
+Aufrufe:
+http://localhost:8080/?classifier=knn
+http://localhost:8080/?classifier=decision_tree
+
 Ergebnisse für MNIST:
 mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 7: Accuracy: 81%
 mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 4: Accuracy: 94%
