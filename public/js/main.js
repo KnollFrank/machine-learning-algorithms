@@ -36,34 +36,44 @@ const ClassifierType = Object.freeze({
 document.addEventListener('DOMContentLoaded', () => {
     const classifierType = getClassifierTypeFromDocumentsURL();
     setH1(classifierType);
-    $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
+    $('#datasetForm input[type=submit], #kernelWidthAndHeight-inputFields, #section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     let dataFile;
     document.querySelector('#csv-file').addEventListener('change', evt => {
-        // dataFile = 'data/data_banknote_authentication.csv';
-        // dataFile = 'data/processed.cleveland.csv';
         dataFile = evt.target.files[0];
+        onCsvFileSelected(dataFile, classifierType);
     });
 
     submitEventListenerHolder4kdatasetForm.setEventListener(
         document.querySelector('#datasetForm'),
-        e => {
-            Papa.parse(dataFile, {
-                download: true,
-                header: false,
-                complete: function(results) {
-                    let datasetDescription = getDatasetDescription(dataFile.name, results.data);
-                    if (datasetDescription.isDigitDataset()) {
-                        datasetDescription = transform(
-                            datasetDescription,
-                            getInputValueById('kernelWidthAndHeight'));
-                    }
-
-                    onDatasetChanged(datasetDescription, classifierType);
-                }
-            });
-        }
+        () => onSubmitDatasetForm(dataFile, classifierType)
     );
 });
+
+function onCsvFileSelected(dataFile, classifierType) {
+    if (isFileDigitDataset(dataFile.name)) {
+        $('#datasetForm input[type=submit], #kernelWidthAndHeight-inputFields').fadeIn();
+    } else {
+        $('#datasetForm input[type=submit], #kernelWidthAndHeight-inputFields').fadeOut();
+        onSubmitDatasetForm(dataFile, classifierType);
+    }
+}
+
+function onSubmitDatasetForm(dataFile, classifierType) {
+    Papa.parse(dataFile, {
+        download: true,
+        header: false,
+        complete: function(results) {
+            let datasetDescription = getDatasetDescription(dataFile.name, results.data);
+            if (datasetDescription.isDigitDataset()) {
+                datasetDescription = transform(
+                    datasetDescription,
+                    getInputValueById('kernelWidthAndHeight'));
+            }
+
+            onDatasetChanged(datasetDescription, classifierType);
+        }
+    });
+}
 
 function getClassifierTypeFromDocumentsURL() {
     const params = (new URL(document.location)).searchParams;
@@ -80,6 +90,10 @@ function getH1(classifierType) {
         'k nächste Nachbarn';
 }
 
+function isFileDigitDataset(fileName) {
+    return fileName.toLowerCase().startsWith('mnist');
+}
+
 function getDatasetDescription(fileName, dataset) {
     let attributeNames = dataset[0];
     // remove header (= column names) of dataset
@@ -93,7 +107,7 @@ function getDatasetDescription(fileName, dataset) {
         },
         splittedDataset: train_test_split(dataset, 0.8),
         isDigitDataset: function() {
-            return this.fileName.toLowerCase().startsWith('mnist');
+            return isFileDigitDataset(this.fileName);
         }
     };
 

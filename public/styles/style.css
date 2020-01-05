@@ -72,7 +72,7 @@ h1 {
 }
 
 .dataInputFields>div>input[type=file] {
-    width: 350px;
+    width: 400px;
 }
 
 .wrongPrediction {
