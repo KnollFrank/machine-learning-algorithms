@@ -11,61 +11,144 @@
     <script src="js/papaparse.min.js"></script>
     <script src="js/jsHelper.js"></script>
     <script src="js/idGenerator.js"></script>
+    <script src="js/htmlHelper.js"></script>
     <script src="js/inputTemplate.js"></script>
     <script src="js/progress.js"></script>
     <script src="js/dataInput.js"></script>
+    <script src="js/splitterWorkers.js"></script>
     <script src="js/decisionTree.js"></script>
+    <script src="js/KDTree.js"></script>
+    <script src="js/KNN.js"></script>
     <script src="js/datasetTable.js"></script>
     <script src="js/network.js"></script>
     <script src="js/timedExecutor.js"></script>
+    <script src="js/digit.js"></script>
+    <script src="js/displayDigitDataset.js"></script>
+    <script src="js/submitEventListenerHolder.js"></script>
     <script src="js/main.js"></script>
     <script src="js/vis-4.21.0/dist/vis.js"></script>
-    <script src="js/KDTree.js"></script>
-    <script src="js/KNN.js"></script>
     <link rel="stylesheet" href="styles/jquery.dataTables.css">
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="js/vis-4.21.0/dist/vis-network.min.css" />
+    <link rel="stylesheet" href="styles/switch.css">
 </head>
 
 <body>
-    <h1>Entscheidungsbäume</h1>
-    <section>
-        <h2>Eingabedaten</h2>
-        <input type="file" id="csv-file" name="files" />
-        <div id="datasetTableContainer"></div>
-        </table>
-    </section>
-    <section>
-        <h2>Entscheidungsbaum</h2>
-        <form id="decisionTreeForm">
-            <div class="dataInputFields">
-                <div>
-                    <label for="max_depth">max_depth:</label>
-                    <input id="max_depth" type="text" value="5">
+    <main class="center">
+        <h1></h1>
+        <section>
+            <h2>1. Datensatz</h2>
+            <form id="datasetForm">
+                <div class="dataInputFields">
+                    <div>
+                        <label for="csv-file">CSV-Datei:</label>
+                        <input type="file" id="csv-file" name="files" />
+                    </div>
+                    <div id="kernelWidthAndHeight-inputFields">
+                        <label for="kernelWidthAndHeight">kernelWidthAndHeight:</label>
+                        <input id="kernelWidthAndHeight" type="text" value="1">
+                    </div>
                 </div>
-                <div>
-                    <label for="min_size">min_size:</label>
-                    <input id="min_size" type="text" value="10">
+                <input type="submit" value="laden">
+            </form>
+            <section id="section-traindata">
+                <h3>1.1 Trainingsdaten</h3>
+                <div id="container-digits-train"></div>
+                <div id="container-trainingDataSet"></div>
+            </section>
+        </section>
+        <div id="dataInputAndDecisionTree">
+            <section id="section-decision-tree">
+                <h2>2. Entscheidungsbaum</h2>
+                <form id="decisionTreeForm">
+                    <div class="dataInputFields">
+                        <div>
+                            <label for="max_depth">Maximale Tiefe:</label>
+                            <input id="max_depth" type="text" value="5">
+                        </div>
+                        <div>
+                            <label for="min_size">Minimale Größe eines Datensatzes fürs Splitten:</label>
+                            <input id="min_size" type="text" value="10">
+                        </div>
+                    </div>
+                    <input type="submit" value="berechnen">
+                    <input id="save_tree" type="button" value="speichern">
+                    <input id="load_tree" type="button" value="laden">
+                </form>
+                <div id="progress">
+                    <h3>2.1 Fortschritt</h3>
+                    <p>Größe des aktuellen Datensatzes: <meter id="numberOfEntriesInDataset" value="0" min="0"></meter>
+                        <span id="numberOfEntriesInDatasetText"></span>
+                    </p>
+                    <div class="table">
+                        <div class="table-header">
+                            <div class="table-cell">Worker</div>
+                            <div class="table-cell">Anfang</div>
+                            <div class="table-cell">Fortschritt</div>
+                            <div class="table-cell">Ende</div>
+                        </div>
+                    </div>
                 </div>
+                <section id="subsection-decision-tree">
+                    <h3>2.2 Entscheidungsbaum</h3>
+                    <label id="decisionTreeNetwork-enhanced-switcher" class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label> erweiterte Ansicht
+                    <div id="decisionTreeNetwork"></div>
+                </section>
+            </section>
+            <section id="section-KNN">
+                <h2>2. k nächste Nachbarn</h2>
+                <form id="knnForm">
+                    <div class="dataInputFields">
+                        <div>
+                            <label for="knn-k">k:</label>
+                            <input id="knn-k" type="text" value="3">
+                        </div>
+                    </div>
+                    <input type="submit" value="berechnen">
+                </form>
+            </section>
+            <section id="section-data-input">
+                <h2>3. Vorhersage</h2>
+                <div id="canvas-data-input">
+                    <p>Zeichne in diesen Bereich eine Ziffer zwischen 0 und 9:</p>
+                    <canvas id="digit-canvas-big" width="200" height="200"></canvas>
+                    <p>
+                        <input id="new-prediction" type="button" value="neue Ziffer">
+                    </p>
+                    <canvas id="digit-canvas-small" width="28" height="28"></canvas>
+                    <p id="prediction-container">
+                        <!-- FK-TODO: Die unter "prediction" dargestellte Ziffer viel sichtbarer darstellen. -->
+                        Ich glaube, Du hast eine <span class="prediction">?</span> geschrieben.
+                    </p>
+                </div>
+                <div id="text-data-input">
+                    <form id="dataInputForm">
+                        <div class="dataInputFields"></div>
+                        <input type="submit" value="vorhersagen">
+                    </form>
+                    <p>
+                        Vorhersage: <span class="prediction"></span>
+                    </p>
+                </div>
+            </section>
+        </div>
+        <section id="section-testdata">
+            <h2>4. Testdaten</h2>
+            <div id="accuracy-panel">
+                <progress value="0"></progress>
+                <p>
+                    <!-- FK-TODO: Accuracy sichtbarer anzeigen -->
+                    Accuracy: <span id="accuracy"></span>
+                </p>
             </div>
-            <input type="submit" value="Go">
-        </form>
-        <div id="decisionTreeNetwork"></div>
-        <p id="selection"></p>
-        <p>
-            Accuracy: <span id="accuracy"></span>
-        </p>
-    </section>
-    <section>
-        <h2>Dateneingabe</h2>
-        <form id="dataInputForm">
-            <div class="dataInputFields"></div>
-            <input type="submit" value="vorhersagen">
-        </form>
-        <p>
-            Vorhersage: <span id="predicted"></span>
-        </p>
-    </section>
+            <div id="container-digits-test"></div>
+            <div id="container-testDataSet"></div>
+        </section>
+    </main>
+
     <div id="qunit"></div>
     <div id="qunit-fixture"></div>
     <script src="js/qunit-2.9.2.js"></script>

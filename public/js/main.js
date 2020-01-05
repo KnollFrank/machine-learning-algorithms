@@ -3,23 +3,6 @@
 // FK-TODO: verwende import export
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
-// FK-TODO: move SubmitEventListenerHolder to new file
-class SubmitEventListenerHolder {
-    constructor() {
-        this._eventListener = e => {
-            e.preventDefault();
-            this.eventListener(e);
-            return false;
-        }
-    }
-
-    setEventListener(form, eventListener) {
-        form.removeEventListener('submit', this._eventListener);
-        this.eventListener = eventListener;
-        form.addEventListener('submit', this._eventListener);
-    }
-}
-
 const submitEventListenerHolder4decisionTreeForm = new SubmitEventListenerHolder();
 const submitEventListenerHolder4knnForm = new SubmitEventListenerHolder();
 const submitEventListenerHolder4kdatasetForm = new SubmitEventListenerHolder();
