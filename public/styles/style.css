@@ -99,6 +99,7 @@ div.digit figcaption.wrongPrediction {
 #canvas-data-input {
     display: flex;
     flex-direction: row;
+    justify-content: center;
 }
 
 #canvas-data-input>div {
