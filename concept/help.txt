@@ -53,3 +53,4 @@ FK-TODO:
 - in den tabellarischen Trainingsdaten eine Legende (oder Tooltip) anzeigen, was die Tabellenspalten bedeuten.
   Dazu die Beschreibungen der Datensätze aus dem Internet herunterladen, in einer Datei speichern
   und in der JS-Anwendung laden und anzeigen.
+- große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging).

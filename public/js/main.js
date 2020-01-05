@@ -9,6 +9,7 @@ const ClassifierType = Object.freeze({
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // FK-TODO: ClassifierType über UI einstellbar machen
     const classifierType = ClassifierType.KNN;
     setH1(classifierType);
     $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
@@ -69,7 +70,7 @@ function transformIfIsDigitDataset(datasetDescription) {
         return datasetDescription;
     }
 
-    // FK-TODO: kernelWidthAndHeight über UI einstellbar machen
+    // FK-TODO: kernelWidthAndHeight und k über UI einstellbar machen
     const kernelWidthAndHeight = 1;
 
     const getScaledImageForRow = row => {
