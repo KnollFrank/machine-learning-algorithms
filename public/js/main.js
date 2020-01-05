@@ -259,7 +259,10 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
         decisionTreeForm.addEventListener('submit', submitEventListener);
     } else {
         const knnForm = document.querySelector('#knnForm');
-        knnForm.addEventListener('submit', submitEventListener);
+        knnForm.addEventListener('submit', e => {
+            document.querySelector('#section-KNN h2').textContent = `2. ${getKFormParam()} nächste Nachbarn`;
+            submitEventListener(e);
+        });
     }
 }
 
@@ -269,13 +272,19 @@ function build_classifier(datasetDescription, classifierType) {
             build_tree(datasetDescription);
             break;
         case ClassifierType.KNN:
-            const knn = new KNNUsingKDTree(3);
+            // FK-TODO: nicht getKFormParam() aufrufen, sondern k als Parameter von build_classifier übergeben.
+            //          Dito für max_depth und min_size
+            const knn = new KNNUsingKDTree(getKFormParam());
             knn.fit(
                 datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
                 datasetDescription.splittedDataset.train.map(getClassValFromRow));
             onClassifierBuilt(datasetDescription, knn, classifierType);
             break;
     }
+}
+
+function getKFormParam() {
+    return getInputValueById('knn-k');
 }
 
 function build_tree(datasetDescription) {
