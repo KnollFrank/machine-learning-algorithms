@@ -3,6 +3,27 @@
 // FK-TODO: verwende import export
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
+// FK-TODO: move SubmitEventListenerHolder to new file
+class SubmitEventListenerHolder {
+    constructor() {
+        this._eventListener = e => {
+            e.preventDefault();
+            this.eventListener(e);
+            return false;
+        }
+    }
+
+    setEventListener(form, eventListener) {
+        form.removeEventListener('submit', this._eventListener);
+        this.eventListener = eventListener;
+        form.addEventListener('submit', this._eventListener);
+    }
+}
+
+const submitEventListenerHolder4decisionTreeForm = new SubmitEventListenerHolder();
+const submitEventListenerHolder4knnForm = new SubmitEventListenerHolder();
+const submitEventListenerHolder4kdatasetForm = new SubmitEventListenerHolder();
+
 const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
     KNN: 'KNN',
@@ -16,21 +37,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const classifierType = getClassifierTypeFromDocumentsURL();
     setH1(classifierType);
     $('#section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
+    let dataFile;
     document.querySelector('#csv-file').addEventListener('change', evt => {
-        // const dataFile = 'data/data_banknote_authentication.csv';
-        // const dataFile = 'data/processed.cleveland.csv';
-        const dataFile = evt.target.files[0];
-
-        Papa.parse(dataFile, {
-            download: true,
-            header: false,
-            complete: function(results) {
-                onDatasetChanged(
-                    transformIfIsDigitDataset(getDatasetDescription(dataFile.name, results.data)),
-                    classifierType);
-            }
-        });
+        // dataFile = 'data/data_banknote_authentication.csv';
+        // dataFile = 'data/processed.cleveland.csv';
+        dataFile = evt.target.files[0];
     });
+
+    submitEventListenerHolder4kdatasetForm.setEventListener(
+        document.querySelector('#datasetForm'),
+        e => {
+            Papa.parse(dataFile, {
+                download: true,
+                header: false,
+                complete: function(results) {
+                    let datasetDescription = getDatasetDescription(dataFile.name, results.data);
+                    if (datasetDescription.isDigitDataset()) {
+                        datasetDescription = transform(
+                            datasetDescription,
+                            getInputValueById('kernelWidthAndHeight'));
+                    }
+
+                    onDatasetChanged(datasetDescription, classifierType);
+                }
+            });
+        }
+    );
 });
 
 function getClassifierTypeFromDocumentsURL() {
@@ -73,14 +105,7 @@ function getDatasetDescription(fileName, dataset) {
     return datasetDescription;
 }
 
-function transformIfIsDigitDataset(datasetDescription) {
-    if (!datasetDescription.isDigitDataset()) {
-        return datasetDescription;
-    }
-
-    // FK-TODO: kernelWidthAndHeight und k über UI einstellbar machen
-    const kernelWidthAndHeight = 1;
-
+function transform(datasetDescription, kernelWidthAndHeight) {
     const getScaledImageForRow = row => {
         const strings2Numbers = strings => strings.map(string => Number(string));
 
@@ -90,7 +115,7 @@ function transformIfIsDigitDataset(datasetDescription) {
                 width: datasetDescription.imageWidth,
                 height: datasetDescription.imageHeight
             },
-            kernelWidthAndHeight: kernelWidthAndHeight
+            kernelWidthAndHeight: Number(kernelWidthAndHeight)
         });
     };
 
@@ -241,25 +266,6 @@ function showSectionFor(classifierType) {
         $('#section-KNN').fadeIn();
     }
 }
-
-class SubmitEventListenerHolder {
-    constructor() {
-        this._eventListener = e => {
-            e.preventDefault();
-            this.eventListener(e);
-            return false;
-        }
-    }
-
-    setEventListener(form, eventListener) {
-        form.removeEventListener('submit', this._eventListener);
-        this.eventListener = eventListener;
-        form.addEventListener('submit', this._eventListener);
-    }
-}
-
-const submitEventListenerHolder4decisionTreeForm = new SubmitEventListenerHolder();
-const submitEventListenerHolder4knnForm = new SubmitEventListenerHolder();
 
 function build_classifier_onSubmit(datasetDescription, classifierType) {
     if (classifierType == ClassifierType.DECISION_TREE) {

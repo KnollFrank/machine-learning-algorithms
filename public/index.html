@@ -36,7 +36,19 @@
         <h1></h1>
         <section>
             <h2>1. Datensatz</h2>
-            <input type="file" id="csv-file" name="files" />
+            <form id="datasetForm">
+                <div class="dataInputFields">
+                    <div>
+                        <label for="csv-file">CSV-Datei:</label>
+                        <input type="file" id="csv-file" name="files" />
+                    </div>
+                    <div>
+                        <label for="kernelWidthAndHeight">kernelWidthAndHeight:</label>
+                        <input id="kernelWidthAndHeight" type="text" value="1">
+                    </div>
+                </div>
+                <input type="submit" value="laden">
+            </form>
             <section id="section-traindata">
                 <h3>1.1 Trainingsdaten</h3>
                 <div id="container-digits-train"></div>

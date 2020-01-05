@@ -71,6 +71,10 @@ h1 {
     width: 100px;
 }
 
+.dataInputFields>div>input[type=file] {
+    width: 350px;
+}
+
 .wrongPrediction {
     /* FK-TODO: kein !important verwenden, andere Lösung suchen */
     background-color: red !important;
