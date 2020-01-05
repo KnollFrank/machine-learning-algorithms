@@ -261,8 +261,15 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
         submitEventListenerHolder4decisionTreeForm.setEventListener(
             document.querySelector('#decisionTreeForm'),
             e => {
+                // FK-TODO: DRY with KK-case:
+                //          - e.preventDefault();
+                //          - return false;
                 e.preventDefault();
-                build_classifier(datasetDescription, classifierType);
+                buildDecisionTreeClassifier({
+                    datasetDescription,
+                    max_depth: getInputValueById('max_depth'),
+                    min_size: getInputValueById('min_size')
+                });
                 return false;
             });
     } else {
@@ -270,41 +277,29 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
             document.querySelector('#knnForm'),
             e => {
                 e.preventDefault();
-                document.querySelector('#section-KNN h2').textContent = `2. ${getKFormParam()} nächste Nachbarn`;
-                build_classifier(datasetDescription, classifierType);
+                const k = getInputValueById('knn-k');
+                document.querySelector('#section-KNN h2').textContent = `2. ${k} nächste Nachbarn`;
+                buildKNNClassifier(datasetDescription, k);
                 return false;
             }
         );
     }
 }
 
-function build_classifier(datasetDescription, classifierType) {
-    switch (classifierType) {
-        case ClassifierType.DECISION_TREE:
-            build_tree(datasetDescription);
-            break;
-        case ClassifierType.KNN:
-            // FK-TODO: nicht getKFormParam() aufrufen, sondern k als Parameter von build_classifier übergeben.
-            //          Dito für max_depth und min_size
-            const knn = new KNNUsingKDTree(getKFormParam());
-            knn.fit(
-                datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
-                datasetDescription.splittedDataset.train.map(getClassValFromRow));
-            onClassifierBuilt(datasetDescription, knn, classifierType);
-            break;
-    }
+function buildKNNClassifier(datasetDescription, k) {
+    const knn = new KNNUsingKDTree(k);
+    knn.fit(
+        datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
+        datasetDescription.splittedDataset.train.map(getClassValFromRow));
+    onClassifierBuilt(datasetDescription, knn, ClassifierType.KNN);
 }
 
-function getKFormParam() {
-    return getInputValueById('knn-k');
-}
-
-function build_tree(datasetDescription) {
+function buildDecisionTreeClassifier({ datasetDescription, max_depth, min_size }) {
     let gNetwork;
     build_tree_with_worker({
         dataset: datasetDescription.splittedDataset.train,
-        max_depth: getInputValueById('max_depth'),
-        min_size: getInputValueById('min_size')
+        max_depth: max_depth,
+        min_size: min_size
     }, ({
         type: type,
         value: value
