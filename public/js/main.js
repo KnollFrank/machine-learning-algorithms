@@ -243,13 +243,18 @@ function showSectionFor(classifierType) {
 }
 
 class SubmitEventListenerHolder {
+    constructor() {
+        this._eventListener = e => {
+            e.preventDefault();
+            this.eventListener(e);
+            return false;
+        }
+    }
 
     setEventListener(form, eventListener) {
-        if (this.eventListener) {
-            form.removeEventListener('submit', this.eventListener);
-        }
+        form.removeEventListener('submit', this._eventListener);
         this.eventListener = eventListener;
-        form.addEventListener('submit', eventListener);
+        form.addEventListener('submit', this._eventListener);
     }
 }
 
@@ -261,26 +266,19 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
         submitEventListenerHolder4decisionTreeForm.setEventListener(
             document.querySelector('#decisionTreeForm'),
             e => {
-                // FK-TODO: DRY with KK-case:
-                //          - e.preventDefault();
-                //          - return false;
-                e.preventDefault();
                 buildDecisionTreeClassifier({
                     datasetDescription,
                     max_depth: getInputValueById('max_depth'),
                     min_size: getInputValueById('min_size')
                 });
-                return false;
             });
     } else {
         submitEventListenerHolder4knnForm.setEventListener(
             document.querySelector('#knnForm'),
             e => {
-                e.preventDefault();
                 const k = getInputValueById('knn-k');
                 document.querySelector('#section-KNN h2').textContent = `2. ${k} nächste Nachbarn`;
                 buildKNNClassifier(datasetDescription, k);
-                return false;
             }
         );
     }
