@@ -8,15 +8,16 @@ function displayTextDataInput(rootElement, attributeNames, tree, network, rowCla
         "submit",
         e => {
             e.preventDefault();
+            const setPrediction = prediction =>
+                rootElement.querySelector('.prediction').innerHTML = prediction;
+
             if (classifierType == ClassifierType.DECISION_TREE) {
                 const prediction = predict(tree, getInputValuesByName(attributeNames));
                 highlightPredictionInNetwork(prediction, network);
-                // FK-TODO: DRY with setPrediction()
-                rootElement.querySelector('.prediction').innerHTML = prediction.value;
+                setPrediction(prediction.value);
             } else {
                 const prediction = rowClassifier(getInputValuesByName(attributeNames));
-                // FK-TODO: DRY with setPrediction()
-                rootElement.querySelector('.prediction').innerHTML = prediction;
+                setPrediction(prediction);
             }
             return false;
         });
