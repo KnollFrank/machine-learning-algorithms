@@ -13,14 +13,14 @@ class DisplayDigitDatasetTemplate {
         digitsContainer.innerHTML = '';
         for (let i = 0; i < digitDataset.length; i++) {
             const digit = new Digit(this.imageWidth, this.imageHeight);
-            digit.setFigcaption(...this._getFigcaption(digitDataset[i]));
+            digit.setFigcaption(...this._getFigcaption(digitDataset[i], i));
             digit.setImage(digitDataset[i]);
             digit.setOnClicked(() => this.onDigitClickedReceiveRow(digitDataset[i]));
             digitsContainer.appendChild(digit.digitElement);
         }
     }
 
-    _getFigcaption(row) {
+    _getFigcaption(row, i) {
         throw new Error('You have to build your own figcaption');
     }
 }
@@ -28,7 +28,7 @@ class DisplayDigitDatasetTemplate {
 class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
 
     constructor(imageWidth, imageHeight) {
-        super(row => { }, imageWidth, imageHeight);
+        super(row => {}, imageWidth, imageHeight);
     }
 
     _getFigcaption(row) {
@@ -45,20 +45,20 @@ function displayDigitTrainDataset(datasetDescription, digitsContainerId) {
 
 class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
 
-    constructor(rowClassifier, onDigitClickedReceiveRow, imageWidth, imageHeight) {
+    constructor(predictions, onDigitClickedReceiveRow, imageWidth, imageHeight) {
         super(onDigitClickedReceiveRow, imageWidth, imageHeight);
-        this.rowClassifier = rowClassifier;
+        this.predictions = predictions;
     }
 
-    _getFigcaption(row) {
+    _getFigcaption(row, i) {
         const actualDigit = getClassValFromRow(row);
-        const predictedDigit = this.rowClassifier(row);
+        const predictedDigit = this.predictions[i];
         return [predictedDigit, actualDigit != predictedDigit ? 'wrongPrediction' : undefined];
     }
 }
 
-function displayDigitTestDataset({ datasetDescription, rowClassifier, digitsContainerId, onDigitClickedReceiveRow }) {
-    new DisplayDigitTestDataset(rowClassifier, onDigitClickedReceiveRow, datasetDescription.imageWidth, datasetDescription.imageHeight)
+function displayDigitTestDataset({ datasetDescription, predictions, digitsContainerId, onDigitClickedReceiveRow }) {
+    new DisplayDigitTestDataset(predictions, onDigitClickedReceiveRow, datasetDescription.imageWidth, datasetDescription.imageHeight)
         .displayDigitDataset(
             datasetDescription.splittedDataset.test,
             digitsContainerId);

@@ -618,12 +618,7 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
             predictions => {
                 displayDigitTestDataset({
                     datasetDescription: datasetDescription,
-                    rowClassifier: row => {
-                        // FK-TODO: refactor
-                        const index = datasetDescription.splittedDataset.test.findIndex(
-                            rowOfTestDataset => compareFlatArrays(row, rowOfTestDataset));
-                        return predictions[index];
-                    },
+                    predictions: predictions,
                     digitsContainerId: 'container-digits-test',
                     onDigitClickedReceiveRow: onDigitClickedReceiveRow
                 });
