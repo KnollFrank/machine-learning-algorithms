@@ -59,3 +59,4 @@ FK-TODO:
   Dazu die Beschreibungen der Datensätze aus dem Internet herunterladen, in einer Datei speichern
   und in der JS-Anwendung laden und anzeigen.
 - große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging).
+- Im prediction-container wird bei verschiedenen Bildschirmauflösungen die vorhergesagte Ziffer fälschlicherweise nicht mittig dargestellt.

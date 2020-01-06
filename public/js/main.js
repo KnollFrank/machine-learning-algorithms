@@ -10,7 +10,7 @@ const submitEventListenerHolder4kdatasetForm = new SubmitEventListenerHolder();
 const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
     KNN: 'KNN',
-    from: function(name) {
+    from: function (name) {
         name = name ? name.toUpperCase() : "";
         return [this.DECISION_TREE, this.KNN].includes(name) ? name : this.DECISION_TREE;
     }
@@ -45,7 +45,7 @@ function onSubmitDatasetForm(dataFile, classifierType) {
     Papa.parse(dataFile, {
         download: true,
         header: false,
-        complete: function(results) {
+        complete: function (results) {
             let datasetDescription = getDatasetDescription(dataFile.name, results.data);
             if (datasetDescription.isDigitDataset()) {
                 datasetDescription = transform(
@@ -89,7 +89,7 @@ function getDatasetDescription(fileName, dataset) {
             all: attributeNames
         },
         splittedDataset: train_test_split(dataset, 0.8),
-        isDigitDataset: function() {
+        isDigitDataset: function () {
             return isFileDigitDataset(this.fileName);
         }
     };
@@ -288,6 +288,29 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
 }
 
 function buildKNNClassifier(datasetDescription, k) {
+    const worker = new Worker('js/knnWorker.js');
+    worker.postMessage({
+        type: 'fit',
+        params: {
+            X: datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
+            y: datasetDescription.splittedDataset.train.map(getClassValFromRow),
+            k: k
+        }
+    });
+    worker.onmessage = event => {
+        const predictions = event.data;
+        console.log('predictions from knnWorker:', predictions);
+    };
+    worker.onerror = function (e) {
+        console.log('There is an error with your worker:', e.filename, e.lineno, e.message);
+    };
+    worker.postMessage({
+        type: 'predict',
+        params: {
+            X: datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription))
+        }
+    });
+
     const knn = new KNNUsingKDTree(k);
     knn.fit(
         datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
@@ -295,7 +318,11 @@ function buildKNNClassifier(datasetDescription, k) {
     onClassifierBuilt(datasetDescription, knn, ClassifierType.KNN);
 }
 
-function buildDecisionTreeClassifier({ datasetDescription, max_depth, min_size }) {
+function buildDecisionTreeClassifier({
+    datasetDescription,
+    max_depth,
+    min_size
+}) {
     let gNetwork;
     build_tree_with_worker({
         dataset: datasetDescription.splittedDataset.train,
