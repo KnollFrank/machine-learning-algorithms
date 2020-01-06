@@ -422,11 +422,23 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
 }
 
 function getRowClassifier(classifierType, classifier, datasetDescription) {
+    const cache = {};
     switch (classifierType) {
         case ClassifierType.DECISION_TREE:
-            return row => predict(classifier, row).value;
+            return row => {
+                // FK-TODO: DRY with cache from "case ClassifierType.KNN:"
+                if (!cache.hasOwnProperty(row)) {
+                    cache[row] = predict(classifier, row).value;
+                }
+                return cache[row];
+            };
         case ClassifierType.KNN:
-            return row => classifier.predict(getIndependentValsFromRow(row, datasetDescription));
+            return row => {
+                if (!cache.hasOwnProperty(row)) {
+                    cache[row] = classifier.predict(getIndependentValsFromRow(row, datasetDescription));
+                }
+                return cache[row];
+            };
     }
 }
 
@@ -521,8 +533,6 @@ function computeAccuracy(rowClassifier, dataset) {
             (row, index) => {
                 progress.value = index + 1;
                 console.log(`accuracy progress: ${index + 1}/${dataset.length}`);
-                // FK-TODO: das Ergebnis von "rowClassifier(row)" Zwischenspeichern für
-                //          die Dartsellung der Testdaten.
                 return rowClassifier(row);
             }));
 }
