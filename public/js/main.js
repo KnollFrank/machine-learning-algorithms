@@ -467,8 +467,25 @@ function getRowsClassifier(classifierType, classifier) {
             };
         case ClassifierType.KNN:
             return (rows, receivePredictionsForRows) => {
-                // FK-TODO: cache wieder einbauen, siehe obiger Fall für DECISION_TREE
-                classifier.predictRows(rows, receivePredictionsForRows);
+                // FK-TODO: refactor
+                const unknownRowIndices = [];
+                for (let i = 0; i < rows.length; i++) {
+                    if (!cache.cache.hasOwnProperty(rows[i])) {
+                        unknownRowIndices.push(i);
+                    }
+                }
+                classifier.predictRows(
+                    unknownRowIndices.map(rowIndex => rows[rowIndex]),
+                    formerlyUnknownPredictions => {
+                        const allPredictions = [];
+                        for (let i = 0; i < rows.length; i++) {
+                            if (unknownRowIndices.includes(i)) {
+                                cache.cache[rows[i]] = formerlyUnknownPredictions[i];
+                            }
+                            allPredictions[i] = cache.cache[rows[i]];
+                        }
+                        receivePredictionsForRows(allPredictions);
+                    });
             }
     }
 }

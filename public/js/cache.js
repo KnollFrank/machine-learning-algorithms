@@ -7,6 +7,7 @@ class Cache {
     }
 
     get(key, computeValue) {
+        // FK-TODO: vergleich mit einem Array als key sollte eigentlich nicht funktionieren. Anders prüfen mit compareFlatArrays().
         if (!this.cache.hasOwnProperty(key)) {
             this.cache[key] = computeValue();
         }
