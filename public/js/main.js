@@ -281,45 +281,80 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
             e => {
                 const k = getInputValueById('knn-k');
                 document.querySelector('#section-KNN h2').textContent = `2. ${k} nächste Nachbarn`;
-                buildKNNClassifier(datasetDescription, k);
+                buildKNNClassifier(datasetDescription, k, knnWorkers);
             }
         );
     }
 }
 
-function buildKNNClassifier(datasetDescription, k) {
-    const worker = new Worker('js/knnWorker.js');
-
-    worker.postMessage({
-        type: 'fit',
-        params: {
-            X: datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
-            y: datasetDescription.splittedDataset.train.map(getClassValFromRow),
-            k: k
-        }
-    });
-
-    worker.onerror = function(e) {
-        console.log('There is an error with your worker:', e.filename, e.lineno, e.message);
-    };
+// FK-TODO: refactor
+function buildKNNClassifier(datasetDescription, k, knnWorkers) {
+    const X = datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription));
+    const y = datasetDescription.splittedDataset.train.map(getClassValFromRow);
+    for (let i = 0; i < knnWorkers.length; i++) {
+        const knnWorker = knnWorkers[i];
+        knnWorker.postMessage({
+            type: 'fit',
+            params: { X, y, k }
+        });
+        knnWorker.onerror = function(e) {
+            console.log('There is an error with your worker:', i, e.filename, e.lineno, e.message);
+        };
+    }
 
     const knn = {
         predictRows: function(rows, receivePredictionsForRows) {
-            worker.postMessage({
-                type: 'predict',
-                params: {
-                    X: rows
-                }
+            const chunks = splitItemsIntoChunks({
+                numItems: rows.length,
+                maxNumChunks: knnWorkers.length
             });
-            worker.onmessage = event => {
-                const predictions = event.data;
-                console.log('predictions from knnWorker:', predictions);
-                receivePredictionsForRows(predictions);
-            };
+            const chunksOfPredictions = [];
+            for (let i = 0; i < chunks.length; i++) {
+                const knnWorker = knnWorkers[i];
+                const { oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk } = chunks[i];
+                const zeroBasedStartIndexOfChunk = oneBasedStartIndexOfChunk - 1;
+                const zeroBasedEndIndexInclusiveOfChunk = oneBasedEndIndexInclusiveOfChunk - 1;
+                const zeroBasedEndIndexExclusiveOfChunk = zeroBasedEndIndexInclusiveOfChunk + 1;
+
+                newFunction(knnWorker, rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk), i, chunksOfPredictions, chunks, receivePredictionsForRows, rows.length);
+            }
         }
     };
 
     onClassifierBuilt(datasetDescription, knn, ClassifierType.KNN);
+}
+
+// FK-TODO: refactor
+function newFunction(knnWorker, rowsForChunk, i, chunksOfPredictions, chunks, receivePredictionsForRows, mergedResultLength) {
+    knnWorker.postMessage({
+        type: 'predict',
+        params: {
+            X: rowsForChunk
+        }
+    });
+
+    knnWorker.onmessage = event => {
+        const predictions = event.data;
+        console.log('predictions from knnWorker:', i, predictions);
+        chunksOfPredictions.push({ chunk: chunks[i], predictions: predictions });
+        if (chunksOfPredictions.length == chunks.length) {
+            receivePredictionsForRows(merge(chunksOfPredictions, mergedResultLength));
+        }
+    };
+}
+
+function merge(chunksOfPredictions, mergedResultLength) {
+    const allPredictions = Array(mergedResultLength).fill(0);
+    for (let i = 0; i < chunksOfPredictions.length; i++) {
+        const { chunk, predictions } = chunksOfPredictions[i];
+        const { oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk } = chunk;
+        const zeroBasedStartIndexOfChunk = oneBasedStartIndexOfChunk - 1;
+        const zeroBasedEndIndexInclusiveOfChunk = oneBasedEndIndexInclusiveOfChunk - 1;
+        for (let j = zeroBasedStartIndexOfChunk; j <= zeroBasedEndIndexInclusiveOfChunk; j++) {
+            allPredictions[j] = predictions[j - zeroBasedStartIndexOfChunk];
+        }
+    }
+    return allPredictions;
 }
 
 function buildDecisionTreeClassifier({
@@ -486,6 +521,7 @@ function getRowsClassifier(classifierType, classifier) {
                         }
                         receivePredictionsForRows(allPredictions);
                     });
+                // classifier.predictRows(rows, receivePredictionsForRows);
             }
     }
 }
