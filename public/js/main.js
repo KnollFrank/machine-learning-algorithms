@@ -421,24 +421,27 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
     }
 }
 
+class Cache {
+
+    constructor() {
+        this.cache = {};
+    }
+
+    get(key, computeValue) {
+        if (!this.cache.hasOwnProperty(key)) {
+            this.cache[key] = computeValue();
+        }
+        return this.cache[key];
+    }
+}
+
 function getRowClassifier(classifierType, classifier, datasetDescription) {
-    const cache = {};
+    const cache = new Cache();
     switch (classifierType) {
         case ClassifierType.DECISION_TREE:
-            return row => {
-                // FK-TODO: DRY with cache from "case ClassifierType.KNN:"
-                if (!cache.hasOwnProperty(row)) {
-                    cache[row] = predict(classifier, row).value;
-                }
-                return cache[row];
-            };
+            return row => cache.get(row, () => predict(classifier, row).value);
         case ClassifierType.KNN:
-            return row => {
-                if (!cache.hasOwnProperty(row)) {
-                    cache[row] = classifier.predict(getIndependentValsFromRow(row, datasetDescription));
-                }
-                return cache[row];
-            };
+            return row => cache.get(row, () => classifier.predict(getIndependentValsFromRow(row, datasetDescription)));
     }
 }
 
