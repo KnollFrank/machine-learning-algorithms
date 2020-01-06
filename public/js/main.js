@@ -436,18 +436,28 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             break;
         case ClassifierType.KNN:
             $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
-            const rowsClassifier = getRowsClassifier(ClassifierType.KNN, classifier, datasetDescription);
-            displayAccuracy(
-                rowsClassifier,
-                datasetDescription.splittedDataset.test,
-                () => {
-                    displayTestingTableWithPredictions(rowsClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
-                    const canvasDataInput = document.querySelector('#canvas-data-input');
-                    const textDataInput = document.querySelector('#text-data-input');
-                    displayDataInput(datasetDescription, canvasDataInput, textDataInput, classifier, network, rowsClassifier, ClassifierType.KNN);
-                });
+            display_accuracy_testingTable_dataInput(classifier, ClassifierType.KNN, datasetDescription, network);
             break;
     }
+}
+
+function display_accuracy_testingTable_dataInput(classifier, classifierType, datasetDescription, network) {
+    const rowsClassifier = getRowsClassifier(classifierType, classifier, datasetDescription);
+    displayAccuracy(
+        rowsClassifier,
+        datasetDescription.splittedDataset.test,
+        () => {
+            displayTestingTableWithPredictions(rowsClassifier, classifierType, network, classifier, datasetDescription);
+            displayDataInput(datasetDescription, getCanvasDataInput(), getTextDataInput(), classifier, network, rowsClassifier, classifierType);
+        });
+}
+
+function getCanvasDataInput() {
+    return document.querySelector('#canvas-data-input');
+}
+
+function getTextDataInput() {
+    return document.querySelector('#text-data-input');
 }
 
 function getRowsClassifier(classifierType, classifier, datasetDescription) {
@@ -484,16 +494,7 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     const network = createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory);
     print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
-    const rowsClassifier = getRowsClassifier(ClassifierType.DECISION_TREE, tree, datasetDescription);
-    displayAccuracy(
-        rowsClassifier,
-        datasetDescription.splittedDataset.test,
-        () => {
-            displayTestingTableWithPredictions(rowsClassifier, ClassifierType.DECISION_TREE, network, tree, datasetDescription);
-            const canvasDataInput = document.querySelector('#canvas-data-input');
-            const textDataInput = document.querySelector('#text-data-input');
-            displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowsClassifier, ClassifierType.DECISION_TREE);
-        });
+    display_accuracy_testingTable_dataInput(tree, ClassifierType.DECISION_TREE, datasetDescription, network);
 }
 
 function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowsClassifier, classifierType) {
@@ -637,6 +638,7 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
         rowsClassifier(
             datasetDescription.splittedDataset.test,
             predictions => {
+                // FK-TODO: refactor
                 const dataset = zip(datasetDescription.splittedDataset.test, predictions)
                     .map(([row, prediction]) => row.concat(prediction));
 
