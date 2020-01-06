@@ -557,10 +557,12 @@ function displayAccuracy(rowsClassifier, dataset, k) {
 function computeAccuracy(rowsClassifier, dataset, receiveAccuracy) {
     rowsClassifier(
         dataset,
-        predictions => {
-            const accuracy = accuracy_percentage(actualClassVals(dataset), predictions);
-            receiveAccuracy(accuracy);
-        });
+        predictions =>
+        receiveAccuracy(
+            accuracy_percentage(
+                actualClassVals(dataset),
+                predictions))
+    );
 }
 
 function computeAccuracyOld(rowClassifier, dataset, receiveAccuracy) {
