@@ -633,19 +633,20 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
         rowsClassifier(
             datasetDescription.splittedDataset.test,
             predictions => {
-                // FK-TODO: refactor
-                const dataset = zip(datasetDescription.splittedDataset.test, predictions)
-                    .map(([row, prediction]) => row.concat(prediction));
-
                 displayDatasetAsTable({
                     tableContainer: $('#container-testDataSet'),
                     attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
-                    dataset: dataset,
+                    dataset: addPredictions2Rows(datasetDescription.splittedDataset.test, predictions),
                     createdRow: markRowIfItsPredictionIsWrong,
                     onRowClicked: onRowClicked
                 });
             });
     }
+}
+
+function addPredictions2Rows(rows, predictions) {
+    const addPrediction2Row = (row, prediction) => row.concat(prediction);
+    return zip(rows, predictions).map(([row, prediction]) => addPrediction2Row(row, prediction));
 }
 
 function predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) {
