@@ -289,6 +289,7 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
 
 function buildKNNClassifier(datasetDescription, k) {
     const worker = new Worker('js/knnWorker.js');
+
     worker.postMessage({
         type: 'fit',
         params: {
@@ -297,24 +298,27 @@ function buildKNNClassifier(datasetDescription, k) {
             k: k
         }
     });
-    worker.onmessage = event => {
-        const predictions = event.data;
-        console.log('predictions from knnWorker:', predictions);
-    };
+
     worker.onerror = function(e) {
         console.log('There is an error with your worker:', e.filename, e.lineno, e.message);
     };
-    worker.postMessage({
-        type: 'predict',
-        params: {
-            X: datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription))
-        }
-    });
 
-    const knn = new KNNUsingKDTree(k);
-    knn.fit(
-        datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
-        datasetDescription.splittedDataset.train.map(getClassValFromRow));
+    const knn = {
+        predictRows: function(rows, receivePredictionsForRows) {
+            worker.postMessage({
+                type: 'predict',
+                params: {
+                    X: rows
+                }
+            });
+            worker.onmessage = event => {
+                const predictions = event.data;
+                console.log('predictions from knnWorker:', predictions);
+                receivePredictionsForRows(predictions);
+            };
+        }
+    };
+
     onClassifierBuilt(datasetDescription, knn, ClassifierType.KNN);
 }
 
@@ -362,11 +366,7 @@ function buildDecisionTreeClassifier({
     });
 }
 
-function build_tree_with_worker({
-    dataset,
-    max_depth,
-    min_size
-}, onmessage) {
+function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
     $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
@@ -376,10 +376,7 @@ function build_tree_with_worker({
             createTreeListener(onmessage))
         .build_tree(
             dataset,
-            tree => onmessage({
-                type: 'result',
-                value: tree
-            }));
+            tree => onmessage({ type: 'result', value: tree }));
 }
 
 function addNewNodesAndEdgesToNetwork(datasetDescription, tree, gNetwork) {
@@ -442,7 +439,7 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
 }
 
 function display_accuracy_testingTable_dataInput(classifier, classifierType, datasetDescription, network) {
-    const rowsClassifier = getRowsClassifier(classifierType, classifier, datasetDescription);
+    const rowsClassifier = getRowsClassifier(classifierType, classifier);
     displayAccuracy(
         rowsClassifier,
         datasetDescription.splittedDataset.test,
@@ -460,18 +457,18 @@ function getTextDataInput() {
     return document.querySelector('#text-data-input');
 }
 
-function getRowsClassifier(classifierType, classifier, datasetDescription) {
+function getRowsClassifier(classifierType, classifier) {
     const cache = new Cache();
     switch (classifierType) {
         case ClassifierType.DECISION_TREE:
-            return (rows, onRowsClassified) => {
+            return (rows, receivePredictionsForRows) => {
                 const predictions = rows.map(row => cache.get(row, () => predict(classifier, row).value));
-                onRowsClassified(predictions);
+                receivePredictionsForRows(predictions);
             };
         case ClassifierType.KNN:
-            return (rows, onRowsClassified) => {
-                const predictions = rows.map(row => cache.get(row, () => classifier.predict(getIndependentValsFromRow(row, datasetDescription))));
-                onRowsClassified(predictions);
+            return (rows, receivePredictionsForRows) => {
+                // FK-TODO: cache wieder einbauen, siehe obiger Fall für DECISION_TREE
+                classifier.predictRows(rows, receivePredictionsForRows);
             }
     }
 }
