@@ -10,7 +10,7 @@ const submitEventListenerHolder4kdatasetForm = new SubmitEventListenerHolder();
 const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
     KNN: 'KNN',
-    from: function (name) {
+    from: function(name) {
         name = name ? name.toUpperCase() : "";
         return [this.DECISION_TREE, this.KNN].includes(name) ? name : this.DECISION_TREE;
     }
@@ -45,7 +45,7 @@ function onSubmitDatasetForm(dataFile, classifierType) {
     Papa.parse(dataFile, {
         download: true,
         header: false,
-        complete: function (results) {
+        complete: function(results) {
             let datasetDescription = getDatasetDescription(dataFile.name, results.data);
             if (datasetDescription.isDigitDataset()) {
                 datasetDescription = transform(
@@ -89,7 +89,7 @@ function getDatasetDescription(fileName, dataset) {
             all: attributeNames
         },
         splittedDataset: train_test_split(dataset, 0.8),
-        isDigitDataset: function () {
+        isDigitDataset: function() {
             return isFileDigitDataset(this.fileName);
         }
     };
@@ -301,7 +301,7 @@ function buildKNNClassifier(datasetDescription, k) {
         const predictions = event.data;
         console.log('predictions from knnWorker:', predictions);
     };
-    worker.onerror = function (e) {
+    worker.onerror = function(e) {
         console.log('There is an error with your worker:', e.filename, e.lineno, e.message);
     };
     worker.postMessage({
@@ -436,25 +436,33 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             break;
         case ClassifierType.KNN:
             $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
-            const rowClassifier = getRowClassifier(ClassifierType.KNN, classifier, datasetDescription);
+            const rowsClassifier = getRowsClassifier(ClassifierType.KNN, classifier, datasetDescription);
             displayAccuracy(
-                rowClassifier,
-                datasetDescription.splittedDataset.test);
-            displayTestingTableWithPredictions(rowClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
-            const canvasDataInput = document.querySelector('#canvas-data-input');
-            const textDataInput = document.querySelector('#text-data-input');
-            displayDataInput(datasetDescription, canvasDataInput, textDataInput, classifier, network, rowClassifier, ClassifierType.KNN);
+                rowsClassifier,
+                datasetDescription.splittedDataset.test,
+                () => {
+                    displayTestingTableWithPredictions(rowsClassifier, ClassifierType.KNN, network, classifier, datasetDescription);
+                    const canvasDataInput = document.querySelector('#canvas-data-input');
+                    const textDataInput = document.querySelector('#text-data-input');
+                    displayDataInput(datasetDescription, canvasDataInput, textDataInput, classifier, network, rowsClassifier, ClassifierType.KNN);
+                });
             break;
     }
 }
 
-function getRowClassifier(classifierType, classifier, datasetDescription) {
+function getRowsClassifier(classifierType, classifier, datasetDescription) {
     const cache = new Cache();
     switch (classifierType) {
         case ClassifierType.DECISION_TREE:
-            return row => cache.get(row, () => predict(classifier, row).value);
+            return (rows, onRowsClassified) => {
+                const predictions = rows.map(row => cache.get(row, () => predict(classifier, row).value));
+                onRowsClassified(predictions);
+            };
         case ClassifierType.KNN:
-            return row => cache.get(row, () => classifier.predict(getIndependentValsFromRow(row, datasetDescription)));
+            return (rows, onRowsClassified) => {
+                const predictions = rows.map(row => cache.get(row, () => classifier.predict(getIndependentValsFromRow(row, datasetDescription))));
+                onRowsClassified(predictions);
+            }
     }
 }
 
@@ -476,25 +484,27 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     const network = createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory);
     print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
-    const rowClassifier = getRowClassifier(ClassifierType.DECISION_TREE, tree, datasetDescription);
+    const rowsClassifier = getRowsClassifier(ClassifierType.DECISION_TREE, tree, datasetDescription);
     displayAccuracy(
-        rowClassifier,
-        datasetDescription.splittedDataset.test);
-    displayTestingTableWithPredictions(rowClassifier, ClassifierType.DECISION_TREE, network, tree, datasetDescription);
-    const canvasDataInput = document.querySelector('#canvas-data-input');
-    const textDataInput = document.querySelector('#text-data-input');
-    displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowClassifier, ClassifierType.DECISION_TREE);
+        rowsClassifier,
+        datasetDescription.splittedDataset.test,
+        () => {
+            displayTestingTableWithPredictions(rowsClassifier, ClassifierType.DECISION_TREE, network, tree, datasetDescription);
+            const canvasDataInput = document.querySelector('#canvas-data-input');
+            const textDataInput = document.querySelector('#text-data-input');
+            displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowsClassifier, ClassifierType.DECISION_TREE);
+        });
 }
 
-function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowClassifier, classifierType) {
+function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowsClassifier, classifierType) {
     if (datasetDescription.isDigitDataset()) {
         $(canvasDataInput).show();
         $(textDataInput).hide();
-        displayCanvasDataInput(canvasDataInput, tree, network, rowClassifier, classifierType, datasetDescription.imageWidth, datasetDescription.imageHeight);
+        displayCanvasDataInput(canvasDataInput, tree, network, rowsClassifier, classifierType, datasetDescription.imageWidth, datasetDescription.imageHeight);
     } else {
         $(canvasDataInput).hide();
         $(textDataInput).show();
-        displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network, rowClassifier, classifierType);
+        displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network, rowsClassifier, classifierType);
     }
 }
 
@@ -533,34 +543,56 @@ function getInputValueBy(selectors) {
     return document.querySelector(selectors).value;
 }
 
-function displayAccuracy(rowClassifier, dataset) {
-    const accuracy = computeAccuracy(rowClassifier, dataset);
-    console.log(`${Math.floor(accuracy)}%`);
-    document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
+function displayAccuracy(rowsClassifier, dataset, k) {
+    computeAccuracy(
+        rowsClassifier,
+        dataset,
+        accuracy => {
+            console.log(`${Math.floor(accuracy)}%`);
+            document.querySelector('#accuracy').innerHTML = `${Math.floor(accuracy)}%`;
+            k();
+        });
 }
 
-// FK-TODO: computeAccuracy in einem Worker durchführen, um den Hauptprozess nicht zu verlangsamen.
-function computeAccuracy(rowClassifier, dataset) {
+function computeAccuracy(rowsClassifier, dataset, receiveAccuracy) {
+    rowsClassifier(
+        dataset,
+        predictions => {
+            const accuracy = accuracy_percentage(actualClassVals(dataset), predictions);
+            receiveAccuracy(accuracy);
+        });
+}
+
+function computeAccuracyOld(rowClassifier, dataset, receiveAccuracy) {
     const progress = document.querySelector('#accuracy-panel progress');
     progress.max = dataset.length;
-    return accuracy_percentage(
-        actualClassVals(dataset),
-        dataset.map(
-            (row, index) => {
-                progress.value = index + 1;
-                console.log(`accuracy progress: ${index + 1}/${dataset.length}`);
-                return rowClassifier(row);
-            }));
+    const predictions = [];
+    for (let i = 0; i < dataset.length; i++) {
+        const row = dataset[i];
+        rowClassifier(
+            row,
+            (predictionForRow, index) => {
+                console.log(`accuracy progress: ${index + 1}/${dataset.length} = ${predictionForRow}`);
+                predictions.push({
+                    index: index,
+                    prediction: predictionForRow
+                });
+                if (predictions.length == dataset.length) {
+                    predictions.sort((r1, r2) => r1.index - r2.index);
+                    const results = predictions.map(result => result.prediction);
+                    const accuracy = accuracy_percentage(actualClassVals(dataset), results);
+                    receiveAccuracy(accuracy);
+                }
+            },
+            i);
+    }
 }
 
-function displayTestingTableWithPredictions(rowClassifier, classifierType, network, tree, datasetDescription) {
+function displayTestingTableWithPredictions(rowsClassifier, classifierType, network, tree, datasetDescription) {
     function addPredictionAttribute(attributeNames) {
         const lastAttributeName = attributeNames[attributeNames.length - 1];
         return attributeNames.concat('prediction for ' + lastAttributeName);
     }
-
-    const addPrediction2Row = row => row.concat(rowClassifier(row));
-    const addPredictions = rows => rows.map(addPrediction2Row);
 
     function markRowIfItsPredictionIsWrong(row, data) {
         const isRowsPredictionWrong = data[data.length - 2] != data[data.length - 1];
@@ -578,12 +610,21 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
             classifierType == ClassifierType.DECISION_TREE ?
             row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
             row => {};
-        displayDigitTestDataset({
-            datasetDescription: datasetDescription,
-            rowClassifier: rowClassifier,
-            digitsContainerId: 'container-digits-test',
-            onDigitClickedReceiveRow: onDigitClickedReceiveRow
-        });
+        rowsClassifier(
+            datasetDescription.splittedDataset.test,
+            predictions => {
+                displayDigitTestDataset({
+                    datasetDescription: datasetDescription,
+                    rowClassifier: row => {
+                        // FK-TODO: refactor
+                        const index = datasetDescription.splittedDataset.test.findIndex(
+                            rowOfTestDataset => compareFlatArrays(row, rowOfTestDataset));
+                        return predictions[index];
+                    },
+                    digitsContainerId: 'container-digits-test',
+                    onDigitClickedReceiveRow: onDigitClickedReceiveRow
+                });
+            });
     } else {
         $('#container-digits-test').fadeOut();
         $('#container-testDataSet').fadeIn();
@@ -591,13 +632,20 @@ function displayTestingTableWithPredictions(rowClassifier, classifierType, netwo
             classifierType == ClassifierType.DECISION_TREE ?
             row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
             row => {};
-        displayDatasetAsTable({
-            tableContainer: $('#container-testDataSet'),
-            attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
-            dataset: addPredictions(datasetDescription.splittedDataset.test),
-            createdRow: markRowIfItsPredictionIsWrong,
-            onRowClicked: onRowClicked
-        });
+        rowsClassifier(
+            datasetDescription.splittedDataset.test,
+            predictions => {
+                const dataset = zip(datasetDescription.splittedDataset.test, predictions)
+                    .map(([row, prediction]) => row.concat(prediction));
+
+                displayDatasetAsTable({
+                    tableContainer: $('#container-testDataSet'),
+                    attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
+                    dataset: dataset,
+                    createdRow: markRowIfItsPredictionIsWrong,
+                    onRowClicked: onRowClicked
+                });
+            });
     }
 }
 

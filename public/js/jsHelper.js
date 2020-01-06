@@ -1,6 +1,6 @@
 'use strict';
 
-Array.prototype.sum = function () {
+Array.prototype.sum = function() {
     return this.reduce((sum, el) => sum + Number(el), 0);
 };
 
@@ -10,6 +10,11 @@ function isNumber(n) {
 
 function zip(array1, array2) {
     return array1.map((value, index) => [value, array2[index]]);
+}
+
+function compareFlatArrays(array1, array2) {
+    return array1.length === array2.length &&
+        array1.every((value, index) => value === array2[index]);
 }
 
 // https://stackoverflow.com/questions/1053843/get-the-element-with-the-highest-occurrence-in-an-array

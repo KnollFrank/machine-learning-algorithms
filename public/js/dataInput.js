@@ -1,4 +1,6 @@
-function displayTextDataInput(rootElement, attributeNames, tree, network, rowClassifier, classifierType) {
+'use strict';
+
+function displayTextDataInput(rootElement, attributeNames, tree, network, rowsClassifier, classifierType) {
     const dataInputFields = rootElement.querySelector('.dataInputFields');
 
     dataInputFields.innerHTML = '';
@@ -16,14 +18,13 @@ function displayTextDataInput(rootElement, attributeNames, tree, network, rowCla
                 highlightPredictionInNetwork(prediction, network);
                 setPrediction(prediction.value);
             } else {
-                const prediction = rowClassifier(getInputValuesByName(attributeNames));
-                setPrediction(prediction);
+                rowsClassifier([getInputValuesByName(attributeNames)], ([prediction]) => setPrediction(prediction));
             }
             return false;
         });
 }
 
-function displayCanvasDataInput(rootElement, tree, network, rowClassifier, classifierType, imageWidth, imageHeight) {
+function displayCanvasDataInput(rootElement, tree, network, rowsClassifier, classifierType, imageWidth, imageHeight) {
     if (classifierType == ClassifierType.DECISION_TREE) {
         rootElement.classList.add('decision-tree');
         rootElement.classList.remove('knn');
@@ -40,7 +41,7 @@ function displayCanvasDataInput(rootElement, tree, network, rowClassifier, class
         canvasBig,
         canvasSmall,
         rootElement.querySelector("#new-prediction"),
-        (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowClassifier, classifierType));
+        (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier, classifierType));
 }
 
 function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDrawn) {
@@ -103,14 +104,14 @@ function clearCanvas(canvasBig, canvasSmall) {
     canvasSmall.getContext('2d').clearRect(0, 0, canvasSmall.width, canvasSmall.height);
 }
 
-function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowClassifier, classifierType) {
+function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier, classifierType) {
     const pixels = getPixels(canvasBig, canvasSmall);
     if (classifierType == ClassifierType.DECISION_TREE) {
         const prediction = predict(tree, pixels);
         highlightPredictionInNetwork(prediction, network);
         setPrediction(prediction.value);
     } else {
-        setPrediction(rowClassifier(pixels));
+        rowsClassifier([pixels], ([prediction]) => setPrediction(prediction));
     }
 }
 
