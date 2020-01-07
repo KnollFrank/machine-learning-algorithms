@@ -301,11 +301,8 @@ function buildKnnClassifier(datasetDescription, k, knnWorkers) {
         const chunksOfPredictions = [];
         for (let i = 0; i < chunks.length; i++) {
             const knnWorker = knnWorkers[i];
-            const { oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk } = chunks[i];
-            const zeroBasedStartIndexOfChunk = oneBasedStartIndexOfChunk - 1;
-            const zeroBasedEndIndexInclusiveOfChunk = oneBasedEndIndexInclusiveOfChunk - 1;
-            const zeroBasedEndIndexExclusiveOfChunk = zeroBasedEndIndexInclusiveOfChunk + 1;
-
+            const chunk = chunks[i];
+            const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunk);
             predictKnnWorker(knnWorker, rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk), i, chunksOfPredictions, chunks, receivePredictionsForRows, rows.length);
         }
     }
@@ -326,6 +323,13 @@ function fitKnnWorker(knnWorker, fitParams) {
     });
 
     knnWorker.onerror = e => console.log(`There is an error with a knnWorker in file ${e.filename}, line ${e.lineno}:`, e.message);
+}
+
+function asJsStartAndEndIndexes({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }) {
+    const zeroBasedStartIndexOfChunk = oneBasedStartIndexOfChunk - 1;
+    const zeroBasedEndIndexInclusiveOfChunk = oneBasedEndIndexInclusiveOfChunk - 1;
+    const zeroBasedEndIndexExclusiveOfChunk = zeroBasedEndIndexInclusiveOfChunk + 1;
+    return { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk };
 }
 
 // FK-TODO: refactor
