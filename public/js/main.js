@@ -483,7 +483,7 @@ function getRowsClassifier(classifierType, classifier) {
             };
         case ClassifierType.KNN:
             return (rows, receivePredictionsForRows) => {
-                const nonCachedRows = rows.filter(row => !cache.cache.hasOwnProperty(row));
+                const nonCachedRows = rows.filter(row => !cache.containsKey(row));
                 classifier(
                     nonCachedRows,
                     nonCachedPredictions => {
