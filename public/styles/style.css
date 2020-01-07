@@ -76,6 +76,10 @@ div.digit {
     padding: 10px;
 }
 
+div.digit canvas {
+    border: 1px solid #d3d3d3;
+}
+
 #section-testdata div.digit:hover {
     padding: 10px;
     background: rgba(152, 195, 252, 0.5);
@@ -134,7 +138,6 @@ div.digit figcaption.wrongPrediction {
     border-left: none;
 }
 
-
 #digit-canvas-big,
 #digit-canvas-big-result-of-prediction {
     border: 15px solid rgba(204, 204, 204, 0.5);
@@ -150,7 +153,7 @@ div.digit figcaption.wrongPrediction {
 #digit-canvas-small {
     border: 2px solid lightblue;
     border-radius: 2px;
-    display: none;
+    display: block;
 }
 
 #decisionTreeNetwork-enhanced-switcher {
