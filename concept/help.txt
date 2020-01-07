@@ -53,8 +53,6 @@ FK-TODO:
 - "With some classification methods (particuarly template-based methods, such as SVM and K-nearest neighbors),
   the error rate improves when the digits are CENTERED BY BOUNDING BOX rather than center of mass. If you do this kind of pre-processing, you should report it in your publications."
   - center digits by bounding box
-- alle CPUs verwenden, um die Accuracy der Testdaten mit KNN verteilt auszurechnen.
-  Dazu mehrere Worker verwenden, jeder Worker erzeugt eine eigene Instanz von KNNUsingKDTree.
 - in den tabellarischen Trainingsdaten eine Legende (oder Tooltip) anzeigen, was die Tabellenspalten bedeuten.
   Dazu die Beschreibungen der Datensätze aus dem Internet herunterladen, in einer Datei speichern
   und in der JS-Anwendung laden und anzeigen.
