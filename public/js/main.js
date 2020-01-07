@@ -151,10 +151,7 @@ function createRowColLabels(numRows, numCols) {
     return rowColLabels;
 }
 
-function getScaledImage({
-    image,
-    kernelWidthAndHeight
-}) {
+function getScaledImage({ image, kernelWidthAndHeight }) {
     const scaledImage_width = image.width / kernelWidthAndHeight;
     const scaledImage_height = image.height / kernelWidthAndHeight;
     const scaledImage = {
@@ -197,30 +194,11 @@ function getAveragePixelValueWithinKernel(kernelWidthAndHeight, getPixel) {
     return Math.round(sum / (kernelWidthAndHeight ** 2));;
 }
 
-function getPixel({
-    image: {
-        pixels,
-        width
-    },
-    point: {
-        x,
-        y
-    }
-}) {
+function getPixel({ image: { pixels, width }, point: { x, y } }) {
     return pixels[y * width + x];
 }
 
-function putPixel({
-    image: {
-        pixels,
-        width
-    },
-    point: {
-        x,
-        y
-    },
-    pixel
-}) {
+function putPixel({ image: { pixels, width }, point: { x, y }, pixel }) {
     pixels[y * width + x] = pixel;
 }
 
@@ -365,20 +343,15 @@ function copyChunkOfPredictions2Predictions(chunkOfPredictions, predictions) {
     }
 }
 
-function buildDecisionTreeClassifier({
-    datasetDescription,
-    max_depth,
-    min_size
-}) {
+function buildDecisionTreeClassifier({ datasetDescription, max_depth, min_size }) {
     let gNetwork;
-    build_tree_with_worker({
-        dataset: datasetDescription.splittedDataset.train,
-        max_depth: max_depth,
-        min_size: min_size
-    }, ({
-        type: type,
-        value: value
-    }) => {
+    build_tree_with_worker(
+        {
+            dataset: datasetDescription.splittedDataset.train,
+            max_depth: max_depth,
+            min_size: min_size
+        },
+        ({ type: type, value: value }) => {
             switch (type) {
                 case 'info':
                     gNetwork = addNewNodesAndEdgesToNetwork(datasetDescription, value, gNetwork);
