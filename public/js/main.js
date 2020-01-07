@@ -351,14 +351,18 @@ function predictKnnWorker(knnWorker, X, receivePredictions) {
 }
 
 function combineChunksOfPredictions(chunksOfPredictions) {
-    const allPredictions = {};
-    for (const { chunk, predictions } of chunksOfPredictions) {
-        const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunk);
-        for (let j = zeroBasedStartIndexOfChunk; j < zeroBasedEndIndexExclusiveOfChunk; j++) {
-            allPredictions[j] = predictions[j - zeroBasedStartIndexOfChunk];
-        }
+    const predictions = {};
+    for (const chunkOfPredictions of chunksOfPredictions) {
+        copyChunkOfPredictions2Predictions(chunkOfPredictions, predictions);
     }
-    return allPredictions;
+    return predictions;
+}
+
+function copyChunkOfPredictions2Predictions(chunkOfPredictions, predictions) {
+    const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunkOfPredictions.chunk);
+    for (let i = zeroBasedStartIndexOfChunk; i < zeroBasedEndIndexExclusiveOfChunk; i++) {
+        predictions[i] = chunkOfPredictions.predictions[i - zeroBasedStartIndexOfChunk];
+    }
 }
 
 function buildDecisionTreeClassifier({
