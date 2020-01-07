@@ -306,7 +306,7 @@ function buildKnnClassifier(datasetDescription, k, knnWorkers) {
             const zeroBasedEndIndexInclusiveOfChunk = oneBasedEndIndexInclusiveOfChunk - 1;
             const zeroBasedEndIndexExclusiveOfChunk = zeroBasedEndIndexInclusiveOfChunk + 1;
 
-            newFunction(knnWorker, rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk), i, chunksOfPredictions, chunks, receivePredictionsForRows, rows.length);
+            predictKnnWorker(knnWorker, rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk), i, chunksOfPredictions, chunks, receivePredictionsForRows, rows.length);
         }
     }
 
@@ -329,7 +329,7 @@ function fitKnnWorker(knnWorker, fitParams) {
 }
 
 // FK-TODO: refactor
-function newFunction(knnWorker, rowsForChunk, i, chunksOfPredictions, chunks, receivePredictionsForRows, mergedResultLength) {
+function predictKnnWorker(knnWorker, rowsForChunk, i, chunksOfPredictions, chunks, receivePredictionsForRows, mergedResultLength) {
     knnWorker.postMessage({
         type: 'predict',
         params: {
