@@ -46,9 +46,13 @@
                         <input type="file" id="csv-file" name="files" />
                     </div>
                     <div id="kernelWidthAndHeight-inputFields">
-                        <label for="kernelWidthAndHeight">Ziffernbreite- und höhe verkleinern um den Faktor:</label>
-                        <!-- Für kernelWidthAndHeight ein <select>-Tag verwenden, um die vordefinierten Werte 1, 2, 4, oder 7 auszuwählen. -->
-                        <input id="kernelWidthAndHeight" type="text" value="1">
+                        <label for="kernelWidthAndHeight">Ziffernbreite und -höhe verkleinern um den Faktor:</label>
+                        <select id="kernelWidthAndHeight">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="4">4</option>
+                            <option value="7">7</option>
+                          </select>
                     </div>
                 </div>
                 <input type="submit" value="laden">
