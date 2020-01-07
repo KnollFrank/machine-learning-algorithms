@@ -288,14 +288,14 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
 }
 
 function buildKnnClassifier(datasetDescription, k, knnWorkers) {
-    fitKnnWorkers(
+    const fittedKnnWorkers = fitKnnWorkers(
         knnWorkers,
         {
             X: datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
             y: datasetDescription.splittedDataset.train.map(getClassValFromRow),
             k: k
         });
-    const knnClassifier = createKnnClassifier(knnWorkers);
+    const knnClassifier = createKnnClassifier(fittedKnnWorkers);
     onClassifierBuilt(datasetDescription, knnClassifier, ClassifierType.KNN);
 }
 
@@ -331,6 +331,7 @@ function fitKnnWorkers(knnWorkers, fitParams) {
     for (const knnWorker of knnWorkers) {
         fitKnnWorker(knnWorker, fitParams);
     }
+    return knnWorkers;
 }
 
 function fitKnnWorker(knnWorker, fitParams) {
