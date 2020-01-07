@@ -585,31 +585,6 @@ function computeAccuracy(rowsClassifier, dataset, receiveAccuracy) {
     );
 }
 
-function computeAccuracyOld(rowClassifier, dataset, receiveAccuracy) {
-    const progress = document.querySelector('#accuracy-panel progress');
-    progress.max = dataset.length;
-    const predictions = [];
-    for (let i = 0; i < dataset.length; i++) {
-        const row = dataset[i];
-        rowClassifier(
-            row,
-            (predictionForRow, index) => {
-                console.log(`accuracy progress: ${index + 1}/${dataset.length} = ${predictionForRow}`);
-                predictions.push({
-                    index: index,
-                    prediction: predictionForRow
-                });
-                if (predictions.length == dataset.length) {
-                    predictions.sort((r1, r2) => r1.index - r2.index);
-                    const results = predictions.map(result => result.prediction);
-                    const accuracy = accuracy_percentage(actualClassVals(dataset), results);
-                    receiveAccuracy(accuracy);
-                }
-            },
-            i);
-    }
-}
-
 function displayTestingTableWithPredictions(rowsClassifier, classifierType, network, tree, datasetDescription) {
     function addPredictionAttribute(attributeNames) {
         const lastAttributeName = attributeNames[attributeNames.length - 1];
