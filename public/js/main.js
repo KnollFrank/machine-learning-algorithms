@@ -627,7 +627,7 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
                 row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
                 row => { };
         rowsClassifier(
-            datasetDescription.splittedDataset.test,
+            datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
             predictions => {
                 displayDatasetAsTable({
                     tableContainer: $('#container-testDataSet'),
