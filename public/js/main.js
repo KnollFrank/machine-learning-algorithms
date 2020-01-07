@@ -309,7 +309,7 @@ const createKnnClassifier =
                         knnWorkers[i],
                         getSlice(rows, chunk),
                         predictions => {
-                            chunksOfPredictions.push({ chunk: chunk, predictions: predictions });
+                            chunksOfPredictions.push({ chunk, predictions });
                             if (chunksOfPredictions.length == chunks.length) {
                                 receivePredictionsForRows(merge(chunksOfPredictions, rows.length));
                             }
