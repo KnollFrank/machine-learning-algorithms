@@ -487,16 +487,13 @@ function getRowsClassifier(classifierType, classifier) {
                 classifier(
                     nonCachedRows,
                     nonCachedPredictions => {
-                        cacheValuesForKeys({ cache, keys: nonCachedRows, values: nonCachedPredictions });
-                        const predictions = getValuesForKeys({ cache, keys: rows });
+                        cache.cacheValuesForKeys({ keys: nonCachedRows, values: nonCachedPredictions });
+                        const predictions = cache.getValuesForKeys({ keys: rows });
                         receivePredictionsForRows(predictions);
                     });
             }
     }
 }
-
-const cacheValuesForKeys = ({ cache, keys, values }) => zip(keys, values).forEach(([key, value]) => cache.cache[key] = value);
-const getValuesForKeys = ({ cache, keys }) => keys.map(row => cache.cache[row]);
 
 function onDecisionTreeChanged(datasetDescription, tree) {
     const switcher = document.querySelector('#decisionTreeNetwork-enhanced-switcher input[type=checkbox]');
