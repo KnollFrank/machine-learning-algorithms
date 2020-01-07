@@ -154,14 +154,24 @@ function fitSrc2Dst({ srcCanvas, dstCanvas }) {
     newCanvas.getContext('2d').putImageData(imageData, 0, 0);
 
     // FK-TODO: refactor
-    const kernelWidthAndHeight = 28 / dstCanvas.width;
-    const boundingBoxWidthAndHeight = 20 / kernelWidthAndHeight;
-    dstCanvas.getContext('2d').drawImage(
-        newCanvas,
-        (dstCanvas.width - boundingBoxWidthAndHeight) / 2,
-        (dstCanvas.height - boundingBoxWidthAndHeight) / 2,
-        boundingBoxWidthAndHeight,
-        boundingBoxWidthAndHeight);
+    const originalImageWidthAndHeight = 28;
+    const originalBoundingBoxWidthAndHeight = 20;
+    const kernelWidthAndHeight = originalImageWidthAndHeight / dstCanvas.width;
+    const boundingBoxWidthAndHeight = originalBoundingBoxWidthAndHeight / kernelWidthAndHeight;
+    drawScaledAndCenteredImageOntoCanvas({
+        canvas: dstCanvas,
+        image: newCanvas,
+        newImageWidthAndHeight: boundingBoxWidthAndHeight
+    });
+}
+
+function drawScaledAndCenteredImageOntoCanvas({ canvas, image, newImageWidthAndHeight }) {
+    canvas.getContext('2d').drawImage(
+        image,
+        (canvas.width - newImageWidthAndHeight) / 2,
+        (canvas.height - newImageWidthAndHeight) / 2,
+        newImageWidthAndHeight,
+        newImageWidthAndHeight);
 }
 
 function highlightPredictionInNetwork(prediction, network) {
