@@ -2,12 +2,14 @@
 
 class Digit {
     constructor(imageWidth, imageHeight) {
-        this.imageWidth = imageWidth;
-        this.imageHeight = imageHeight;
         this.digitElement = getHtml('digitTemplate.html');
         this.digitElement.setAttribute('id', 'digit-' + newId());
-        this.digitElement.querySelector('canvas').width = imageWidth;
-        this.digitElement.querySelector('canvas').height = imageHeight;
+        this._getCanvas().width = imageWidth;
+        this._getCanvas().height = imageHeight;
+    }
+
+    _getCanvas() {
+        return this.digitElement.querySelector('canvas');
     }
 
     setFigcaption(innerHTML, clazz) {
@@ -19,26 +21,24 @@ class Digit {
     }
 
     setImage(pixels) {
-        this._drawImageIntoCanvas(pixels, this.digitElement.querySelector('canvas'));
-    }
-
-    _drawImageIntoCanvas(pixels, canvas) {
-        const ctx = canvas.getContext("2d");
-        const imageData = ctx.createImageData(this.imageWidth, this.imageHeight);
-
-        for (const it of iterateOverImageData(imageData)) {
-            imageData.data[it.color_index.red] = 0;
-            imageData.data[it.color_index.green] = 0;
-            imageData.data[it.color_index.blue] = 0;
-            imageData.data[it.color_index.alpha] = pixels[it.pixelIndex];
-        }
-
-        ctx.putImageData(imageData, 0, 0);
+        drawImageIntoCanvas(pixels, this._getCanvas());
     }
 
     setOnClicked(onClicked) {
         this.digitElement.addEventListener('click', onClicked);
     }
+}
+
+function drawImageIntoCanvas(pixels, canvas) {
+    const ctx = canvas.getContext("2d");
+    const imageData = ctx.createImageData(canvas.width, canvas.height);
+    for (const it of iterateOverImageData(imageData)) {
+        imageData.data[it.color_index.red] = 0;
+        imageData.data[it.color_index.green] = 0;
+        imageData.data[it.color_index.blue] = 0;
+        imageData.data[it.color_index.alpha] = pixels[it.pixelIndex];
+    }
+    ctx.putImageData(imageData, 0, 0);
 }
 
 function imageData2Pixels(imageData) {

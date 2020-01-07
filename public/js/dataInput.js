@@ -67,18 +67,18 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
         }
     }
 
-    $(canvasBig).on('mousedown', function (e) {
+    $(canvasBig).on('mousedown', function(e) {
         last_mouse = mouse = getMousePos(canvasBig, e);
         mousedown = true;
         fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    $(canvasBig).on('mouseup', function (e) {
+    $(canvasBig).on('mouseup', function(e) {
         mousedown = false;
         onDigitDrawn(canvasBig, canvasSmall);
     });
 
-    $(canvasBig).on('mousemove', function (e) {
+    $(canvasBig).on('mousemove', function(e) {
         mouse = getMousePos(canvasBig, e);
         if (mousedown) {
             ctxBig.beginPath();
@@ -103,6 +103,7 @@ function clearCanvases(canvasBig, canvasSmall) {
     clearCanvas(canvasBig);
     clearCanvas(canvasSmall);
 }
+
 function clearCanvas(canvas) {
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
@@ -141,22 +142,26 @@ function getPixels(canvasBig, canvasSmall) {
 }
 
 function fitSrc2Dst({ srcCanvas, dstCanvas }) {
-    var srcCtx = srcCanvas.getContext('2d');
-    var imageData = srcCtx.getImageData(0, 0, srcCanvas.width, srcCanvas.height);
-    var destCtx = dstCanvas.getContext('2d');
+    const imageData =
+        srcCanvas
+        .getContext('2d')
+        .getImageData(0, 0, srcCanvas.width, srcCanvas.height);
 
-    var newCanvas = $("<canvas>")
+    const newCanvas = $("<canvas>")
         .attr("width", imageData.width)
         .attr("height", imageData.height)[0];
 
     newCanvas.getContext('2d').putImageData(imageData, 0, 0);
 
-    destCtx.drawImage(
+    // FK-TODO: refactor
+    const kernelWidthAndHeight = 28 / dstCanvas.width;
+    const boundingBoxWidthAndHeight = 20 / kernelWidthAndHeight;
+    dstCanvas.getContext('2d').drawImage(
         newCanvas,
-        (dstCanvas.width - 20) / 2,
-        (dstCanvas.height - 20) / 2,
-        20,
-        20);
+        (dstCanvas.width - boundingBoxWidthAndHeight) / 2,
+        (dstCanvas.height - boundingBoxWidthAndHeight) / 2,
+        boundingBoxWidthAndHeight,
+        boundingBoxWidthAndHeight);
 }
 
 function highlightPredictionInNetwork(prediction, network) {
