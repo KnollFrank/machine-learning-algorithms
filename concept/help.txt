@@ -16,6 +16,7 @@ Abhängigkeiten:
 - https://datatables.net/
 - https://socket.io/docs/client-api/
 - https://www.kaggle.com/oddrationale/mnist-in-csv
+- https://pjreddie.com/projects/mnist-in-csv/
 - https://en.wikipedia.org/wiki/K-d_tree
 - https://github.com/mljs/knn/tree/master/src
 - https://www.classes.cs.uchicago.edu/archive/2015/spring/12300-1/pa2.html
@@ -58,3 +59,7 @@ FK-TODO:
 - "With some classification methods (particuarly template-based methods, such as SVM and K-nearest neighbors),
   the error rate improves when the digits are CENTERED BY BOUNDING BOX rather than center of mass. If you do this kind of pre-processing, you should report it in your publications."
   - center digits by bounding box
+  https://www.wavemetrics.com/code-snippet/calculate-centre-mass-image
+  - die Ziffer in eine 20x20 pixel box malen lassen
+  - the images were centered in a 28x28 image by computing the center of mass of the pixels,
+    and translating the image so as to position this point at the center of the 28x28 field.  

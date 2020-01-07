@@ -151,10 +151,12 @@ function fitSrc2Dst({ srcCanvas, dstCanvas }) {
 
     newCanvas.getContext('2d').putImageData(imageData, 0, 0);
 
-    destCtx.save();
-    destCtx.scale(dstCanvas.width / srcCanvas.width, dstCanvas.height / srcCanvas.height);
-    destCtx.drawImage(newCanvas, 0, 0);
-    destCtx.restore();
+    destCtx.drawImage(
+        newCanvas,
+        (dstCanvas.width - 20) / 2,
+        (dstCanvas.height - 20) / 2,
+        20,
+        20);
 }
 
 function highlightPredictionInNetwork(prediction, network) {
