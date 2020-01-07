@@ -299,34 +299,6 @@ function buildKnnClassifier(datasetDescription, k, knnWorkers) {
     onClassifierBuilt(datasetDescription, knnClassifier, ClassifierType.KNN);
 }
 
-const createKnnClassifier =
-    knnWorkers =>
-        (rows, receivePredictionsForRows) => {
-            const chunksOfPredictions = [];
-            splitItemsIntoChunks({ numItems: rows.length, maxNumChunks: knnWorkers.length })
-                .forEach((chunk, i, chunks) => {
-                    predictKnnWorker(
-                        knnWorkers[i],
-                        getSlice(rows, chunk),
-                        predictions => {
-                            chunksOfPredictions.push({ chunk, predictions });
-                            if (chunksOfPredictions.length == chunks.length) {
-                                receivePredictionsForRows(merge(chunksOfPredictions, rows.length));
-                            }
-                        });
-                });
-        };
-
-function getSlice(rows, chunk) {
-    const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunk);
-    return rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk);
-}
-
-function predictKnnWorker(knnWorker, X, receivePredictions) {
-    knnWorker.postMessage({ type: 'predict', params: { X: X } });
-    knnWorker.onmessage = event => receivePredictions(event.data);
-}
-
 function fitKnnWorkers(knnWorkers, fitParams) {
     for (const knnWorker of knnWorkers) {
         fitKnnWorker(knnWorker, fitParams);
@@ -343,6 +315,29 @@ function fitKnnWorker(knnWorker, fitParams) {
     knnWorker.onerror = e => console.log(`There is an error with a knnWorker in file ${e.filename}, line ${e.lineno}:`, e.message);
 }
 
+const createKnnClassifier =
+    knnWorkers =>
+        (rows, receivePredictionsForRows) => {
+            const chunksOfPredictions = [];
+            splitItemsIntoChunks({ numItems: rows.length, maxNumChunks: knnWorkers.length })
+                .forEach((chunk, i, chunks) => {
+                    predictKnnWorker(
+                        knnWorkers[i],
+                        getSlice(rows, chunk),
+                        predictions => {
+                            chunksOfPredictions.push({ chunk, predictions });
+                            if (chunksOfPredictions.length == chunks.length) {
+                                receivePredictionsForRows(combineChunksOfPredictions(chunksOfPredictions));
+                            }
+                        });
+                });
+        };
+
+function getSlice(rows, chunk) {
+    const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunk);
+    return rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk);
+}
+
 function asJsStartAndEndIndexes({ oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk }) {
     const zeroBasedStartIndexOfChunk = oneBasedStartIndexOfChunk - 1;
     const zeroBasedEndIndexInclusiveOfChunk = oneBasedEndIndexInclusiveOfChunk - 1;
@@ -350,14 +345,16 @@ function asJsStartAndEndIndexes({ oneBasedStartIndexOfChunk, oneBasedEndIndexInc
     return { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk };
 }
 
-function merge(chunksOfPredictions, mergedResultLength) {
-    const allPredictions = Array(mergedResultLength).fill(0);
-    for (let i = 0; i < chunksOfPredictions.length; i++) {
-        const { chunk, predictions } = chunksOfPredictions[i];
-        const { oneBasedStartIndexOfChunk, oneBasedEndIndexInclusiveOfChunk } = chunk;
-        const zeroBasedStartIndexOfChunk = oneBasedStartIndexOfChunk - 1;
-        const zeroBasedEndIndexInclusiveOfChunk = oneBasedEndIndexInclusiveOfChunk - 1;
-        for (let j = zeroBasedStartIndexOfChunk; j <= zeroBasedEndIndexInclusiveOfChunk; j++) {
+function predictKnnWorker(knnWorker, X, receivePredictions) {
+    knnWorker.postMessage({ type: 'predict', params: { X: X } });
+    knnWorker.onmessage = event => receivePredictions(event.data);
+}
+
+function combineChunksOfPredictions(chunksOfPredictions) {
+    const allPredictions = {};
+    for (const { chunk, predictions } of chunksOfPredictions) {
+        const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunk);
+        for (let j = zeroBasedStartIndexOfChunk; j < zeroBasedEndIndexExclusiveOfChunk; j++) {
             allPredictions[j] = predictions[j - zeroBasedStartIndexOfChunk];
         }
     }
