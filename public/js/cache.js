@@ -7,7 +7,7 @@ class Cache {
     }
 
     get(key, computeValue) {
-        // FK-TODO: vergleich mit einem Array als key sollte eigentlich nicht funktionieren. Anders prüfen mit compareFlatArrays().
+        // FK-TODO: Vergleich geht glaube ich über eine Stringkonvertierung des keys, was nicht gut ist. Anders prüfen mit compareFlatArrays().
         if (!this.containsKey(key)) {
             this._cacheValueForKey({ key, value: computeValue() });
         }
