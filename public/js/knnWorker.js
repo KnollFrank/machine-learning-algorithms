@@ -8,17 +8,10 @@ let knn;
 
 onmessage = e => {
     console.log('Worker for KNN received message:', e.data);
-    const {
-        type,
-        params
-    } = e.data;
+    const { type, params } = e.data;
     switch (type) {
         case 'fit': {
-            const {
-                X,
-                y,
-                k
-            } = params;
+            const { X, y, k } = params;
             knn = new KNNUsingKDTree(k);
             knn.fit(X, y);
             break;
@@ -30,8 +23,4 @@ onmessage = e => {
             break;
         }
     }
-
-    //const result = knn.predict(getIndependentValsFromRow(row, datasetDescription));
-    //console.log('knn result:', result);
-    //postMessage(result);
 }
