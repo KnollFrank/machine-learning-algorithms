@@ -281,14 +281,14 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
             e => {
                 const k = getInputValueById('knn-k');
                 document.querySelector('#section-KNN h2').textContent = `2. ${k} nächste Nachbarn`;
-                buildKNNClassifier(datasetDescription, k, knnWorkers);
+                buildKnnClassifier(datasetDescription, k, knnWorkers);
             }
         );
     }
 }
 
 // FK-TODO: refactor
-function buildKNNClassifier(datasetDescription, k, knnWorkers) {
+function buildKnnClassifier(datasetDescription, k, knnWorkers) {
     const X = datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription));
     const y = datasetDescription.splittedDataset.train.map(getClassValFromRow);
     fitKnnWorkers(knnWorkers, { X, y, k });
