@@ -298,7 +298,7 @@ function buildKNNClassifier(datasetDescription, k, knnWorkers) {
             params: { X, y, k }
         });
         knnWorker.onerror = function(e) {
-            console.log('There is an error with your worker:', i, e.filename, e.lineno, e.message);
+            console.log(`There is an error with knnWorker(${i}) in file ${e.filename}, line ${e.lineno}:`, e.message);
         };
     }
 
