@@ -293,7 +293,7 @@ function buildKnnClassifier(datasetDescription, k, knnWorkers) {
     const y = datasetDescription.splittedDataset.train.map(getClassValFromRow);
     fitKnnWorkers(knnWorkers, { X, y, k });
 
-    function knn(rows, receivePredictionsForRows) {
+    function knnClassifyRows(rows, receivePredictionsForRows) {
         const chunks = splitItemsIntoChunks({
             numItems: rows.length,
             maxNumChunks: knnWorkers.length
@@ -310,7 +310,7 @@ function buildKnnClassifier(datasetDescription, k, knnWorkers) {
         }
     }
 
-    onClassifierBuilt(datasetDescription, knn, ClassifierType.KNN);
+    onClassifierBuilt(datasetDescription, knnClassifyRows, ClassifierType.KNN);
 }
 
 function fitKnnWorkers(knnWorkers, fitParams) {
@@ -325,9 +325,7 @@ function fitKnnWorker(knnWorker, fitParams) {
         params: fitParams
     });
 
-    knnWorker.onerror = function (e) {
-        console.log(`There is an error with a knnWorker in file ${e.filename}, line ${e.lineno}:`, e.message);
-    };
+    knnWorker.onerror = e => console.log(`There is an error with a knnWorker in file ${e.filename}, line ${e.lineno}:`, e.message);
 }
 
 // FK-TODO: refactor
