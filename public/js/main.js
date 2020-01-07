@@ -484,27 +484,25 @@ function getRowsClassifier(classifierType, classifier) {
         case ClassifierType.KNN:
             return (rows, receivePredictionsForRows) => {
                 // FK-TODO: refactor
-                const unknownRowIndices = [];
-                for (let i = 0; i < rows.length; i++) {
-                    if (!cache.cache.hasOwnProperty(rows[i])) {
-                        unknownRowIndices.push(i);
-                    }
-                }
+                const nonCachedRows = getNonCachedRows(rows, cache);
                 classifier(
-                    unknownRowIndices.map(rowIndex => rows[rowIndex]),
-                    formerlyUnknownPredictions => {
+                    nonCachedRows,
+                    nonCachedPredictions => {
+                        for (let i = 0; i < nonCachedRows.length; i++) {
+                            cache.cache[nonCachedRows[i]] = nonCachedPredictions[i];
+                        }
                         const allPredictions = [];
                         for (let i = 0; i < rows.length; i++) {
-                            if (unknownRowIndices.includes(i)) {
-                                cache.cache[rows[i]] = formerlyUnknownPredictions[i];
-                            }
                             allPredictions[i] = cache.cache[rows[i]];
                         }
                         receivePredictionsForRows(allPredictions);
                     });
-                // classifier(rows, receivePredictionsForRows);
             }
     }
+}
+
+function getNonCachedRows(rows, cache) {
+    return rows.filter(row => !cache.cache.hasOwnProperty(row));
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
