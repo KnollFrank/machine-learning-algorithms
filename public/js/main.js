@@ -483,27 +483,20 @@ function getRowsClassifier(classifierType, classifier) {
             };
         case ClassifierType.KNN:
             return (rows, receivePredictionsForRows) => {
-                // FK-TODO: refactor
-                const nonCachedRows = getNonCachedRows(rows, cache);
+                const nonCachedRows = rows.filter(row => !cache.cache.hasOwnProperty(row));
                 classifier(
                     nonCachedRows,
                     nonCachedPredictions => {
-                        for (let i = 0; i < nonCachedRows.length; i++) {
-                            cache.cache[nonCachedRows[i]] = nonCachedPredictions[i];
-                        }
-                        const allPredictions = [];
-                        for (let i = 0; i < rows.length; i++) {
-                            allPredictions[i] = cache.cache[rows[i]];
-                        }
-                        receivePredictionsForRows(allPredictions);
+                        cacheValuesForKeys({ cache, keys: nonCachedRows, values: nonCachedPredictions });
+                        const predictions = getValuesForKeys({ cache, keys: rows });
+                        receivePredictionsForRows(predictions);
                     });
             }
     }
 }
 
-function getNonCachedRows(rows, cache) {
-    return rows.filter(row => !cache.cache.hasOwnProperty(row));
-}
+const cacheValuesForKeys = ({ cache, keys, values }) => zip(keys, values).forEach(([key, value]) => cache.cache[key] = value);
+const getValuesForKeys = ({ cache, keys }) => keys.map(row => cache.cache[row]);
 
 function onDecisionTreeChanged(datasetDescription, tree) {
     const switcher = document.querySelector('#decisionTreeNetwork-enhanced-switcher input[type=checkbox]');
