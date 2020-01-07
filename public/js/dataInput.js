@@ -67,18 +67,18 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
         }
     }
 
-    $(canvasBig).on('mousedown', function(e) {
+    $(canvasBig).on('mousedown', function (e) {
         last_mouse = mouse = getMousePos(canvasBig, e);
         mousedown = true;
         fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    $(canvasBig).on('mouseup', function(e) {
+    $(canvasBig).on('mouseup', function (e) {
         mousedown = false;
         onDigitDrawn(canvasBig, canvasSmall);
     });
 
-    $(canvasBig).on('mousemove', function(e) {
+    $(canvasBig).on('mousemove', function (e) {
         mouse = getMousePos(canvasBig, e);
         if (mousedown) {
             ctxBig.beginPath();
@@ -95,13 +95,16 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
 }
 
 function prepareNewPrediction(canvasBig, canvasSmall) {
-    clearCanvas(canvasBig, canvasSmall);
+    clearCanvases(canvasBig, canvasSmall);
     setPrediction('');
 }
 
-function clearCanvas(canvasBig, canvasSmall) {
-    canvasBig.getContext('2d').clearRect(0, 0, canvasBig.width, canvasBig.height);
-    canvasSmall.getContext('2d').clearRect(0, 0, canvasSmall.width, canvasSmall.height);
+function clearCanvases(canvasBig, canvasSmall) {
+    clearCanvas(canvasBig);
+    clearCanvas(canvasSmall);
+}
+function clearCanvas(canvas) {
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier, classifierType) {
@@ -116,7 +119,18 @@ function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier
 }
 
 function setPrediction(predictedValue) {
-    document.querySelector('#prediction-container .prediction').innerHTML = predictedValue;
+    const canvas = document.querySelector('#prediction-container #digit-canvas-big-result-of-prediction');
+    clearCanvas(canvas);
+    printCenteredTextIntoCanvas(canvas, predictedValue);
+}
+
+function printCenteredTextIntoCanvas(canvas, text) {
+    const ctx = canvas.getContext("2d");
+    const fontSize = Math.min(canvas.width, canvas.height);
+    ctx.font = `${fontSize}px Verdana`;
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
+    ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 }
 
 function getPixels(canvasBig, canvasSmall) {

@@ -134,18 +134,9 @@ div.digit figcaption.wrongPrediction {
     border-left: none;
 }
 
-.resultOfPrediction {
-    border: 15px solid rgba(204, 204, 204, 0.5);
-    cursor: crosshair;
-    border-radius: 15px;
-    width: 230px;
-    height: 230px;
-    font-size: 15vw;
-    text-align: center;
-    margin-top: 10px;
-}
 
-#digit-canvas-big {
+#digit-canvas-big,
+#digit-canvas-big-result-of-prediction {
     border: 15px solid rgba(204, 204, 204, 0.5);
     cursor: crosshair;
     border-radius: 15px;
