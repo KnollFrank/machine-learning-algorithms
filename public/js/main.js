@@ -302,8 +302,7 @@ function buildKNNClassifier(datasetDescription, k, knnWorkers) {
         };
     }
 
-    const knn = {
-        predictRows: function(rows, receivePredictionsForRows) {
+    function knn(rows, receivePredictionsForRows) {
             const chunks = splitItemsIntoChunks({
                 numItems: rows.length,
                 maxNumChunks: knnWorkers.length
@@ -318,8 +317,7 @@ function buildKNNClassifier(datasetDescription, k, knnWorkers) {
 
                 newFunction(knnWorker, rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk), i, chunksOfPredictions, chunks, receivePredictionsForRows, rows.length);
             }
-        }
-    };
+        }   
 
     onClassifierBuilt(datasetDescription, knn, ClassifierType.KNN);
 }
@@ -509,7 +507,7 @@ function getRowsClassifier(classifierType, classifier) {
                         unknownRowIndices.push(i);
                     }
                 }
-                classifier.predictRows(
+                classifier(
                     unknownRowIndices.map(rowIndex => rows[rowIndex]),
                     formerlyUnknownPredictions => {
                         const allPredictions = [];
@@ -521,7 +519,7 @@ function getRowsClassifier(classifierType, classifier) {
                         }
                         receivePredictionsForRows(allPredictions);
                     });
-                // classifier.predictRows(rows, receivePredictionsForRows);
+                // classifier(rows, receivePredictionsForRows);
             }
     }
 }
