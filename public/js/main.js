@@ -458,6 +458,7 @@ function display_accuracy_testingTable_dataInput(classifier, classifierType, dat
     const rowsClassifier = getRowsClassifier(classifierType, classifier);
     displayAccuracy(
         rowsClassifier,
+        datasetDescription,
         datasetDescription.splittedDataset.test,
         () => {
             displayTestingTableWithPredictions(rowsClassifier, classifierType, network, classifier, datasetDescription);
@@ -563,9 +564,10 @@ function getInputValueBy(selectors) {
     return document.querySelector(selectors).value;
 }
 
-function displayAccuracy(rowsClassifier, dataset, k) {
+function displayAccuracy(rowsClassifier, datasetDescription, dataset, k) {
     computeAccuracy(
         rowsClassifier,
+        datasetDescription,
         dataset,
         accuracy => {
             console.log(`${Math.floor(accuracy)}%`);
@@ -574,9 +576,9 @@ function displayAccuracy(rowsClassifier, dataset, k) {
         });
 }
 
-function computeAccuracy(rowsClassifier, dataset, receiveAccuracy) {
+function computeAccuracy(rowsClassifier, datasetDescription, dataset, receiveAccuracy) {
     rowsClassifier(
-        dataset,
+        dataset.map(row => getIndependentValsFromRow(row, datasetDescription)),
         predictions =>
             receiveAccuracy(
                 accuracy_percentage(
@@ -608,7 +610,7 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
                 row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
                 row => { };
         rowsClassifier(
-            datasetDescription.splittedDataset.test,
+            datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
             predictions => {
                 displayDigitTestDataset({
                     datasetDescription: datasetDescription,
