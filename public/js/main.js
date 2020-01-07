@@ -287,27 +287,44 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
     }
 }
 
-// FK-TODO: refactor
 function buildKnnClassifier(datasetDescription, k, knnWorkers) {
-    const X = datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription));
-    const y = datasetDescription.splittedDataset.train.map(getClassValFromRow);
-    fitKnnWorkers(knnWorkers, { X, y, k });
-
-    function knnClassifyRows(rows, receivePredictionsForRows) {
-        const chunks = splitItemsIntoChunks({
-            numItems: rows.length,
-            maxNumChunks: knnWorkers.length
+    fitKnnWorkers(
+        knnWorkers,
+        {
+            X: datasetDescription.splittedDataset.train.map(row => getIndependentValsFromRow(row, datasetDescription)),
+            y: datasetDescription.splittedDataset.train.map(getClassValFromRow),
+            k: k
         });
-        const chunksOfPredictions = [];
-        for (let i = 0; i < chunks.length; i++) {
-            const knnWorker = knnWorkers[i];
-            const chunk = chunks[i];
-            const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunk);
-            predictKnnWorker(knnWorker, rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk), i, chunksOfPredictions, chunks, receivePredictionsForRows, rows.length);
-        }
-    }
+    const knnClassifier = createKnnClassifier(knnWorkers);
+    onClassifierBuilt(datasetDescription, knnClassifier, ClassifierType.KNN);
+}
 
-    onClassifierBuilt(datasetDescription, knnClassifyRows, ClassifierType.KNN);
+const createKnnClassifier =
+    knnWorkers =>
+        (rows, receivePredictionsForRows) => {
+            const chunksOfPredictions = [];
+            splitItemsIntoChunks({ numItems: rows.length, maxNumChunks: knnWorkers.length })
+                .forEach((chunk, i, chunks) => {
+                    predictKnnWorker(
+                        knnWorkers[i],
+                        getSlice(rows, chunk),
+                        predictions => {
+                            chunksOfPredictions.push({ chunk: chunk, predictions: predictions });
+                            if (chunksOfPredictions.length == chunks.length) {
+                                receivePredictionsForRows(merge(chunksOfPredictions, rows.length));
+                            }
+                        });
+                });
+        };
+
+function getSlice(rows, chunk) {
+    const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunk);
+    return rows.slice(zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk);
+}
+
+function predictKnnWorker(knnWorker, X, receivePredictions) {
+    knnWorker.postMessage({ type: 'predict', params: { X: X } });
+    knnWorker.onmessage = event => receivePredictions(event.data);
 }
 
 function fitKnnWorkers(knnWorkers, fitParams) {
@@ -330,25 +347,6 @@ function asJsStartAndEndIndexes({ oneBasedStartIndexOfChunk, oneBasedEndIndexInc
     const zeroBasedEndIndexInclusiveOfChunk = oneBasedEndIndexInclusiveOfChunk - 1;
     const zeroBasedEndIndexExclusiveOfChunk = zeroBasedEndIndexInclusiveOfChunk + 1;
     return { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk };
-}
-
-// FK-TODO: refactor
-function predictKnnWorker(knnWorker, rowsForChunk, i, chunksOfPredictions, chunks, receivePredictionsForRows, mergedResultLength) {
-    knnWorker.postMessage({
-        type: 'predict',
-        params: {
-            X: rowsForChunk
-        }
-    });
-
-    knnWorker.onmessage = event => {
-        const predictions = event.data;
-        console.log('predictions from knnWorker:', i, predictions);
-        chunksOfPredictions.push({ chunk: chunks[i], predictions: predictions });
-        if (chunksOfPredictions.length == chunks.length) {
-            receivePredictionsForRows(merge(chunksOfPredictions, mergedResultLength));
-        }
-    };
 }
 
 function merge(chunksOfPredictions, mergedResultLength) {
