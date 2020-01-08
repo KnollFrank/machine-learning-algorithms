@@ -222,9 +222,11 @@ function onDatasetChanged(datasetDescription, classifierType) {
         $('#container-digits-train').fadeIn();
         $('#container-trainingDataSet').fadeOut();
         const maxDigits2Display = 500;
-        // FK-TODO: extract method
-        document.querySelector('#section-traindata .maxDigits2Display').textContent = Math.min(maxDigits2Display, datasetDescription.splittedDataset.train.length);
-        document.querySelector('#section-traindata .totalNumberOfDigits').textContent = datasetDescription.splittedDataset.train.length;
+        display_maxDigits2Display_totalNumberOfDigits({
+            root: document.querySelector('#section-traindata'),
+            maxDigits2Display,
+            totalNumberOfDigits: datasetDescription.splittedDataset.train.length
+        });
         displayDigitTrainDataset(datasetDescription, 'container-digits-train', maxDigits2Display);
     } else {
         $('#container-digits-train').fadeOut();
@@ -237,6 +239,11 @@ function onDatasetChanged(datasetDescription, classifierType) {
     }
     build_classifier_onSubmit(datasetDescription, classifierType);
     configure_load_tree(datasetDescription);
+}
+
+function display_maxDigits2Display_totalNumberOfDigits({ root, maxDigits2Display, totalNumberOfDigits }) {
+    root.querySelector('.maxDigits2Display').textContent = Math.min(maxDigits2Display, totalNumberOfDigits);
+    root.querySelector('.totalNumberOfDigits').textContent = totalNumberOfDigits;
 }
 
 function showSectionFor(classifierType) {
@@ -617,10 +624,12 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
         rowsClassifier(
             datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
             predictions => {
-                // FK-TODO: extract method
                 const maxDigits2Display = 500;
-                document.querySelector('#section-testdata .maxDigits2Display').textContent = Math.min(maxDigits2Display, datasetDescription.splittedDataset.test.length);
-                document.querySelector('#section-testdata .totalNumberOfDigits').textContent = datasetDescription.splittedDataset.test.length;
+                display_maxDigits2Display_totalNumberOfDigits({
+                    root: document.querySelector('#section-testdata'),
+                    maxDigits2Display,
+                    totalNumberOfDigits: datasetDescription.splittedDataset.test.length
+                });
                 displayDigitTestDataset({
                     datasetDescription: datasetDescription,
                     predictions: predictions,
