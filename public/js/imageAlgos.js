@@ -9,7 +9,7 @@ function getCenterOfMass(image) {
         totalMass += mass;
         centerOfMass = addPoints(centerOfMass, mulPoint(mass, subPoints(point, origin)));
     }
-    
+
     if (totalMass === 0) {
         return null;
     }
@@ -29,7 +29,7 @@ function* iterateOverImage(image) {
     }
 }
 
-// FK-TODO: erzeuge eine Point-Klasse mit Methoden für *, -, +
+// FK-TODO: verwende die eingebaute Point-Klasse von JavaScript oder erzeuge eine eigene Point-Klasse mit Methoden für *, -, +
 function addPoints(point1, point2) {
     return { x: point1.x + point2.x, y: point1.y + point2.y };
 }
