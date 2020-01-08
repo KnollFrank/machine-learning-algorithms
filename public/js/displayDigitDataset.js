@@ -36,10 +36,10 @@ class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
     }
 }
 
-function displayDigitTrainDataset(datasetDescription, digitsContainerId) {
+function displayDigitTrainDataset(datasetDescription, digitsContainerId, maxDigits2Display) {
     new DisplayDigitTrainDataset(datasetDescription.imageWidth, datasetDescription.imageHeight)
         .displayDigitDataset(
-            datasetDescription.splittedDataset.train,
+            datasetDescription.splittedDataset.train.slice(0, maxDigits2Display),
             digitsContainerId);
 }
 

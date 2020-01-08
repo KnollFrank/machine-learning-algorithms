@@ -10,7 +10,7 @@ const submitEventListenerHolder4kdatasetForm = new SubmitEventListenerHolder();
 const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
     KNN: 'KNN',
-    from: function(name) {
+    from: function (name) {
         name = name ? name.toUpperCase() : "";
         return [this.DECISION_TREE, this.KNN].includes(name) ? name : this.DECISION_TREE;
     }
@@ -45,7 +45,7 @@ function onSubmitDatasetForm(dataFile, classifierType) {
     Papa.parse(dataFile, {
         download: true,
         header: false,
-        complete: function(results) {
+        complete: function (results) {
             let datasetDescription = getDatasetDescription(dataFile.name, results.data);
             if (datasetDescription.isDigitDataset()) {
                 datasetDescription = transform(datasetDescription, getSelectedKernelWidthAndHeight());
@@ -92,7 +92,7 @@ function getDatasetDescription(fileName, dataset) {
             all: attributeNames
         },
         splittedDataset: train_test_split(dataset, 0.8),
-        isDigitDataset: function() {
+        isDigitDataset: function () {
             return isFileDigitDataset(this.fileName);
         }
     };
@@ -221,7 +221,10 @@ function onDatasetChanged(datasetDescription, classifierType) {
     if (datasetDescription.isDigitDataset()) {
         $('#container-digits-train').fadeIn();
         $('#container-trainingDataSet').fadeOut();
-        displayDigitTrainDataset(datasetDescription, 'container-digits-train');
+        const maxDigits2Display = 500;
+        document.querySelector('#section-traindata .maxDigits2Display').textContent = Math.min(maxDigits2Display, datasetDescription.splittedDataset.train.length);
+        document.querySelector('#section-traindata .totalNumberOfDigits').textContent = datasetDescription.splittedDataset.train.length;
+        displayDigitTrainDataset(datasetDescription, 'container-digits-train', maxDigits2Display);
     } else {
         $('#container-digits-train').fadeOut();
         $('#container-trainingDataSet').fadeIn();
@@ -297,21 +300,21 @@ function fitKnnWorker(knnWorker, fitParams) {
 
 const createKnnClassifier =
     knnWorkers =>
-    (rows, receivePredictionsForRows) => {
-        const chunksOfPredictions = [];
-        splitItemsIntoChunks({ numItems: rows.length, maxNumChunks: knnWorkers.length })
-            .forEach((chunk, i, chunks) => {
-                predictKnnWorker(
-                    knnWorkers[i],
-                    getSlice(rows, chunk),
-                    predictions => {
-                        chunksOfPredictions.push({ chunk, predictions });
-                        if (chunksOfPredictions.length == chunks.length) {
-                            receivePredictionsForRows(combineChunksOfPredictions(chunksOfPredictions));
-                        }
-                    });
-            });
-    };
+        (rows, receivePredictionsForRows) => {
+            const chunksOfPredictions = [];
+            splitItemsIntoChunks({ numItems: rows.length, maxNumChunks: knnWorkers.length })
+                .forEach((chunk, i, chunks) => {
+                    predictKnnWorker(
+                        knnWorkers[i],
+                        getSlice(rows, chunk),
+                        predictions => {
+                            chunksOfPredictions.push({ chunk, predictions });
+                            if (chunksOfPredictions.length == chunks.length) {
+                                receivePredictionsForRows(combineChunksOfPredictions(chunksOfPredictions));
+                            }
+                        });
+                });
+        };
 
 function getSlice(rows, chunk) {
     const { zeroBasedStartIndexOfChunk, zeroBasedEndIndexExclusiveOfChunk } = asJsStartAndEndIndexes(chunk);
@@ -348,10 +351,10 @@ function copyChunkOfPredictions2Predictions(chunkOfPredictions, predictions) {
 function buildDecisionTreeClassifier({ datasetDescription, max_depth, min_size }) {
     let gNetwork;
     build_tree_with_worker({
-            dataset: datasetDescription.splittedDataset.train,
-            max_depth: max_depth,
-            min_size: min_size
-        },
+        dataset: datasetDescription.splittedDataset.train,
+        max_depth: max_depth,
+        min_size: min_size
+    },
         ({ type: type, value: value }) => {
             switch (type) {
                 case 'info':
@@ -387,10 +390,10 @@ function build_tree_with_worker({ dataset, max_depth, min_size }, onmessage) {
     $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
-            max_depth,
-            min_size,
-            splitterWorkers,
-            createTreeListener(onmessage))
+        max_depth,
+        min_size,
+        splitterWorkers,
+        createTreeListener(onmessage))
         .build_tree(
             dataset,
             tree => onmessage({ type: 'result', value: tree }));
@@ -504,8 +507,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             datasetDescription,
             tree,
             switcher.checked ?
-            new EnhancedNodeContentFactory() :
-            new SimpleNodeContentFactory());
+                new EnhancedNodeContentFactory() :
+                new SimpleNodeContentFactory());
     switcher.addEventListener('change', __onDecisionTreeChanged);
     __onDecisionTreeChanged();
 }
@@ -581,10 +584,10 @@ function computeAccuracy(rowsClassifier, datasetDescription, dataset, receiveAcc
     rowsClassifier(
         dataset.map(row => getIndependentValsFromRow(row, datasetDescription)),
         predictions =>
-        receiveAccuracy(
-            accuracy_percentage(
-                actualClassVals(dataset),
-                predictions))
+            receiveAccuracy(
+                accuracy_percentage(
+                    actualClassVals(dataset),
+                    predictions))
     );
 }
 
@@ -608,8 +611,8 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
         $('#container-testDataSet').fadeOut();
         const onDigitClickedReceiveRow =
             classifierType == ClassifierType.DECISION_TREE ?
-            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
-            row => {};
+                row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+                row => { };
         rowsClassifier(
             datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
             predictions => {
@@ -625,8 +628,8 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
         $('#container-testDataSet').fadeIn();
         const onRowClicked =
             classifierType == ClassifierType.DECISION_TREE ?
-            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
-            row => {};
+                row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+                row => { };
         rowsClassifier(
             datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
             predictions => {
@@ -671,7 +674,7 @@ function createTreeListener(onmessage) {
                 value: rootNode
             }));
         },
-        onStartSplit: nodeId => {},
+        onStartSplit: nodeId => { },
         onInnerSplit: ({
             workerIndex,
             nodeId,
@@ -691,6 +694,6 @@ function createTreeListener(onmessage) {
                 }
             });
         },
-        onEndSplit: nodeId => {}
+        onEndSplit: nodeId => { }
     }
 }
