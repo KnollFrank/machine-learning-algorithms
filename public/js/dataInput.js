@@ -164,7 +164,6 @@ function fitSrc2Dst({ srcCanvas, dstCanvas }) {
     const originalImageWidthAndHeight = 28;
     const originalBoundingBoxWidthAndHeight = 20;
     const kernelWidthAndHeight = originalImageWidthAndHeight / dstCanvas.width;
-    // centerOfMass = mulPoint(1 / kernelWidthAndHeight, centerOfMass);
     const boundingBoxWidthAndHeight = originalBoundingBoxWidthAndHeight / kernelWidthAndHeight;
     drawScaledAndCenteredImageOntoCanvas({
         canvas: dstCanvas,
