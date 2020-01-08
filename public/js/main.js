@@ -260,7 +260,7 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
     if (classifierType == ClassifierType.DECISION_TREE) {
         submitEventListenerHolder4decisionTreeForm.setEventListener(
             document.querySelector('#decisionTreeForm'),
-            e => {
+            () => {
                 buildDecisionTreeClassifier({
                     datasetDescription,
                     max_depth: getInputValueById('max_depth'),
@@ -270,7 +270,7 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
     } else {
         submitEventListenerHolder4knnForm.setEventListener(
             document.querySelector('#knnForm'),
-            e => {
+            () => {
                 const k = getInputValueById('knn-k');
                 document.querySelector('#section-KNN h2').textContent = `2. ${k} nächste Nachbarn`;
                 buildKnnClassifier(datasetDescription, k, knnWorkers);
@@ -473,7 +473,7 @@ function displayDataInputSectionAndTestdataSectionOnClick(classifier, classifier
         .querySelector('#section-testdata .evaluate-testdata-button')
         .addEventListener(
             'click',
-            e => displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier));
+            () => displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier));
 }
 
 function displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier) {
