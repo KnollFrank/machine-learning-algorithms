@@ -49,13 +49,9 @@ mnist_train_60000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 7: Accuracy
 FK-TODO:
 - k-d tree:
   "As a general rule, if the dimensionality is k, the number of points in the data, N, should be N ≫ 2 ^ k."
-- Train- und Testdatensatz getrennt voneinander auswählbar machen über Dateidialog.
-- Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
 - in den tabellarischen Trainingsdaten eine Legende (oder Tooltip) anzeigen, was die Tabellenspalten bedeuten.
   Dazu die Beschreibungen der Datensätze aus dem Internet herunterladen, in einer Datei speichern
   und in der JS-Anwendung laden und anzeigen.
-- große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging)
-  oder einfacher nur eine bestimmte Anzahl von Einträgen anzeigen und mit drei Punkten (...) andeuten, dass es noch mehrere Einträge gibt.
 - Bewege die Maus beim Zeichnen aus dem canvas heraus, die Zeichnung sieht merkwürdig aus beim Wiedereintritt der Maus in den canvas.
 - "With some classification methods (particuarly template-based methods, such as SVM and K-nearest neighbors),
   the error rate improves when the digits are CENTERED BY BOUNDING BOX rather than center of mass. If you do this kind of pre-processing, you should report it in your publications."
@@ -66,3 +62,7 @@ FK-TODO:
     and translating the image so as to position this point at the center of the 28x28 field.  
 - Bei knn die k nächsten Nachbardigits anzeigen (, um die Ähnlichkeit zur gezeichneten Digit zu erkennen).
   dazu anzuzeigender Text: "Deine Ziffer sieht den folgenden mir bekannten Ziffern am ähnlichsten, welche mehrheitlich eine ... darstellen."
+- große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging)
+  oder einfacher nur eine bestimmte Anzahl von Einträgen anzeigen und mit drei Punkten (...) andeuten, dass es noch mehrere Einträge gibt.
+- Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
+- Train- und Testdatensatz getrennt voneinander auswählbar machen über Dateidialog.

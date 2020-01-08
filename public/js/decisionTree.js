@@ -26,11 +26,11 @@ function splitItemsIntoChunks({
 }
 
 const dummyTreeListener = {
-    onNodeAdded: node => {},
-    onEdgeAdded: (fromNode, toNode) => {},
-    onStartSplit: nodeId => {},
-    onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => {},
-    onEndSplit: nodeId => {}
+    onNodeAdded: node => { },
+    onEdgeAdded: (fromNode, toNode) => { },
+    onStartSplit: nodeId => { },
+    onInnerSplit: ({ nodeId, actualSplitIndex, endSplitIndex }) => { },
+    onEndSplit: nodeId => { }
 };
 
 class DecisionTreeBuilder {
@@ -220,8 +220,8 @@ class Splitter {
         for (const row of dataset) {
             const splitCondition =
                 isNumber(value) ?
-                Number(row[index]) < Number(value) :
-                row[index] == value;
+                    Number(row[index]) < Number(value) :
+                    row[index] == value;
             if (splitCondition) {
                 left.push(row);
             } else {
@@ -235,26 +235,26 @@ class Splitter {
     gini_index(groups, classes) {
         const getP = group => class_val =>
             group
-            .map(getClassValFromRow)
-            .filter(classVal => classVal == class_val)
-            .length / group.length;
+                .map(getClassValFromRow)
+                .filter(classVal => classVal == class_val)
+                .length / group.length;
 
         const getScore = group =>
             classes
-            .map(getP(group))
-            .map(p => p * p)
-            .sum();
+                .map(getP(group))
+                .map(p => p * p)
+                .sum();
 
         const n_instances =
             groups
-            .map(group => group.length)
-            .sum();
+                .map(group => group.length)
+                .sum();
 
         const gini =
             groups
-            .filter(group => group.length != 0)
-            .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
-            .sum();
+                .filter(group => group.length != 0)
+                .map(group => (1.0 - getScore(group)) * (group.length / n_instances))
+                .sum();
 
         return gini;
     }
@@ -276,7 +276,7 @@ function accuracy_percentage(actual, predicted) {
             correct++;
         }
     }
-    return correct / actual.length * 100.0;
+    return actual.length != 0 ? correct / actual.length * 100.0 : 0;
 }
 
 function getNumberOfAttributes(dataset) {
@@ -387,8 +387,8 @@ function predict(node, row) {
 
     const splitCondition =
         isNumber(node.value) ?
-        Number(row[node.index]) < Number(node.value) :
-        row[node.index] == node.value;
+            Number(row[node.index]) < Number(node.value) :
+            row[node.index] == node.value;
 
     let { value, nodes } = predict(splitCondition ? node.left : node.right, row);
     return {
