@@ -67,18 +67,17 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
         }
     }
 
-    $(canvasBig).on('mousedown', function(e) {
+    $(canvasBig).on('mousedown', function (e) {
         last_mouse = mouse = getMousePos(canvasBig, e);
         mousedown = true;
-        fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
-    $(canvasBig).on('mouseup', function(e) {
+    $(canvasBig).on('mouseup', function (e) {
         mousedown = false;
         onDigitDrawn(canvasBig, canvasSmall);
     });
 
-    $(canvasBig).on('mousemove', function(e) {
+    $(canvasBig).on('mousemove', function (e) {
         mouse = getMousePos(canvasBig, e);
         if (mousedown) {
             ctxBig.beginPath();
@@ -87,7 +86,6 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
             ctxBig.stroke();
         }
         last_mouse = mouse;
-        fitSrc2Dst({ srcCanvas: canvasBig, dstCanvas: canvasSmall });
     });
 
     newPredictionBtn.addEventListener("click", () => prepareNewPrediction(canvasBig, canvasSmall));
@@ -144,19 +142,29 @@ function getPixels(canvasBig, canvasSmall) {
 function fitSrc2Dst({ srcCanvas, dstCanvas }) {
     const imageData =
         srcCanvas
-        .getContext('2d')
-        .getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+            .getContext('2d')
+            .getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+
+    const center = getCenterOfMassOfImageOrDefault(
+        {
+            imageData: imageData,
+            default: { x: srcCanvas.width / 2, y: srcCanvas.height / 2 }
+        });
 
     const newCanvas = $("<canvas>")
         .attr("width", imageData.width)
         .attr("height", imageData.height)[0];
 
-    newCanvas.getContext('2d').putImageData(imageData, 0, 0);
+    newCanvas.getContext('2d').putImageData(
+        imageData,
+        -(center.x - srcCanvas.width / 2),
+        -(center.y - srcCanvas.height / 2));
 
     // FK-TODO: refactor
     const originalImageWidthAndHeight = 28;
     const originalBoundingBoxWidthAndHeight = 20;
     const kernelWidthAndHeight = originalImageWidthAndHeight / dstCanvas.width;
+    // centerOfMass = mulPoint(1 / kernelWidthAndHeight, centerOfMass);
     const boundingBoxWidthAndHeight = originalBoundingBoxWidthAndHeight / kernelWidthAndHeight;
     drawScaledAndCenteredImageOntoCanvas({
         canvas: dstCanvas,
@@ -165,7 +173,18 @@ function fitSrc2Dst({ srcCanvas, dstCanvas }) {
     });
 }
 
+function getCenterOfMassOfImageOrDefault({ imageData, default: defaultValue }) {
+    const centerOfMass = getCenterOfMass(
+        {
+            pixels: imageData2Pixels(imageData),
+            width: imageData.width,
+            height: imageData.height
+        });
+    return centerOfMass || defaultValue;
+}
+
 function drawScaledAndCenteredImageOntoCanvas({ canvas, image, newImageWidthAndHeight }) {
+    clearCanvas(canvas);
     canvas.getContext('2d').drawImage(
         image,
         (canvas.width - newImageWidthAndHeight) / 2,
