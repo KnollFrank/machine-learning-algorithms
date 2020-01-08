@@ -5,12 +5,16 @@ function getCenterOfMass(image) {
     let centerOfMass = { x: 0, y: 0 };
     const origin = { x: -1, y: -1 };
 
-    for (const {point, color: mass} of iterateOverImage(image)) {
+    for (const { point, color: mass } of iterateOverImage(image)) {
         totalMass += mass;
         centerOfMass = addPoints(centerOfMass, mulPoint(mass, subPoints(point, origin)));
     }
-    centerOfMass = mulPoint(1 / totalMass, centerOfMass);
+    
+    if (totalMass === 0) {
+        return null;
+    }
 
+    centerOfMass = mulPoint(1 / totalMass, centerOfMass);
     return subPoints(centerOfMass, subPoints({ x: 0, y: 0 }, origin)); // == addPoints(centerOfMass, origin);
 }
 
