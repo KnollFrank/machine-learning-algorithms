@@ -24,6 +24,7 @@
     <script src="js/network.js"></script>
     <script src="js/timedExecutor.js"></script>
     <script src="js/digit.js"></script>
+    <script src="js/imageAlgos.js"></script>
     <script src="js/displayDigitDataset.js"></script>
     <script src="js/submitEventListenerHolder.js"></script>
     <script src="js/cache.js"></script>
@@ -2000,40 +2001,6 @@
             checkKNN(k => new KNN(k), 'KNN: ');
             checkKNN(k => new KNNUsingKDTree(k), 'KNNUsingKDTree: ');
         });
-
-        function getMassOfPointWithinImage(image, point) {
-            return image.pixels[getArrayIndexOfPoint(point, image.width)];
-        }
-
-        // FK-TODO: erzeuge eine Point-Klasse mit Methoden für *, -, +
-        function addPoints(point1, point2) {
-            return { x: point1.x + point2.x, y: point1.y + point2.y };
-        }
-
-        function mulPoint(scalar, { x, y }) {
-            return { x: scalar * x, y: scalar * y };
-        }
-
-        function subPoints(point1, point2) {
-            return { x: point1.x - point2.x, y: point1.y - point2.y };
-        }
-
-        function getCenterOfMass(image) {
-            let totalMass = 0;
-            let centerOfMass = { x: 0, y: 0 };
-            const origin = { x: -1, y: -1 };
-
-            for (let y = 0; y < image.height; y++) {
-                for (let x = 0; x < image.width; x++) {
-                    const mass = getMassOfPointWithinImage(image, { x, y });
-                    totalMass += mass;
-                    centerOfMass = addPoints(centerOfMass, mulPoint(mass, subPoints({ x, y }, origin)));
-                }
-            }
-            centerOfMass = mulPoint(1 / totalMass, centerOfMass);
-
-            return subPoints(centerOfMass, subPoints({ x: 0, y: 0 }, origin)); // == addPoints(centerOfMass, origin);
-        }
 
         QUnit.test("center of mass of an image", function (assert) {
             assert.deepEqual(
