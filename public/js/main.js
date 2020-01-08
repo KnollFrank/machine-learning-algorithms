@@ -222,6 +222,7 @@ function onDatasetChanged(datasetDescription, classifierType) {
         $('#container-digits-train').fadeIn();
         $('#container-trainingDataSet').fadeOut();
         const maxDigits2Display = 500;
+        // FK-TODO: extract method
         document.querySelector('#section-traindata .maxDigits2Display').textContent = Math.min(maxDigits2Display, datasetDescription.splittedDataset.train.length);
         document.querySelector('#section-traindata .totalNumberOfDigits').textContent = datasetDescription.splittedDataset.train.length;
         displayDigitTrainDataset(datasetDescription, 'container-digits-train', maxDigits2Display);
@@ -616,11 +617,16 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
         rowsClassifier(
             datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
             predictions => {
+                // FK-TODO: extract method
+                const maxDigits2Display = 500;
+                document.querySelector('#section-testdata .maxDigits2Display').textContent = Math.min(maxDigits2Display, datasetDescription.splittedDataset.test.length);
+                document.querySelector('#section-testdata .totalNumberOfDigits').textContent = datasetDescription.splittedDataset.test.length;
                 displayDigitTestDataset({
                     datasetDescription: datasetDescription,
                     predictions: predictions,
                     digitsContainerId: 'container-digits-test',
-                    onDigitClickedReceiveRow: onDigitClickedReceiveRow
+                    onDigitClickedReceiveRow: onDigitClickedReceiveRow,
+                    maxDigits2Display: maxDigits2Display
                 });
             });
     } else {

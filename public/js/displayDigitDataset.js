@@ -57,9 +57,9 @@ class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
     }
 }
 
-function displayDigitTestDataset({ datasetDescription, predictions, digitsContainerId, onDigitClickedReceiveRow }) {
-    new DisplayDigitTestDataset(predictions, onDigitClickedReceiveRow, datasetDescription.imageWidth, datasetDescription.imageHeight)
+function displayDigitTestDataset({ datasetDescription, predictions, digitsContainerId, onDigitClickedReceiveRow, maxDigits2Display }) {
+    new DisplayDigitTestDataset(predictions.slice(0, maxDigits2Display), onDigitClickedReceiveRow, datasetDescription.imageWidth, datasetDescription.imageHeight)
         .displayDigitDataset(
-            datasetDescription.splittedDataset.test,
+            datasetDescription.splittedDataset.test.slice(0, maxDigits2Display),
             digitsContainerId);
 }
