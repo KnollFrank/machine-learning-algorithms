@@ -67,7 +67,4 @@ FK-TODO:
 - TODO-A: Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
 
 Was zu tun ist, um den großen MNIST-Datensatz mnist_train_60000.csv + mnist_test_10000.csv im Browser effektiv auszuwerten:
-1. Nach dem Laden des Datensatzes nur die ersten N (z.B. 500) Datensätze (Ziffern) anzeigen.
-2. Bei "4. Testdaten" einen Button einbauen, um explizit die Berechnung der Accuracy und
-   die Anzeige der Testdaten anzustoßen.
 3. siehe TODO-A

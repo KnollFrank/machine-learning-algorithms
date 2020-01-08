@@ -461,21 +461,27 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             break;
         case ClassifierType.KNN:
             $('#subsection-decision-tree, #section-data-input, #section-testdata').fadeIn();
-            display_accuracy_testingTable_dataInput(classifier, ClassifierType.KNN, datasetDescription, network);
+            displayDataInputSectionAndTestdataSectionOnClick(classifier, ClassifierType.KNN, datasetDescription, network);
             break;
     }
 }
 
-function display_accuracy_testingTable_dataInput(classifier, classifierType, datasetDescription, network) {
+function displayDataInputSectionAndTestdataSectionOnClick(classifier, classifierType, datasetDescription, network) {
     const rowsClassifier = getRowsClassifier(classifierType, classifier);
+    displayDataInput(datasetDescription, getCanvasDataInput(), getTextDataInput(), classifier, network, rowsClassifier, classifierType);
+    document
+        .querySelector('#section-testdata .evaluate-testdata-button')
+        .addEventListener(
+            'click',
+            e => displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier));
+}
+
+function displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier) {
     displayAccuracy(
         rowsClassifier,
         datasetDescription,
         datasetDescription.splittedDataset.test,
-        () => {
-            displayTestingTableWithPredictions(rowsClassifier, classifierType, network, classifier, datasetDescription);
-            displayDataInput(datasetDescription, getCanvasDataInput(), getTextDataInput(), classifier, network, rowsClassifier, classifierType);
-        });
+        () => displayTestingTableWithPredictions(rowsClassifier, classifierType, network, classifier, datasetDescription));
 }
 
 function getCanvasDataInput() {
@@ -526,7 +532,7 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
     const network = createAndDisplayNetwork(datasetDescription, tree, nodeContentFactory);
     print_tree(tree, datasetDescription.attributeNames.all);
     configure_save_tree(tree);
-    display_accuracy_testingTable_dataInput(tree, ClassifierType.DECISION_TREE, datasetDescription, network);
+    displayDataInputSectionAndTestdataSectionOnClick(tree, ClassifierType.DECISION_TREE, datasetDescription, network);
 }
 
 function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowsClassifier, classifierType) {
