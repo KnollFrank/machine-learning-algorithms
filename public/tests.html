@@ -1891,6 +1891,23 @@
                     oneBasedEndIndexInclusiveOfChunk: 2
                 }],
                 "numItems: 2, maxNumChunks: 2");
+
+            assert.deepEqual(
+                splitItemsIntoChunks({
+                    numItems: 0,
+                    maxNumChunks: 4
+                }), [],
+                "numItems: 0, maxNumChunks: 4");
+
+            assert.deepEqual(
+                splitItemsIntoChunks({
+                    numItems: 1,
+                    maxNumChunks: 4
+                }), [{
+                    oneBasedStartIndexOfChunk: 1,
+                    oneBasedEndIndexInclusiveOfChunk: 1
+                }],
+                "numItems: 1, maxNumChunks: 4");
         });
 
         QUnit.test("should getMinOfArray", function (assert) {
@@ -2004,19 +2021,41 @@
 
         QUnit.test("center of mass of an image", function (assert) {
             assert.deepEqual(
-                getCenterOfMass({ pixels: [250, 250], width: 2, height: 1 }),
-                { x: 0.5, y: 0 });
+                getCenterOfMass({
+                    pixels: [250, 250],
+                    width: 2,
+                    height: 1
+                }), {
+                    x: 0.5,
+                    y: 0
+                });
 
             assert.deepEqual(
-                getCenterOfMass({ pixels: [250, 10], width: 2, height: 1 }),
-                { x: ((250 * 1 + 10 * 2) / (250 + 10)) - 1, y: 0 });
+                getCenterOfMass({
+                    pixels: [250, 10],
+                    width: 2,
+                    height: 1
+                }), {
+                    x: ((250 * 1 + 10 * 2) / (250 + 10)) - 1,
+                    y: 0
+                });
 
             assert.deepEqual(
-                getCenterOfMass({ pixels: [250, 250, 250, 250], width: 2, height: 2 }),
-                { x: 0.5, y: 0.5 });
+                getCenterOfMass({
+                    pixels: [250, 250, 250, 250],
+                    width: 2,
+                    height: 2
+                }), {
+                    x: 0.5,
+                    y: 0.5
+                });
 
             assert.deepEqual(
-                getCenterOfMass({ pixels: [0, 0], width: 2, height: 1 }),
+                getCenterOfMass({
+                    pixels: [0, 0],
+                    width: 2,
+                    height: 1
+                }),
                 null);
         });
     </script>

@@ -335,12 +335,15 @@ function fitKnnWorker(knnWorker, fitParams) {
 const createKnnClassifier =
     knnWorkers =>
     (rows, receivePredictionsForRows) => {
-        const chunksOfPredictions = [];
-        splitItemsIntoChunks({
-                numItems: rows.length,
-                maxNumChunks: knnWorkers.length
-            })
-            .forEach((chunk, i, chunks) => {
+        const chunks = splitItemsIntoChunks({
+            numItems: rows.length,
+            maxNumChunks: knnWorkers.length
+        });
+        if (chunks.length == 0) {
+            receivePredictionsForRows([]);
+        } else {
+            const chunksOfPredictions = [];
+            chunks.forEach((chunk, i, chunks) => {
                 predictKnnWorker(
                     knnWorkers[i],
                     getSlice(rows, chunk),
@@ -354,6 +357,7 @@ const createKnnClassifier =
                         }
                     });
             });
+        }
     };
 
 function getSlice(rows, chunk) {
