@@ -52,7 +52,7 @@ function imageData2Pixels(imageData) {
 function* iterateOverImageData(imageData) {
     for (let y = 0; y < imageData.height; y++) {
         for (let x = 0; x < imageData.width; x++) {
-            const i = y * imageData.width + x;
+            const i = getArrayIndexOfPoint({ x, y }, imageData.width);
             yield {
                 x: x,
                 y: y,
@@ -66,4 +66,8 @@ function* iterateOverImageData(imageData) {
             };
         }
     }
+}
+
+function getArrayIndexOfPoint(point, width) {
+    return point.y * width + point.x;
 }
