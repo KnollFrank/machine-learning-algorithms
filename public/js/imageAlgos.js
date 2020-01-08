@@ -5,20 +5,24 @@ function getCenterOfMass(image) {
     let centerOfMass = { x: 0, y: 0 };
     const origin = { x: -1, y: -1 };
 
-    for (let y = 0; y < image.height; y++) {
-        for (let x = 0; x < image.width; x++) {
-            const mass = getMassOfPointWithinImage(image, { x, y });
-            totalMass += mass;
-            centerOfMass = addPoints(centerOfMass, mulPoint(mass, subPoints({ x, y }, origin)));
-        }
+    for (const {point, color: mass} of iterateOverImage(image)) {
+        totalMass += mass;
+        centerOfMass = addPoints(centerOfMass, mulPoint(mass, subPoints(point, origin)));
     }
     centerOfMass = mulPoint(1 / totalMass, centerOfMass);
 
     return subPoints(centerOfMass, subPoints({ x: 0, y: 0 }, origin)); // == addPoints(centerOfMass, origin);
 }
 
-function getMassOfPointWithinImage(image, point) {
-    return image.pixels[getArrayIndexOfPoint(point, image.width)];
+function* iterateOverImage(image) {
+    for (let y = 0; y < image.height; y++) {
+        for (let x = 0; x < image.width; x++) {
+            yield {
+                point: { x: x, y: y },
+                color: image.pixels[getArrayIndexOfPoint({ x, y }, image.width)]
+            };
+        }
+    }
 }
 
 // FK-TODO: erzeuge eine Point-Klasse mit Methoden für *, -, +
