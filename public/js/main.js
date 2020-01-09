@@ -25,7 +25,7 @@ const changeEventListenerHolder4EnhancedSwitcher =
 const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
     KNN: 'KNN',
-    from: function (name) {
+    from: function(name) {
         name = name ? name.toUpperCase() : "";
         return [this.DECISION_TREE, this.KNN].includes(name) ? name : this.DECISION_TREE;
     }
@@ -57,7 +57,7 @@ function onSubmitDatasetForm(dataFile, classifierType) {
     Papa.parse(dataFile, {
         download: true,
         header: false,
-        complete: function (results) {
+        complete: function(results) {
             let datasetDescription = getDatasetDescription(dataFile.name, results.data);
             if (datasetDescription.isDigitDataset()) {
                 datasetDescription = transform(datasetDescription, getSelectedKernelWidthAndHeight());
@@ -104,7 +104,7 @@ function getDatasetDescription(fileName, dataset) {
             all: attributeNames
         },
         splittedDataset: train_test_split(dataset, 0.8),
-        isDigitDataset: function () {
+        isDigitDataset: function() {
             return isFileDigitDataset(this.fileName);
         }
     };
@@ -298,11 +298,11 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
     if (classifierType == ClassifierType.DECISION_TREE) {
         submitEventListenerHolder4decisionTreeForm.setEventListener(
             () =>
-                buildDecisionTreeClassifier({
-                    datasetDescription,
-                    max_depth: getInputValueById('max_depth'),
-                    min_size: getInputValueById('min_size')
-                }));
+            buildDecisionTreeClassifier({
+                datasetDescription,
+                max_depth: getInputValueById('max_depth'),
+                min_size: getInputValueById('min_size')
+            }));
     } else {
         submitEventListenerHolder4knnForm.setEventListener(
             () => buildKnnClassifier(datasetDescription, getInputValueById('knn-k'), knnWorkers));
@@ -338,28 +338,28 @@ function fitKnnWorker(knnWorker, fitParams) {
 
 const createKnnClassifier =
     knnWorkers =>
-        (rows, receivePredictionsForRows) => {
-            const chunks = splitItemsIntoChunks({
-                numItems: rows.length,
-                maxNumChunks: knnWorkers.length
+    (rows, receivePredictionsForRows) => {
+        const chunks = splitItemsIntoChunks({
+            numItems: rows.length,
+            maxNumChunks: knnWorkers.length
+        });
+        if (chunks.length == 0) {
+            receivePredictionsForRows([]);
+        } else {
+            const chunksOfPredictions = [];
+            chunks.forEach((chunk, i, chunks) => {
+                getKNearestNeighbors(
+                    knnWorkers[i],
+                    getSlice(rows, chunk),
+                    kNearestNeighborssWithPredictions => {
+                        chunksOfPredictions.push({ chunk, kNearestNeighborssWithPredictions });
+                        if (chunksOfPredictions.length == chunks.length) {
+                            receivePredictionsForRows(combineChunksOfPredictions(chunksOfPredictions));
+                        }
+                    });
             });
-            if (chunks.length == 0) {
-                receivePredictionsForRows([]);
-            } else {
-                const chunksOfPredictions = [];
-                chunks.forEach((chunk, i, chunks) => {
-                    getKNearestNeighbors(
-                        knnWorkers[i],
-                        getSlice(rows, chunk),
-                        kNearestNeighborssWithPredictions => {
-                            chunksOfPredictions.push({ chunk, kNearestNeighborssWithPredictions });
-                            if (chunksOfPredictions.length == chunks.length) {
-                                receivePredictionsForRows(combineChunksOfPredictions(chunksOfPredictions));
-                            }
-                        });
-                });
-            }
-        };
+        }
+    };
 
 function getSlice(rows, chunk) {
     const {
@@ -429,10 +429,10 @@ function buildDecisionTreeClassifier({
 }) {
     let gNetwork;
     build_tree_with_worker({
-        dataset: datasetDescription.splittedDataset.train,
-        max_depth: max_depth,
-        min_size: min_size
-    },
+            dataset: datasetDescription.splittedDataset.train,
+            max_depth: max_depth,
+            min_size: min_size
+        },
         ({
             type: type,
             value: value
@@ -475,10 +475,10 @@ function build_tree_with_worker({
     $('#progress, #subsection-decision-tree').fadeIn();
     createProgressElements('progress', splitterWorkers.length);
     new DecisionTreeBuilder(
-        max_depth,
-        min_size,
-        splitterWorkers,
-        createTreeListener(onmessage))
+            max_depth,
+            min_size,
+            splitterWorkers,
+            createTreeListener(onmessage))
         .build_tree(
             dataset,
             tree => onmessage({
@@ -577,7 +577,7 @@ function getRowsClassifier(classifierType, classifier) {
     switch (classifierType) {
         case ClassifierType.DECISION_TREE:
             return (rows, receivePredictionsForRows) => {
-                const predictions = rows.map(row => cache.get(row, () => predict(classifier, row).value));
+                const predictions = rows.map(row => cache.get(row, () => ({ prediction: predict(classifier, row).value })));
                 receivePredictionsForRows(predictions);
             };
         case ClassifierType.KNN:
@@ -605,8 +605,8 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             datasetDescription,
             tree,
             changeEventListenerHolder4EnhancedSwitcher.getHtmlElement().checked ?
-                new EnhancedNodeContentFactory() :
-                new SimpleNodeContentFactory());
+            new EnhancedNodeContentFactory() :
+            new SimpleNodeContentFactory());
     changeEventListenerHolder4EnhancedSwitcher.setEventListener(__onDecisionTreeChanged);
     __onDecisionTreeChanged();
 }
@@ -682,10 +682,10 @@ function computeAccuracy(rowsClassifier, datasetDescription, dataset, receiveAcc
     rowsClassifier(
         dataset.map(row => getIndependentValsFromRow(row, datasetDescription)),
         kNearestNeighborssWithPredictions =>
-            receiveAccuracy(
-                accuracy_percentage(
-                    actualClassVals(dataset),
-                    getPredictions(kNearestNeighborssWithPredictions)))
+        receiveAccuracy(
+            accuracy_percentage(
+                actualClassVals(dataset),
+                getPredictions(kNearestNeighborssWithPredictions)))
     );
 }
 
@@ -714,8 +714,8 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
         $('#container-testDataSet').fadeOut();
         const onDigitClickedReceiveRow =
             classifierType == ClassifierType.DECISION_TREE ?
-                row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
-                row => { };
+            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+            row => {};
         rowsClassifier(
             datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
             kNearestNeighborssWithPredictions => {
@@ -738,8 +738,8 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
         $('#container-testDataSet').fadeIn();
         const onRowClicked =
             classifierType == ClassifierType.DECISION_TREE ?
-                row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
-                row => { };
+            row => predictRowAndHighlightInNetwork(row, tree, network, datasetDescription) :
+            row => {};
         rowsClassifier(
             datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
             kNearestNeighborssWithPredictions => {
@@ -784,7 +784,7 @@ function createTreeListener(onmessage) {
                 value: rootNode
             }));
         },
-        onStartSplit: nodeId => { },
+        onStartSplit: nodeId => {},
         onInnerSplit: ({
             workerIndex,
             nodeId,
@@ -804,6 +804,6 @@ function createTreeListener(onmessage) {
                 }
             });
         },
-        onEndSplit: nodeId => { }
+        onEndSplit: nodeId => {}
     }
 }

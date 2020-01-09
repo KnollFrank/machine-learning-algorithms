@@ -76,5 +76,3 @@ FK-TODO:
 - Bei knn die k nächsten Nachbardigits anzeigen (, um die Ähnlichkeit zur gezeichneten Digit zu erkennen).
   dazu anzuzeigender Text: "Deine Ziffer sieht den folgenden mir bekannten Ziffern am ähnlichsten, welche mehrheitlich eine ... darstellen."
 
-FK-FIXME: bei Decision-Tree und digitdataset und normalem Dataset wird unter "4. Testdaten" bei den digits undefined als
-          Unterschrift angezeigt und in der Tabelle fast nur rote Zeilen.
