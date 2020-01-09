@@ -55,7 +55,6 @@ mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 97%
 mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 96%
 
 mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 81%
-mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 
 
 FK-TODO:
 - k-d tree:
@@ -75,7 +74,4 @@ FK-TODO:
   dazu anzuzeigender Text: "Deine Ziffer sieht den folgenden mir bekannten Ziffern am ähnlichsten, welche mehrheitlich eine ... darstellen."
 - große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging)
   oder einfacher nur eine bestimmte Anzahl von Einträgen anzeigen und mit drei Punkten (...) andeuten, dass es noch mehrere Einträge gibt.
-- TODO-A: Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
-
-Was zu tun ist, um den großen MNIST-Datensatz mnist_train_60000.csv + mnist_test_10000.csv im Browser effektiv auszuwerten:
-3. siehe TODO-A
+- Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
