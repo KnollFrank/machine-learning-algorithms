@@ -7,6 +7,7 @@ const submitEventListenerHolder4decisionTreeForm = new SubmitEventListenerHolder
 const submitEventListenerHolder4knnForm = new SubmitEventListenerHolder();
 const submitEventListenerHolder4datasetForm = new SubmitEventListenerHolder();
 const clickEventListenerHolder4EvaluateTestdataButton = new EventListenerHolder('click');
+const changeEventListenerHolder4EnhancedSwitcher = new EventListenerHolder('change');
 
 const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
@@ -599,7 +600,7 @@ function onDecisionTreeChanged(datasetDescription, tree) {
             switcher.checked ?
                 new EnhancedNodeContentFactory() :
                 new SimpleNodeContentFactory());
-    switcher.addEventListener('change', __onDecisionTreeChanged);
+    changeEventListenerHolder4EnhancedSwitcher.setEventListener(switcher, __onDecisionTreeChanged);
     __onDecisionTreeChanged();
 }
 
