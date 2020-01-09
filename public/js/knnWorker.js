@@ -12,7 +12,7 @@ onmessage = e => {
     switch (type) {
         case 'fit': {
             const { X, y, k } = params;
-            knn = new KNNUsingKDTree(k);
+            knn = new KNN(k);
             knn.fit(X, y);
             break;
         }

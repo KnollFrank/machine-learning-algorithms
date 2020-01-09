@@ -26,11 +26,26 @@ class KNNUsingKDTree {
         this.kdTree = new KDTree(points, distance);
     }
 
+    // FK-TODO: DRY with getKNearestNeighbors()
     predict(x) {
         const nearestPoints = this.kdTree.nearest(x, this.k);
         const classIndex = nearestPoints[0][0].length - 1;
         const ys = nearestPoints.map(nearestPoint => nearestPoint[0][classIndex]);
         return getElementWithHighestOccurence(ys);
+    }
+
+    // FK-FIXME: This is buggy, see tests.xml, "getKNearestNeighbors, k=3"
+    getKNearestNeighbors(x) {
+        const nearestPoints = this.kdTree.nearest(x, this.k);
+        const classIndex = nearestPoints[0][0].length - 1;
+        const ys = nearestPoints.map(nearestPoint => nearestPoint[0][classIndex]);
+        return nearestPoints.map(
+            ([row, distance]) =>
+                ({
+                    x: row.slice(0, classIndex),
+                    y: row[classIndex],
+                    distance: Math.sqrt(distance)
+                }));
     }
 }
 
@@ -45,6 +60,7 @@ class KNN {
         this.y = y;
     }
 
+    // FK-TODO: DRY with getKNearestNeighbors()
     predict(x) {
         const distancesX2x = [];
         for (let i = 0; i < this.X.length; i++) {
@@ -53,6 +69,22 @@ class KNN {
         distancesX2x.sort((distance1, distance2) => distance1.distance - distance2.distance);
         const k_nearest_y2x = distancesX2x.slice(0, this.k).map(({ index }) => this.y[index]);
         return getElementWithHighestOccurence(k_nearest_y2x);
+    }
+
+    getKNearestNeighbors(x) {
+        const distancesX2x = [];
+        for (let i = 0; i < this.X.length; i++) {
+            distancesX2x.push({ index: i, distance: getSquaredEuclideanDistance(this.X[i], x) });
+        }
+        distancesX2x.sort((distance1, distance2) => distance1.distance - distance2.distance);
+        const k_nearest = distancesX2x.slice(0, this.k);
+        return k_nearest.map(
+            ({ index, distance }) =>
+                ({
+                    x: this.X[index],
+                    y: this.y[index],
+                    distance: Math.sqrt(distance)
+                }));
     }
 }
 

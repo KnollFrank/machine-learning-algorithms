@@ -45,7 +45,7 @@ mnist_test_1000.csv, k = 3, kernelWidthAndHeight = 4: Accuracy: 84%
 mnist_test_1000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 68%
 
 mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 92%
-mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 92% (geeignet für die Klassifizierung gemalter Ziffern)
+mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 93% (geeignet für die Klassifizierung gemalter Ziffern)
 mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 4: Accuracy: 91% 
 mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 73%
 
@@ -70,8 +70,8 @@ FK-TODO:
   + die Ziffer in eine 20x20 pixel box malen lassen
   + the images were centered in a 28x28 image by computing the center of mass of the pixels,
     and translating the image so as to position this point at the center of the 28x28 field.  
-- Bei knn die k nächsten Nachbardigits anzeigen (, um die Ähnlichkeit zur gezeichneten Digit zu erkennen).
-  dazu anzuzeigender Text: "Deine Ziffer sieht den folgenden mir bekannten Ziffern am ähnlichsten, welche mehrheitlich eine ... darstellen."
 - große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging)
   oder einfacher nur eine bestimmte Anzahl von Einträgen anzeigen und mit drei Punkten (...) andeuten, dass es noch mehrere Einträge gibt.
 - Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
+- Bei knn die k nächsten Nachbardigits anzeigen (, um die Ähnlichkeit zur gezeichneten Digit zu erkennen).
+  dazu anzuzeigender Text: "Deine Ziffer sieht den folgenden mir bekannten Ziffern am ähnlichsten, welche mehrheitlich eine ... darstellen."

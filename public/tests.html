@@ -2019,6 +2019,52 @@
             checkKNN(k => new KNNUsingKDTree(k), 'KNNUsingKDTree: ');
         });
 
+        QUnit.test("getKNearestNeighbors, k=3", function (assert) {
+            function checkKNN(KNNFactory, testDescr) {
+                // Given
+                //      /--------- radius = 2
+                //     /     B
+                //    /    ----- radius = 1
+                //   /    /  A
+                //  /    /
+                // | B  | B  X
+                //  \    \  
+                //   \    \  A
+                //    \    ----- radius = 1
+                //     \ --------- radius = 2
+                const X = [
+                    [0, 0.5],
+                    [0, -0.5],
+                    [-0.5, 0],
+                    [-1.5, 0],
+                    [0, 1.5]
+                ];
+                const y = ['A', 'A', 'B', 'B', 'B'];
+
+                {
+                    // Given
+                    const knn = KNNFactory(3);
+
+                    // When
+                    knn.fit(X, y);
+
+                    // Then
+                    const neighbors = knn.getKNearestNeighbors([0, 0]);
+                    assert.deepEqual(
+                        neighbors,
+                        [
+                            { x: [0, 0.5], y: 'A', distance: 0.5 },
+                            { x: [0, -0.5], y: 'A', distance: 0.5 },
+                            { x: [-0.5, 0], y: 'B', distance: 0.5 }
+                        ],
+                        testDescr + "getKNearestNeighbors: A, A, B => A");
+                }
+            }
+
+            checkKNN(k => new KNN(k), 'KNN: ');
+            // checkKNN(k => new KNNUsingKDTree(k), 'KNNUsingKDTree: ');
+        });
+
         QUnit.test("center of mass of an image", function (assert) {
             assert.deepEqual(
                 getCenterOfMass({
