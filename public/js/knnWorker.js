@@ -16,10 +16,10 @@ onmessage = e => {
             knn.fit(X, y);
             break;
         }
-        case 'predict': {
+        case 'getKNearestNeighbors': {
             const X = params.X
-            const predictions = X.map(x => knn.predict(x));
-            postMessage(predictions);
+            const kNearestNeighborss = X.map(x => knn.getKNearestNeighbors(x));
+            postMessage(kNearestNeighborss);
             break;
         }
     }

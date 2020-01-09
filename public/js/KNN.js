@@ -61,8 +61,7 @@ class KNN {
     }
 
     predict(x) {
-        const k_nearest_y2x = this.getKNearestNeighbors(x).map(({ y }) => y);
-        return getElementWithHighestOccurence(k_nearest_y2x);
+        return getPredictionFromKNearestNeighbors(this.getKNearestNeighbors(x));
     }
 
     getKNearestNeighbors(x) {
@@ -86,4 +85,9 @@ function getSquaredEuclideanDistance(pointA, pointB) {
     return zip(pointA, pointB)
         .map(([coordA, coordB]) => (coordA - coordB) ** 2)
         .sum();
+}
+
+function getPredictionFromKNearestNeighbors(kNearestNeighbors) {
+    const k_nearest_y2x = kNearestNeighbors.map(({ y }) => y);
+    return getElementWithHighestOccurence(k_nearest_y2x);
 }
