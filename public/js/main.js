@@ -392,14 +392,16 @@ function getKNearestNeighbors(knnWorker, X, receivePredictions) {
 
     knnWorker.onmessage = event => {
         const kNearestNeighborss = event.data;
-        kNearestNeighborss.forEach(addPrediction);
-        return receivePredictions(kNearestNeighborss);
+        const kNearestNeighborssWithPredictions = kNearestNeighborss.map(addPrediction);
+        return receivePredictions(kNearestNeighborssWithPredictions);
     };
 }
 
 function addPrediction(kNearestNeighbors) {
-    kNearestNeighbors.prediction = getPredictionFromKNearestNeighbors(kNearestNeighbors);
-    return kNearestNeighbors;
+    return {
+        kNearestNeighbors: kNearestNeighbors,
+        prediction: getPredictionFromKNearestNeighbors(kNearestNeighbors)
+    };
 }
 
 function combineChunksOfPredictions(chunksOfPredictions) {

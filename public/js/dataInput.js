@@ -128,7 +128,11 @@ function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier
     } else {
         rowsClassifier(
             [pixels],
-            ([kNearestNeighborsWithPrediction]) => setPrediction(kNearestNeighborsWithPrediction.prediction));
+            ([kNearestNeighborsWithPrediction]) => {
+                setPrediction(kNearestNeighborsWithPrediction.prediction);
+                document.querySelector('#k-nearest-neighbors-section .prediction-results').textContent =
+                    kNearestNeighborsWithPrediction.kNearestNeighbors.map(({ y }) => y).join(', ');
+            });
     }
 }
 
