@@ -10,7 +10,10 @@ class DisplayDigitDatasetTemplate {
 
     displayDigitDataset(digitDataset, digitsContainerId) {
         const digitsContainer = document.querySelector('#' + digitsContainerId);
-        digitsContainer.innerHTML = '';
+        // FK-TODO: extract method
+        while (digitsContainer.firstChild) {
+            digitsContainer.removeChild(digitsContainer.firstChild);
+        }
         for (let i = 0; i < digitDataset.length; i++) {
             const digit = new Digit(this.imageWidth, this.imageHeight);
             digit.setFigcaption(...this._getFigcaption(digitDataset[i], i));

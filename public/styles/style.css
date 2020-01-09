@@ -66,6 +66,8 @@ h1 {
     background-color: red !important;
 }
 
+/* FK-TODO: daraus eine Klasse machen, z.B.: displays-digits */
+#container-k-nearest-digits,
 #container-digits-train,
 #container-digits-test {
     display: flex;

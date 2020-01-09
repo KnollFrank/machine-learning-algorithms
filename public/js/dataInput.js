@@ -130,10 +130,12 @@ function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier
             [pixels],
             ([kNearestNeighborsWithPrediction]) => {
                 setPrediction(kNearestNeighborsWithPrediction.prediction);
-                // FK-TODO: remove text and refactor
-                document.querySelector('#k-nearest-neighbors-section .prediction-results').textContent =
-                    kNearestNeighborsWithPrediction.kNearestNeighbors.map(({ y }) => y).join(', ');
-                displayDigitDataset(kNearestNeighborsWithPrediction.kNearestNeighbors.map(({ x, y }) => x.concat(y)), imageWidth, imageHeight, 'container-k-nearest-digits');
+                displayDigitDataset(
+                    // FK-TODO: DRY: dieses Hinzufügen des y-Wertes wird an mehreren Stellen vorgenommen
+                    kNearestNeighborsWithPrediction.kNearestNeighbors.map(({ x, y }) => x.concat(y)),
+                    imageWidth,
+                    imageHeight,
+                    'container-k-nearest-digits');
             });
     }
 }
