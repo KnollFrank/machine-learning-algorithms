@@ -67,28 +67,42 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
         }
     }
 
-    $(canvasBig).on('mousedown', function (e) {
-        last_mouse = mouse = getMousePos(canvasBig, e);
-        mousedown = true;
-    });
+    $(canvasBig)
+        .off('mousedown')
+        .on('mousedown',
+            function (e) {
+                last_mouse = mouse = getMousePos(canvasBig, e);
+                mousedown = true;
+            });
 
-    $(canvasBig).on('mouseup', function (e) {
-        mousedown = false;
-        onDigitDrawn(canvasBig, canvasSmall);
-    });
+    $(canvasBig)
+        .off('mouseup')
+        .on('mouseup',
+            function (e) {
+                mousedown = false;
+                console.log('mouseup for canvasBig');
+                onDigitDrawn(canvasBig, canvasSmall);
+            });
 
-    $(canvasBig).on('mousemove', function (e) {
-        mouse = getMousePos(canvasBig, e);
-        if (mousedown) {
-            ctxBig.beginPath();
-            ctxBig.moveTo(last_mouse.x, last_mouse.y);
-            ctxBig.lineTo(mouse.x, mouse.y);
-            ctxBig.stroke();
-        }
-        last_mouse = mouse;
-    });
+    $(canvasBig)
+        .off('mousemove')
+        .on('mousemove',
+            function (e) {
+                mouse = getMousePos(canvasBig, e);
+                if (mousedown) {
+                    ctxBig.beginPath();
+                    ctxBig.moveTo(last_mouse.x, last_mouse.y);
+                    ctxBig.lineTo(mouse.x, mouse.y);
+                    ctxBig.stroke();
+                }
+                last_mouse = mouse;
+            });
 
-    newPredictionBtn.addEventListener("click", () => prepareNewPrediction(canvasBig, canvasSmall));
+    $(newPredictionBtn)
+        .off('click')
+        .on('click',
+            () => prepareNewPrediction(canvasBig, canvasSmall));
+
     prepareNewPrediction(canvasBig, canvasSmall);
 }
 
