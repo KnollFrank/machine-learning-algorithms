@@ -28,9 +28,11 @@ function displayCanvasDataInput(rootElement, tree, network, rowsClassifier, clas
     if (classifierType == ClassifierType.DECISION_TREE) {
         rootElement.classList.add('decision-tree');
         rootElement.classList.remove('knn');
+        $('#k-nearest-neighbors-section').fadeOut();
     } else {
         rootElement.classList.add('knn');
         rootElement.classList.remove('decision-tree');
+        $('#k-nearest-neighbors-section').fadIn();
     }
     const canvasBig = rootElement.querySelector('#digit-canvas-big');
     const canvasSmall = document.querySelector('#digit-canvas-small');

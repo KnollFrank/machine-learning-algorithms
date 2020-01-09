@@ -152,7 +152,6 @@ function transform(datasetDescription, kernelWidthAndHeight) {
         imageHeight: someTransformedImage.height
     };
 
-    console.log('transformed datasetDescription:', transformedDatasetDescription);
     return transformedDatasetDescription;
 }
 

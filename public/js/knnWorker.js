@@ -7,20 +7,21 @@ importScripts('KNN.js');
 let knn;
 
 onmessage = e => {
-    console.log('Worker for KNN received message:', e.data);
     const { type, params } = e.data;
     switch (type) {
-        case 'fit': {
-            const { X, y, k } = params;
-            knn = new KNN(k);
-            knn.fit(X, y);
-            break;
-        }
-        case 'getKNearestNeighbors': {
-            const X = params.X
-            const kNearestNeighborss = X.map(x => knn.getKNearestNeighbors(x));
-            postMessage(kNearestNeighborss);
-            break;
-        }
+        case 'fit':
+            {
+                const { X, y, k } = params;
+                knn = new KNN(k);
+                knn.fit(X, y);
+                break;
+            }
+        case 'getKNearestNeighbors':
+            {
+                const X = params.X
+                const kNearestNeighborss = X.map(x => knn.getKNearestNeighbors(x));
+                postMessage(kNearestNeighborss);
+                break;
+            }
     }
 }
