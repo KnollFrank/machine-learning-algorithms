@@ -40,7 +40,7 @@ function displayCanvasDataInput(rootElement, tree, network, rowsClassifier, clas
     initializeDrawTool(
         canvasBig,
         canvasSmall,
-        rootElement.querySelector("#new-prediction"),
+        document.querySelector("#new-prediction"),
         (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier, classifierType, imageWidth, imageHeight));
 }
 
@@ -70,7 +70,7 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
     $(canvasBig)
         .off('mousedown')
         .on('mousedown',
-            function (e) {
+            function(e) {
                 last_mouse = mouse = getMousePos(canvasBig, e);
                 mousedown = true;
             });
@@ -78,7 +78,7 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
     $(canvasBig)
         .off('mouseup')
         .on('mouseup',
-            function (e) {
+            function(e) {
                 mousedown = false;
                 onDigitDrawn(canvasBig, canvasSmall);
             });
@@ -86,7 +86,7 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
     $(canvasBig)
         .off('mousemove')
         .on('mousemove',
-            function (e) {
+            function(e) {
                 mouse = getMousePos(canvasBig, e);
                 if (mousedown) {
                     ctxBig.beginPath();
@@ -165,23 +165,20 @@ function getPixels(canvasBig, canvasSmall) {
 function fitSrc2Dst({ srcCanvas, dstCanvas }) {
     const imageData =
         srcCanvas
-            .getContext('2d')
-            .getImageData(0, 0, srcCanvas.width, srcCanvas.height);
+        .getContext('2d')
+        .getImageData(0, 0, srcCanvas.width, srcCanvas.height);
 
-    const center = getCenterOfMassOfImageOrDefault(
-        {
-            imageData: imageData,
-            default: { x: srcCanvas.width / 2, y: srcCanvas.height / 2 }
-        });
+    const center = getCenterOfMassOfImageOrDefault({
+        imageData: imageData,
+        default: { x: srcCanvas.width / 2, y: srcCanvas.height / 2 }
+    });
 
     const newCanvas = $("<canvas>")
         .attr("width", imageData.width)
         .attr("height", imageData.height)[0];
 
     newCanvas.getContext('2d').putImageData(
-        imageData,
-        -(center.x - srcCanvas.width / 2),
-        -(center.y - srcCanvas.height / 2));
+        imageData, -(center.x - srcCanvas.width / 2), -(center.y - srcCanvas.height / 2));
 
     // FK-TODO: refactor
     const originalImageWidthAndHeight = 28;
@@ -196,12 +193,11 @@ function fitSrc2Dst({ srcCanvas, dstCanvas }) {
 }
 
 function getCenterOfMassOfImageOrDefault({ imageData, default: defaultValue }) {
-    const centerOfMass = getCenterOfMass(
-        {
-            pixels: imageData2Pixels(imageData),
-            width: imageData.width,
-            height: imageData.height
-        });
+    const centerOfMass = getCenterOfMass({
+        pixels: imageData2Pixels(imageData),
+        width: imageData.width,
+        height: imageData.height
+    });
     return centerOfMass || defaultValue;
 }
 
