@@ -126,7 +126,9 @@ function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier
         highlightPredictionInNetwork(prediction, network);
         setPrediction(prediction.value);
     } else {
-        rowsClassifier([pixels], ([prediction]) => setPrediction(prediction));
+        rowsClassifier(
+            [pixels],
+            ([kNearestNeighborsWithPrediction]) => setPrediction(kNearestNeighborsWithPrediction.prediction));
     }
 }
 

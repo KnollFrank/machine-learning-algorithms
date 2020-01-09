@@ -352,11 +352,7 @@ const createKnnClassifier =
                         knnWorkers[i],
                         getSlice(rows, chunk),
                         kNearestNeighborssWithPredictions => {
-                            const predictions = kNearestNeighborssWithPredictions.map(({ prediction }) => prediction);
-                            chunksOfPredictions.push({
-                                chunk,
-                                predictions
-                            });
+                            chunksOfPredictions.push({ chunk, kNearestNeighborssWithPredictions });
                             if (chunksOfPredictions.length == chunks.length) {
                                 receivePredictionsForRows(combineChunksOfPredictions(chunksOfPredictions));
                             }
@@ -420,7 +416,7 @@ function copyChunkOfPredictions2Predictions(chunkOfPredictions, predictions) {
         zeroBasedEndIndexExclusiveOfChunk
     } = asJsStartAndEndIndexes(chunkOfPredictions.chunk);
     for (let i = zeroBasedStartIndexOfChunk; i < zeroBasedEndIndexExclusiveOfChunk; i++) {
-        predictions[i] = chunkOfPredictions.predictions[i - zeroBasedStartIndexOfChunk];
+        predictions[i] = chunkOfPredictions.kNearestNeighborssWithPredictions[i - zeroBasedStartIndexOfChunk];
     }
 }
 
@@ -683,12 +679,16 @@ function displayAccuracy(rowsClassifier, datasetDescription, dataset, k) {
 function computeAccuracy(rowsClassifier, datasetDescription, dataset, receiveAccuracy) {
     rowsClassifier(
         dataset.map(row => getIndependentValsFromRow(row, datasetDescription)),
-        predictions =>
+        kNearestNeighborssWithPredictions =>
             receiveAccuracy(
                 accuracy_percentage(
                     actualClassVals(dataset),
-                    predictions))
+                    getPredictions(kNearestNeighborssWithPredictions)))
     );
+}
+
+function getPredictions(kNearestNeighborssWithPredictions) {
+    return kNearestNeighborssWithPredictions.map(({ prediction }) => prediction);
 }
 
 function displayTestingTableWithPredictions(rowsClassifier, classifierType, network, tree, datasetDescription) {
@@ -716,7 +716,7 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
                 row => { };
         rowsClassifier(
             datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
-            predictions => {
+            kNearestNeighborssWithPredictions => {
                 const maxDigits2Display = 500;
                 display_maxDigits2Display_totalNumberOfDigits({
                     root: document.querySelector('#section-testdata'),
@@ -725,7 +725,7 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
                 });
                 displayDigitTestDataset({
                     datasetDescription: datasetDescription,
-                    predictions: predictions,
+                    predictions: getPredictions(kNearestNeighborssWithPredictions),
                     digitsContainerId: 'container-digits-test',
                     onDigitClickedReceiveRow: onDigitClickedReceiveRow,
                     maxDigits2Display: maxDigits2Display
@@ -740,11 +740,11 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
                 row => { };
         rowsClassifier(
             datasetDescription.splittedDataset.test.map(row => getIndependentValsFromRow(row, datasetDescription)),
-            predictions => {
+            kNearestNeighborssWithPredictions => {
                 displayDatasetAsTable({
                     tableContainer: $('#container-testDataSet'),
                     attributeNames: addPredictionAttribute(datasetDescription.attributeNames.all),
-                    dataset: addPredictions2Rows(datasetDescription.splittedDataset.test, predictions),
+                    dataset: addPredictions2Rows(datasetDescription.splittedDataset.test, getPredictions(kNearestNeighborssWithPredictions)),
                     createdRow: markRowIfItsPredictionIsWrong,
                     onRowClicked: onRowClicked
                 });
