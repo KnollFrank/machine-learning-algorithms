@@ -305,12 +305,7 @@ function build_classifier_onSubmit(datasetDescription, classifierType) {
                 }));
     } else {
         submitEventListenerHolder4knnForm.setEventListener(
-            () => {
-                const k = getInputValueById('knn-k');
-                document.querySelector('#section-KNN h2').textContent = `2. ${k} nächste Nachbarn`;
-                buildKnnClassifier(datasetDescription, k, knnWorkers);
-            }
-        );
+            () => buildKnnClassifier(datasetDescription, getInputValueById('knn-k'), knnWorkers));
     }
 }
 
