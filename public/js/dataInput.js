@@ -107,6 +107,7 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
 
 function prepareNewPrediction(canvasBig, canvasSmall) {
     clearCanvases(canvasBig, canvasSmall);
+    document.querySelector('#container-k-nearest-digits').innerHTML = '';
     setPrediction('');
 }
 
