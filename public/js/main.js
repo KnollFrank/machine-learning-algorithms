@@ -621,10 +621,12 @@ function _onDecisionTreeChanged(datasetDescription, tree, nodeContentFactory) {
 function displayDataInput(datasetDescription, canvasDataInput, textDataInput, tree, network, rowsClassifier, classifierType) {
     if (datasetDescription.isDigitDataset()) {
         $(canvasDataInput).show();
+        $('#new-prediction').show();
         $(textDataInput).hide();
         displayCanvasDataInput(canvasDataInput, tree, network, rowsClassifier, classifierType, datasetDescription.imageWidth, datasetDescription.imageHeight);
     } else {
         $(canvasDataInput).hide();
+        $('#new-prediction').hide();
         $(textDataInput).show();
         displayTextDataInput(textDataInput, datasetDescription.attributeNames.X, tree, network, rowsClassifier, classifierType);
     }

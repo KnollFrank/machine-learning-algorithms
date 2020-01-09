@@ -18,7 +18,7 @@ function displayTextDataInput(rootElement, attributeNames, tree, network, rowsCl
                 highlightPredictionInNetwork(prediction, network);
                 setPrediction(prediction.value);
             } else {
-                rowsClassifier([getInputValuesByName(attributeNames)], ([prediction]) => setPrediction(prediction));
+                rowsClassifier([getInputValuesByName(attributeNames)], ([{ prediction }]) => setPrediction(prediction));
             }
             return false;
         });
@@ -32,7 +32,7 @@ function displayCanvasDataInput(rootElement, tree, network, rowsClassifier, clas
     } else {
         rootElement.classList.add('knn');
         rootElement.classList.remove('decision-tree');
-        $('#k-nearest-neighbors-section').fadIn();
+        $('#k-nearest-neighbors-section').fadeIn();
     }
     const canvasBig = rootElement.querySelector('#digit-canvas-big');
     const canvasSmall = document.querySelector('#digit-canvas-small');
