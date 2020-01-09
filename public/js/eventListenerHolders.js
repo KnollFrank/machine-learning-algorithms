@@ -19,17 +19,24 @@ class SubmitEventListenerHolder {
 
 class EventListenerHolder {
 
-    constructor(type) {
+    constructor(type, htmlElementProvider) {
         this.type = type;
+        this.htmlElementProvider = htmlElementProvider;
         this._eventListener = e => {
             return this.eventListener(e);
         }
     }
 
-    // FK-TODO: das htmlElement in einen Provider verpackt im Konstruktor übergeben
-    setEventListener(htmlElement, eventListener) {
-        htmlElement.removeEventListener(this.type, this._eventListener);
+    setEventListener(eventListener) {
+        this.getHtmlElement().removeEventListener(this.type, this._eventListener);
         this.eventListener = eventListener;
-        htmlElement.addEventListener(this.type, this._eventListener);
+        this.getHtmlElement().addEventListener(this.type, this._eventListener);
+    }
+
+    getHtmlElement() {
+        if (!this.htmlElement) {
+            this.htmlElement = this.htmlElementProvider();
+        }
+        return this.htmlElement;
     }
 }

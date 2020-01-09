@@ -6,8 +6,14 @@
 const submitEventListenerHolder4decisionTreeForm = new SubmitEventListenerHolder();
 const submitEventListenerHolder4knnForm = new SubmitEventListenerHolder();
 const submitEventListenerHolder4datasetForm = new SubmitEventListenerHolder();
-const clickEventListenerHolder4EvaluateTestdataButton = new EventListenerHolder('click');
-const changeEventListenerHolder4EnhancedSwitcher = new EventListenerHolder('change');
+const clickEventListenerHolder4EvaluateTestdataButton =
+    new EventListenerHolder(
+        'click',
+        () => document.querySelector('#section-testdata .evaluate-testdata-button'));
+const changeEventListenerHolder4EnhancedSwitcher =
+    new EventListenerHolder(
+        'change',
+        () => document.querySelector('#decisionTreeNetwork-enhanced-switcher input[type=checkbox]'));
 
 const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
@@ -539,10 +545,7 @@ function displayDataInputSectionAndTestdataSectionOnClick(classifier, classifier
     $('#accuracy-panel, #testdata-panel').fadeOut();
     const rowsClassifier = getRowsClassifier(classifierType, classifier);
     displayDataInput(datasetDescription, getCanvasDataInput(), getTextDataInput(), classifier, network, rowsClassifier, classifierType);
-    clickEventListenerHolder4EvaluateTestdataButton.setEventListener(
-        document.querySelector('#section-testdata .evaluate-testdata-button'),
-        () => displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier)
-    );
+    clickEventListenerHolder4EvaluateTestdataButton.setEventListener(() => displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier));
 }
 
 function displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier) {
@@ -592,15 +595,14 @@ function getRowsClassifier(classifierType, classifier) {
 }
 
 function onDecisionTreeChanged(datasetDescription, tree) {
-    const switcher = document.querySelector('#decisionTreeNetwork-enhanced-switcher input[type=checkbox]');
     const __onDecisionTreeChanged = () =>
         _onDecisionTreeChanged(
             datasetDescription,
             tree,
-            switcher.checked ?
+            changeEventListenerHolder4EnhancedSwitcher.getHtmlElement().checked ?
                 new EnhancedNodeContentFactory() :
                 new SimpleNodeContentFactory());
-    changeEventListenerHolder4EnhancedSwitcher.setEventListener(switcher, __onDecisionTreeChanged);
+    changeEventListenerHolder4EnhancedSwitcher.setEventListener(__onDecisionTreeChanged);
     __onDecisionTreeChanged();
 }
 
