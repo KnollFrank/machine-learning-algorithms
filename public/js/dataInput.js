@@ -41,7 +41,7 @@ function displayCanvasDataInput(rootElement, tree, network, rowsClassifier, clas
         canvasBig,
         canvasSmall,
         rootElement.querySelector("#new-prediction"),
-        (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier, classifierType));
+        (canvasBig, canvasSmall) => predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier, classifierType, imageWidth, imageHeight));
 }
 
 function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDrawn) {
@@ -119,7 +119,7 @@ function clearCanvas(canvas) {
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
-function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier, classifierType) {
+function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier, classifierType, imageWidth, imageHeight) {
     const pixels = getPixels(canvasBig, canvasSmall);
     if (classifierType == ClassifierType.DECISION_TREE) {
         const prediction = predict(tree, pixels);
@@ -130,8 +130,10 @@ function predictDrawnDigit(canvasBig, canvasSmall, tree, network, rowsClassifier
             [pixels],
             ([kNearestNeighborsWithPrediction]) => {
                 setPrediction(kNearestNeighborsWithPrediction.prediction);
+                // FK-TODO: remove text and refactor
                 document.querySelector('#k-nearest-neighbors-section .prediction-results').textContent =
                     kNearestNeighborsWithPrediction.kNearestNeighbors.map(({ y }) => y).join(', ');
+                displayDigitDataset(kNearestNeighborsWithPrediction.kNearestNeighbors.map(({ x, y }) => x.concat(y)), imageWidth, imageHeight, 'container-k-nearest-digits');
             });
     }
 }

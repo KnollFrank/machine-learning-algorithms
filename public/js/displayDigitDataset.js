@@ -28,7 +28,7 @@ class DisplayDigitDatasetTemplate {
 class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
 
     constructor(imageWidth, imageHeight) {
-        super(row => {}, imageWidth, imageHeight);
+        super(row => { }, imageWidth, imageHeight);
     }
 
     _getFigcaption(row) {
@@ -41,6 +41,11 @@ function displayDigitTrainDataset(datasetDescription, digitsContainerId, maxDigi
         .displayDigitDataset(
             datasetDescription.splittedDataset.train.slice(0, maxDigits2Display),
             digitsContainerId);
+}
+
+// FK-TODO: refactor
+function displayDigitDataset(dataset, imageWidth, imageHeight, digitsContainerId) {
+    new DisplayDigitTrainDataset(imageWidth, imageHeight).displayDigitDataset(dataset, digitsContainerId);
 }
 
 class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
