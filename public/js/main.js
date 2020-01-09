@@ -351,9 +351,8 @@ const createKnnClassifier =
                     getKNearestNeighbors(
                         knnWorkers[i],
                         getSlice(rows, chunk),
-                        kNearestNeighborss => {
-                            console.log('kNearestNeighborss:', kNearestNeighborss);
-                            const predictions = kNearestNeighborss.map(getPredictionFromKNearestNeighbors);
+                        kNearestNeighborssWithPredictions => {
+                            const predictions = kNearestNeighborssWithPredictions.map(({ prediction }) => prediction);
                             chunksOfPredictions.push({
                                 chunk,
                                 predictions
@@ -394,7 +393,17 @@ function getKNearestNeighbors(knnWorker, X, receivePredictions) {
             X: X
         }
     });
-    knnWorker.onmessage = event => receivePredictions(event.data);
+
+    knnWorker.onmessage = event => {
+        const kNearestNeighborss = event.data;
+        kNearestNeighborss.forEach(addPrediction);
+        return receivePredictions(kNearestNeighborss);
+    };
+}
+
+function addPrediction(kNearestNeighbors) {
+    kNearestNeighbors.prediction = getPredictionFromKNearestNeighbors(kNearestNeighbors);
+    return kNearestNeighbors;
 }
 
 function combineChunksOfPredictions(chunksOfPredictions) {
