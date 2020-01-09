@@ -2049,9 +2049,8 @@
                     knn.fit(X, y);
 
                     // Then
-                    const neighbors = knn.getKNearestNeighbors([0, 0]);
                     assert.deepEqual(
-                        neighbors,
+                        knn.getKNearestNeighbors([0, 0]),
                         [
                             { x: [0, 0.5], y: 'A', distance: 0.5 },
                             { x: [0, -0.5], y: 'A', distance: 0.5 },
