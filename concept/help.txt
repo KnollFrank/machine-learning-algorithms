@@ -39,12 +39,23 @@ http://localhost:8080/?classifier=knn
 http://localhost:8080/?classifier=decision_tree
 
 Ergebnisse für MNIST:
-mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 7: Accuracy: 81%
-mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 4: Accuracy: 94%
-mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 2: Accuracy: 97%
-mnist_test_10000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 1: Accuracy: 96%
+mnist_test_1000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 84%
+mnist_test_1000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 86%
+mnist_test_1000.csv, k = 3, kernelWidthAndHeight = 4: Accuracy: 84%
+mnist_test_1000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 68%
 
-mnist_train_60000.csv, new KNNUsingKDTree(3), kernelWidthAndHeight = 7: Accuracy: 81%
+mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 92%
+mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 92% (geeignet für die Klassifizierung gemalter Ziffern)
+mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 4: Accuracy: 91% 
+mnist_test_5000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 73%
+
+mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 81%
+mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 4: Accuracy: 94%
+mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 97%
+mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 96%
+
+mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 81%
+mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 
 
 FK-TODO:
 - k-d tree:
