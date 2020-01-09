@@ -1,5 +1,4 @@
 'use strict';
-// FK-TODO: Datei umbenennen in eventListenerHolders.js
 // FK-TODO: SubmitEventListenerHolder extends EventListenerHolder
 class SubmitEventListenerHolder {
 
