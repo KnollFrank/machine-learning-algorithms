@@ -3,13 +3,20 @@
 // FK-TODO: verwende import export
 // see https://www.joyofdata.de/blog/parsing-local-csv-file-with-javascript-papa-parse/
 
-const submitEventListenerHolder4decisionTreeForm = new SubmitEventListenerHolder();
-const submitEventListenerHolder4knnForm = new SubmitEventListenerHolder();
-const submitEventListenerHolder4datasetForm = new SubmitEventListenerHolder();
+const submitEventListenerHolder4decisionTreeForm =
+    new SubmitEventListenerHolder(() => document.querySelector('#decisionTreeForm'));
+
+const submitEventListenerHolder4knnForm =
+    new SubmitEventListenerHolder(() => document.querySelector('#knnForm'));
+
+const submitEventListenerHolder4datasetForm =
+    new SubmitEventListenerHolder(() => document.querySelector('#datasetForm'));
+
 const clickEventListenerHolder4EvaluateTestdataButton =
     new EventListenerHolder(
         'click',
         () => document.querySelector('#section-testdata .evaluate-testdata-button'));
+
 const changeEventListenerHolder4EnhancedSwitcher =
     new EventListenerHolder(
         'change',
@@ -34,10 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         onCsvFileSelected(dataFile, classifierType);
     });
 
-    submitEventListenerHolder4datasetForm.setEventListener(
-        document.querySelector('#datasetForm'),
-        () => onSubmitDatasetForm(dataFile, classifierType)
-    );
+    submitEventListenerHolder4datasetForm.setEventListener(() => onSubmitDatasetForm(dataFile, classifierType));
 });
 
 function onCsvFileSelected(dataFile, classifierType) {
@@ -293,17 +297,14 @@ function showSectionFor(classifierType) {
 function build_classifier_onSubmit(datasetDescription, classifierType) {
     if (classifierType == ClassifierType.DECISION_TREE) {
         submitEventListenerHolder4decisionTreeForm.setEventListener(
-            document.querySelector('#decisionTreeForm'),
-            () => {
+            () =>
                 buildDecisionTreeClassifier({
                     datasetDescription,
                     max_depth: getInputValueById('max_depth'),
                     min_size: getInputValueById('min_size')
-                });
-            });
+                }));
     } else {
         submitEventListenerHolder4knnForm.setEventListener(
-            document.querySelector('#knnForm'),
             () => {
                 const k = getInputValueById('knn-k');
                 document.querySelector('#section-KNN h2').textContent = `2. ${k} nächste Nachbarn`;
