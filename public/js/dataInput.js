@@ -80,7 +80,6 @@ function initializeDrawTool(canvasBig, canvasSmall, newPredictionBtn, onDigitDra
         .on('mouseup',
             function (e) {
                 mousedown = false;
-                console.log('mouseup for canvasBig');
                 onDigitDrawn(canvasBig, canvasSmall);
             });
 
