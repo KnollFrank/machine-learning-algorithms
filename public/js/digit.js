@@ -1,6 +1,7 @@
 'use strict';
 
 class Digit {
+
     constructor(imageWidth, imageHeight) {
         this.digitElement = getHtml('digitTemplate.html');
         this.digitElement.setAttribute('id', 'digit-' + newId());
