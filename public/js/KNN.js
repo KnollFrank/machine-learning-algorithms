@@ -60,14 +60,8 @@ class KNN {
         this.y = y;
     }
 
-    // FK-TODO: DRY with getKNearestNeighbors()
     predict(x) {
-        const distancesX2x = [];
-        for (let i = 0; i < this.X.length; i++) {
-            distancesX2x.push({ index: i, distance: getSquaredEuclideanDistance(this.X[i], x) });
-        }
-        distancesX2x.sort((distance1, distance2) => distance1.distance - distance2.distance);
-        const k_nearest_y2x = distancesX2x.slice(0, this.k).map(({ index }) => this.y[index]);
+        const k_nearest_y2x = this.getKNearestNeighbors(x).map(({ y }) => y);
         return getElementWithHighestOccurence(k_nearest_y2x);
     }
 
@@ -77,8 +71,8 @@ class KNN {
             distancesX2x.push({ index: i, distance: getSquaredEuclideanDistance(this.X[i], x) });
         }
         distancesX2x.sort((distance1, distance2) => distance1.distance - distance2.distance);
-        const k_nearest = distancesX2x.slice(0, this.k);
-        return k_nearest.map(
+        const k_nearest_neighbors = distancesX2x.slice(0, this.k);
+        return k_nearest_neighbors.map(
             ({ index, distance }) =>
                 ({
                     x: this.X[index],
