@@ -401,7 +401,7 @@ function getKNearestNeighbors(knnWorker, X, receivePredictions) {
                 }
             case 'progress':
                 {
-                    console.log();
+                    console.log('progress:', value);
                     break;
                 }
         }
