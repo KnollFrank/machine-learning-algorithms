@@ -73,3 +73,7 @@ FK-TODO:
 - große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging)
   oder einfacher nur eine bestimmte Anzahl von Einträgen anzeigen und mit drei Punkten (...) andeuten, dass es noch mehrere Einträge gibt.
 - Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
+
+FK-FIXME:
+- Den Text "Die ersten von Testdaten sind:" in den Testdaten für Tabellen ausblenden.
+- Beim Umschalten des Switschers "erweiterte Ansicht" verschwinden fälschlicherweise die angezeigten Testdaten
