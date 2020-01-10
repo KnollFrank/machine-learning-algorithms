@@ -711,7 +711,7 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
 
     $('#testdata-panel').fadeIn();
     if (datasetDescription.isDigitDataset()) {
-        $('#container-digits-test').fadeIn();
+        $('#section-digits-test').fadeIn();
         $('#container-testDataSet').fadeOut();
         const onDigitClickedReceiveRow =
             classifierType == ClassifierType.DECISION_TREE ?
@@ -735,7 +735,7 @@ function displayTestingTableWithPredictions(rowsClassifier, classifierType, netw
                 });
             });
     } else {
-        $('#container-digits-test').fadeOut();
+        $('#section-digits-test').fadeOut();
         $('#container-testDataSet').fadeIn();
         const onRowClicked =
             classifierType == ClassifierType.DECISION_TREE ?

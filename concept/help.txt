@@ -75,5 +75,4 @@ FK-TODO:
 - Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
 
 FK-FIXME:
-- Den Text "Die ersten von Testdaten sind:" in den Testdaten für Tabellen ausblenden.
 - Beim Umschalten des Switschers "erweiterte Ansicht" verschwinden fälschlicherweise die angezeigten Testdaten
