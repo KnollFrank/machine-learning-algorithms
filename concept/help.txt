@@ -75,4 +75,4 @@ FK-TODO:
 - Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
 
 FK-FIXME:
-- Beim Umschalten des Switschers "erweiterte Ansicht" verschwinden fälschlicherweise die angezeigten Testdaten
+- Beim Umschalten des Switchers "erweiterte Ansicht" verschwinden fälschlicherweise die angezeigten Testdaten
