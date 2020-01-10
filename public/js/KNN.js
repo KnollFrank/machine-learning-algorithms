@@ -69,7 +69,7 @@ class KNN {
         for (let i = 0; i < this.X.length; i++) {
             distancesX2x.push({ index: i, distance: getSquaredEuclideanDistance(this.X[i], x) });
         }
-        distancesX2x.sort((distance1, distance2) => distance1.distance - distance2.distance);
+        distancesX2x.sort(({ distance: distance1 }, { distance: distance2 }) => distance1 - distance2);
         const k_nearest_neighbors = distancesX2x.slice(0, this.k);
         return k_nearest_neighbors.map(
             ({ index, distance }) =>
