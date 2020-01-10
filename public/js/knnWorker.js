@@ -19,8 +19,14 @@ onmessage = e => {
         case 'getKNearestNeighbors':
             {
                 const X = params.X
-                const kNearestNeighborss = X.map(x => knn.getKNearestNeighbors(x));
-                postMessage(kNearestNeighborss);
+                const kNearestNeighborss = X.map((x, index) => {
+                    postMessage({
+                        type: 'progress',
+                        value: { actualIndexZeroBased: index, endIndexZeroBasedExclusive: X.length }
+                    });
+                    return knn.getKNearestNeighbors(x);
+                });
+                postMessage({ type: 'result', value: kNearestNeighborss });
                 break;
             }
     }
