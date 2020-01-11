@@ -570,10 +570,19 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
 
 function displayDataInputSectionAndTestdataSectionOnClick(classifier, classifierType, datasetDescription, network) {
     $('#section-data-input, #section-testdata').fadeIn();
+    display_knnProgress_forKnn(classifierType);
     $('#accuracy-panel, #testdata-panel').fadeOut();
     const rowsClassifier = getRowsClassifier(classifierType, classifier);
     displayDataInput(datasetDescription, getCanvasDataInput(), getTextDataInput(), classifier, network, rowsClassifier, classifierType);
     clickEventListenerHolder4EvaluateTestdataButton.setEventListener(() => displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier));
+}
+
+function display_knnProgress_forKnn(classifierType) {
+    if (classifierType == ClassifierType.KNN) {
+        $('#knnProgress').fadeIn();
+    } else {
+        $('#knnProgress').fadeOut();
+    }
 }
 
 function displayTestdataSection(rowsClassifier, datasetDescription, classifierType, network, classifier) {
