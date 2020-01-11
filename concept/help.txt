@@ -72,7 +72,6 @@ FK-TODO:
     and translating the image so as to position this point at the center of the 28x28 field.  
 - große Datenmengen (im Digitdataset) seitenweise laden und anzeigen (paging)
   oder einfacher nur eine bestimmte Anzahl von Einträgen anzeigen und mit drei Punkten (...) andeuten, dass es noch mehrere Einträge gibt.
-- Bei der Vorhersage der Testdaten über KNN den aktuellen Fortschritt anzeigen (z.B. über eine Progressbar), weil KNN langsam bei der Vorhersage ist.
 
 FK-FIXME:
 - Beim Umschalten des Switchers "erweiterte Ansicht" verschwinden fälschlicherweise die angezeigten Testdaten
