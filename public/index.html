@@ -13,6 +13,7 @@
     <script src="js/htmlHelper.js"></script>
     <script src="js/inputTemplate.js"></script>
     <script src="js/progress.js"></script>
+    <script src="js/knnProgress.js"></script>
     <script src="js/dataInput.js"></script>
     <script src="js/splitterWorkers.js"></script>
     <script src="js/knnWorkers.js"></script>
@@ -60,8 +61,7 @@
             </form>
             <section id="section-traindata">
                 <h3>1.1 Trainingsdaten</h3>
-                <p>Die ersten <span class="maxDigits2Display"></span> von <span class="totalNumberOfDigits"></span>
-                    Trainingsdaten sind:</p>
+                <p>Die ersten <span class="maxDigits2Display"></span> von <span class="totalNumberOfDigits"></span> Trainingsdaten sind:</p>
                 <div id="container-digits-train"></div>
                 <div id="container-trainingDataSet"></div>
             </section>
@@ -155,6 +155,16 @@
         <section id="section-testdata">
             <h2>4. Testdaten</h2>
             <p><button class="evaluate-testdata-button">Testdaten auswerten</button></p>
+            <div id="knnProgress">
+                <h3>4.1 Fortschritt</h3>
+                <div class="table">
+                    <div class="table-header">
+                        <div class="table-cell">Worker</div>
+                        <div class="table-cell">Fortschritt</div>
+                        <div class="table-cell">Ende</div>
+                    </div>
+                </div>
+            </div>
             <div id="accuracy-panel">
                 <p>
                     <!-- FK-TODO: Accuracy sichtbarer anzeigen -->
@@ -163,8 +173,7 @@
             </div>
             <div id="testdata-panel">
                 <section id="section-digits-test">
-                    <p>Die ersten <span class="maxDigits2Display"></span> von <span class="totalNumberOfDigits"></span>
-                        Testdaten sind:</p>
+                    <p>Die ersten <span class="maxDigits2Display"></span> von <span class="totalNumberOfDigits"></span> Testdaten sind:</p>
                     <div id="container-digits-test"></div>
                 </section>
                 <div id="container-testDataSet"></div>

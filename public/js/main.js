@@ -345,6 +345,7 @@ const createKnnClassifier =
         if (chunks.length == 0) {
             receivePredictionsForRows([]);
         } else {
+            createKnnProgressElements('knnProgress', knnWorkers.length);
             const chunksOfPredictions = [];
             chunks.forEach((chunk, i, chunks) => {
                 getKNearestNeighbors(
@@ -382,7 +383,7 @@ function asJsStartAndEndIndexes({
     };
 }
 
-function getKNearestNeighbors(knnWorker, index, X, receivePredictions) {
+function getKNearestNeighbors(knnWorker, knnWorkerIndex, X, receivePredictions) {
     knnWorker.postMessage({
         type: 'getKNearestNeighbors',
         params: {
@@ -402,11 +403,22 @@ function getKNearestNeighbors(knnWorker, index, X, receivePredictions) {
                 }
             case 'progress':
                 {
-                    console.log('progress:', index, value);
+                    const { actualIndexZeroBased, endIndexZeroBasedExclusive } = value;
+                    displayKnnProgress(knnWorkerIndex, actualIndexZeroBased, endIndexZeroBasedExclusive);
                     break;
                 }
         }
     };
+}
+
+function displayKnnProgress(workerIndex, actualIndexZeroBased, endIndexZeroBasedExclusive) {
+    setKnnProgress_workerId(workerIndex, workerIndex + 1);
+    setKnnProgress_progress({
+        workerIndex: workerIndex,
+        value: actualIndexZeroBased,
+        max: endIndexZeroBasedExclusive - 1
+    });
+    setKnnProgress_endAttribute(workerIndex, endIndexZeroBasedExclusive);
 }
 
 function addPrediction(kNearestNeighbors) {
