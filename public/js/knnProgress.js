@@ -26,14 +26,11 @@ function setKnnProgress_workerId(workerIndex, text) {
     getKnnTableCellOfTableRow(workerIndex, 'div.workerId').innerHTML = text;
 }
 
-function setKnnProgress_endAttribute(workerIndex, endIndexZeroBasedExclusive) {
-    getKnnTableCellOfTableRow(workerIndex, 'div.endAttribute').innerHTML = endIndexZeroBasedExclusive;
-}
-
-function setKnnProgress_progress({ workerIndex, value, max }) {
+function setKnnProgress_progress({ workerIndex, value: actualValue, max: maxValue }) {
     const progress = getKnnTableCellOfTableRow(workerIndex, 'div.progress progress');
-    progress.value = value;
-    progress.max = max;
+    progress.value = actualValue;
+    progress.max = maxValue;
+    getKnnTableCellOfTableRow(workerIndex, 'div.progress span').textContent = `(${actualValue}/${maxValue})`;
 }
 
 function getKnnTableCellOfTableRow(workerIndex, subElementSelector) {

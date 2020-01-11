@@ -415,10 +415,9 @@ function displayKnnProgress(workerIndex, actualIndexZeroBased, endIndexZeroBased
     setKnnProgress_workerId(workerIndex, workerIndex + 1);
     setKnnProgress_progress({
         workerIndex: workerIndex,
-        value: actualIndexZeroBased,
-        max: endIndexZeroBasedExclusive - 1
+        value: actualIndexZeroBased + 1,
+        max: endIndexZeroBasedExclusive
     });
-    setKnnProgress_endAttribute(workerIndex, endIndexZeroBasedExclusive);
 }
 
 function addPrediction(kNearestNeighbors) {
