@@ -34,3 +34,5 @@ class Cache {
         return this.cache[key];
     }
 }
+
+export { Cache };

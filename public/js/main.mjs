@@ -1,3 +1,5 @@
+import { Cache } from './cache.mjs';
+
 'use strict';
 
 // FK-TODO: verwende import export
@@ -21,15 +23,6 @@ const changeEventListenerHolder4EnhancedSwitcher =
     new EventListenerHolder(
         'change',
         () => document.querySelector('#decisionTreeNetwork-enhanced-switcher input[type=checkbox]'));
-
-const ClassifierType = Object.freeze({
-    DECISION_TREE: 'DECISION_TREE',
-    KNN: 'KNN',
-    from: function(name) {
-        name = name ? name.toUpperCase() : "";
-        return [this.DECISION_TREE, this.KNN].includes(name) ? name : this.DECISION_TREE;
-    }
-});
 
 document.addEventListener('DOMContentLoaded', () => {
     const classifierType = getClassifierTypeFromDocumentsURL();
@@ -841,3 +834,5 @@ function createTreeListener(onmessage) {
         onEndSplit: nodeId => {}
     }
 }
+
+export { train_test_split };
