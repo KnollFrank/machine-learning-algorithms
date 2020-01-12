@@ -1,1 +1,1 @@
-# Decision-Tree
+# Machine Learning Algorithms
