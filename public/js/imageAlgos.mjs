@@ -1,11 +1,14 @@
+import { getArrayIndexOfPoint } from './digit.mjs';
+
 'use strict';
 
-function getCenterOfMass(image) {
+export function getCenterOfMass(image) {
     let totalMass = 0;
     let centerOfMass = { x: 0, y: 0 };
     const origin = { x: -1, y: -1 };
 
-    for (const { point, color: mass } of iterateOverImage(image)) {
+    for (const { point, color: mass }
+        of iterateOverImage(image)) {
         totalMass += mass;
         centerOfMass = addPoints(centerOfMass, mulPoint(mass, subPoints(point, origin)));
     }

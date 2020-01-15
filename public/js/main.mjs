@@ -1,6 +1,10 @@
 import { Cache } from './cache.mjs';
 import { TimedExecutor } from './timedExecutor.mjs'
 import { displayTextDataInput, highlightPredictionInNetwork, displayCanvasDataInput } from './dataInput.mjs';
+import { displayDigitTrainDataset, displayDigitTestDataset, displayDigitDataset } from './displayDigitDataset.mjs';
+import { getInputValueById } from './htmlHelper.mjs';
+import { createProgressElements, setProgress_numberOfEntriesInDataset, setProgress_workerId, setProgress_progress, setProgress_startAttribute, setProgress_endAttribute } from './progress.mjs';
+import { createKnnProgressElements, setKnnProgress_workerId, setKnnProgress_progress } from './knnProgress.mjs';
 
 'use strict';
 
@@ -681,18 +685,6 @@ function configure_save_tree(tree) {
     save_tree.addEventListener('click', () =>
         localStorage.setItem(localStorageTreeKey, JSON.stringify(tree))
     );
-}
-
-export function getInputValueById(id) {
-    return getInputValueBy('#' + id);
-}
-
-export function getInputValueByName(name) {
-    return getInputValueBy(`input[name = "${name}"]`);
-}
-
-function getInputValueBy(selectors) {
-    return document.querySelector(selectors).value;
 }
 
 function displayAccuracy(rowsClassifier, datasetDescription, dataset, k) {

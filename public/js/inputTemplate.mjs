@@ -1,6 +1,8 @@
+import { getHtml } from './htmlHelper.mjs';
+
 "use strict";
 
-function createInputElement(attributeName) {
+export function createInputElement(attributeName) {
     let div = getHtml('inputTemplate.html');
     div.querySelector('label').setAttribute('for', attributeName);
     div.querySelector('label').innerHTML = attributeName + ':';

@@ -1,4 +1,8 @@
-import { getInputValueById, getInputValueByName } from './main.mjs';
+import { getInputValueById, getInputValueByName } from './htmlHelper.mjs';
+import { imageData2Pixels } from './digit.mjs';
+import { getCenterOfMass } from './imageAlgos.mjs';
+import { createInputElement } from './inputTemplate.mjs';
+import { displayDigitDataset } from './displayDigitDataset.mjs';
 
 'use strict';
 

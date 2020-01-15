@@ -1,3 +1,5 @@
+import { Digit } from './digit.mjs';
+
 'use strict';
 
 class DisplayDigitDatasetTemplate {
@@ -31,7 +33,7 @@ class DisplayDigitDatasetTemplate {
 class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
 
     constructor(imageWidth, imageHeight) {
-        super(row => { }, imageWidth, imageHeight);
+        super(row => {}, imageWidth, imageHeight);
     }
 
     _getFigcaption(row) {
@@ -39,7 +41,7 @@ class DisplayDigitTrainDataset extends DisplayDigitDatasetTemplate {
     }
 }
 
-function displayDigitTrainDataset(datasetDescription, digitsContainerId, maxDigits2Display) {
+export function displayDigitTrainDataset(datasetDescription, digitsContainerId, maxDigits2Display) {
     new DisplayDigitTrainDataset(datasetDescription.imageWidth, datasetDescription.imageHeight)
         .displayDigitDataset(
             datasetDescription.splittedDataset.train.slice(0, maxDigits2Display),
@@ -47,7 +49,7 @@ function displayDigitTrainDataset(datasetDescription, digitsContainerId, maxDigi
 }
 
 // FK-TODO: refactor
-function displayDigitDataset(dataset, imageWidth, imageHeight, digitsContainerId) {
+export function displayDigitDataset(dataset, imageWidth, imageHeight, digitsContainerId) {
     new DisplayDigitTrainDataset(imageWidth, imageHeight).displayDigitDataset(dataset, digitsContainerId);
 }
 
@@ -65,7 +67,7 @@ class DisplayDigitTestDataset extends DisplayDigitDatasetTemplate {
     }
 }
 
-function displayDigitTestDataset({ datasetDescription, predictions, digitsContainerId, onDigitClickedReceiveRow, maxDigits2Display }) {
+export function displayDigitTestDataset({ datasetDescription, predictions, digitsContainerId, onDigitClickedReceiveRow, maxDigits2Display }) {
     new DisplayDigitTestDataset(predictions.slice(0, maxDigits2Display), onDigitClickedReceiveRow, datasetDescription.imageWidth, datasetDescription.imageHeight)
         .displayDigitDataset(
             datasetDescription.splittedDataset.test.slice(0, maxDigits2Display),

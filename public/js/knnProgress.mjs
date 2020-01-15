@@ -1,6 +1,8 @@
+import { getHtml } from './htmlHelper.mjs';
+
 'use strict';
 
-function createKnnProgressElements(progressId, numWorkers) {
+export function createKnnProgressElements(progressId, numWorkers) {
     let progressTable = document.querySelector(`#${progressId} div.table`);
     clearKnnTable(progressTable);
     appendKnnRows(progressTable, numWorkers);
@@ -22,11 +24,11 @@ function createKnnRow(workerIndex) {
     return div;
 }
 
-function setKnnProgress_workerId(workerIndex, text) {
+export function setKnnProgress_workerId(workerIndex, text) {
     getKnnTableCellOfTableRow(workerIndex, 'div.workerId').innerHTML = text;
 }
 
-function setKnnProgress_progress({ workerIndex, value: actualValue, max: maxValue }) {
+export function setKnnProgress_progress({ workerIndex, value: actualValue, max: maxValue }) {
     const progress = getKnnTableCellOfTableRow(workerIndex, 'div.progress progress');
     progress.value = actualValue;
     progress.max = maxValue;

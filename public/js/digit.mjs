@@ -1,6 +1,8 @@
+import { getHtml } from './htmlHelper.mjs';
+
 'use strict';
 
-class Digit {
+export class Digit {
 
     constructor(imageWidth, imageHeight) {
         this.digitElement = getHtml('digitTemplate.html');
@@ -42,7 +44,7 @@ function drawImageIntoCanvas(pixels, canvas) {
     ctx.putImageData(imageData, 0, 0);
 }
 
-function imageData2Pixels(imageData) {
+export function imageData2Pixels(imageData) {
     const pixels = [];
     for (const it of iterateOverImageData(imageData)) {
         pixels.push(imageData.data[it.color_index.alpha]);
@@ -69,6 +71,6 @@ function* iterateOverImageData(imageData) {
     }
 }
 
-function getArrayIndexOfPoint(point, width) {
+export function getArrayIndexOfPoint(point, width) {
     return point.y * width + point.x;
 }
