@@ -6,6 +6,7 @@ import { getInputValueById } from './htmlHelper.mjs';
 import { createProgressElements, setProgress_numberOfEntriesInDataset, setProgress_workerId, setProgress_progress, setProgress_startAttribute, setProgress_endAttribute } from './progress.mjs';
 import { createKnnProgressElements, setKnnProgress_workerId, setKnnProgress_progress } from './knnProgress.mjs';
 import { ClassifierType } from './classifierType.mjs';
+import { displayDatasetAsTable } from './datasetTable.mjs';
 
 'use strict';
 
