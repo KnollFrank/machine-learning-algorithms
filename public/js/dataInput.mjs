@@ -1,6 +1,8 @@
+import { getInputValueById, getInputValueByName } from './main.mjs';
+
 'use strict';
 
-function displayTextDataInput(rootElement, attributeNames, tree, network, rowsClassifier, classifierType) {
+export function displayTextDataInput(rootElement, attributeNames, tree, network, rowsClassifier, classifierType) {
     const dataInputFields = rootElement.querySelector('.dataInputFields');
 
     dataInputFields.innerHTML = '';
@@ -24,7 +26,7 @@ function displayTextDataInput(rootElement, attributeNames, tree, network, rowsCl
         });
 }
 
-function displayCanvasDataInput(rootElement, tree, network, rowsClassifier, classifierType, imageWidth, imageHeight) {
+export function displayCanvasDataInput(rootElement, tree, network, rowsClassifier, classifierType, imageWidth, imageHeight) {
     if (classifierType == ClassifierType.DECISION_TREE) {
         rootElement.classList.add('decision-tree');
         rootElement.classList.remove('knn');
@@ -214,7 +216,7 @@ function drawScaledAndCenteredImageOntoCanvas({ canvas, image, newImageWidthAndH
         newImageWidthAndHeight);
 }
 
-function highlightPredictionInNetwork(prediction, network) {
+export function highlightPredictionInNetwork(prediction, network) {
     const nodeIdsOfPrediction = prediction.nodes.map(node => node.id);
     highlightTreeNodes(network.nodes, nodeIdsOfPrediction);
     highlightTreeEdges(network.edges, nodeIdsOfPrediction);

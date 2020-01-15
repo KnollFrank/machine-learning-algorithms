@@ -1,6 +1,6 @@
 'use strict';
 
-class TimedExecutor {
+export class TimedExecutor {
     constructor(waitTimeMillis) {
         this.waitTimeMillis = waitTimeMillis;
         this.lastExecutionTime = new Date().getTime();

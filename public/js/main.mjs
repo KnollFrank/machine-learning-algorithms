@@ -1,4 +1,6 @@
 import { Cache } from './cache.mjs';
+import { TimedExecutor } from './timedExecutor.mjs'
+import { displayTextDataInput, highlightPredictionInNetwork, displayCanvasDataInput } from './dataInput.mjs';
 
 'use strict';
 
@@ -681,11 +683,11 @@ function configure_save_tree(tree) {
     );
 }
 
-function getInputValueById(id) {
+export function getInputValueById(id) {
     return getInputValueBy('#' + id);
 }
 
-function getInputValueByName(name) {
+export function getInputValueByName(name) {
     return getInputValueBy(`input[name = "${name}"]`);
 }
 
