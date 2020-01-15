@@ -112,7 +112,11 @@ class DecisionTreeBuilder {
             switch (type) {
                 case 'inner-split':
                     const {
-                        nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset
+                        nodeId,
+                        startSplitIndex,
+                        actualSplitIndex,
+                        endSplitIndex,
+                        numberOfEntriesInDataset
                     } = value;
                     this.treeListener.onInnerSplit({
                         workerIndex,

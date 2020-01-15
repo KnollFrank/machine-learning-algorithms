@@ -1,4 +1,5 @@
 import { getHtml } from './htmlHelper.mjs';
+import { newId } from './idGenerator.mjs';
 
 'use strict';
 
