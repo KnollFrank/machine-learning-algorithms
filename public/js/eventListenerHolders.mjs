@@ -1,7 +1,6 @@
 'use strict';
 
-
-class EventListenerHolder {
+export class EventListenerHolder {
 
     constructor(type, htmlElementProvider) {
         this.type = type;
@@ -23,7 +22,7 @@ class EventListenerHolder {
     }
 }
 
-class SubmitEventListenerHolder {
+export class SubmitEventListenerHolder {
 
     constructor(htmlElementProvider) {
         this.delegate = new EventListenerHolder('submit', htmlElementProvider);

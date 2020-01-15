@@ -7,6 +7,7 @@ import { createProgressElements, setProgress_numberOfEntriesInDataset, setProgre
 import { createKnnProgressElements, setKnnProgress_workerId, setKnnProgress_progress } from './knnProgress.mjs';
 import { ClassifierType } from './classifierType.mjs';
 import { displayDatasetAsTable } from './datasetTable.mjs';
+import { SubmitEventListenerHolder, EventListenerHolder } from './eventListenerHolders.mjs';
 
 'use strict';
 
