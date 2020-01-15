@@ -3,6 +3,7 @@ import { imageData2Pixels } from './digit.mjs';
 import { getCenterOfMass } from './imageAlgos.mjs';
 import { createInputElement } from './inputTemplate.mjs';
 import { displayDigitDataset } from './displayDigitDataset.mjs';
+import { ClassifierType } from './classifierType.mjs';
 
 'use strict';
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const ClassifierType = Object.freeze({
+export const ClassifierType = Object.freeze({
     DECISION_TREE: 'DECISION_TREE',
     KNN: 'KNN',
     from: function(name) {
