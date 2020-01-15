@@ -1,7 +1,6 @@
 'use strict';
 
 importScripts('jsHelper.js');
-importScripts('KDTree.js');
 importScripts('KNN.js');
 
 let knn;

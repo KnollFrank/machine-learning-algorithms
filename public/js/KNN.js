@@ -1,54 +1,5 @@
 'use strict';
 
-class KNNUsingKDTree {
-
-    constructor(k) {
-        this.k = k;
-    }
-
-    fit(X, y) {
-        this.X = X;
-        this.y = y;
-
-        const dim = X[0].length;
-        const distance = (pointA, pointB) =>
-            getSquaredEuclideanDistance(
-                pointA.slice(0, dim + 1),
-                pointB.slice(0, dim + 1));
-        // FK-TODO: extract method copyArray
-        const points = new Array(X.length);
-        for (let i = 0; i < X.length; i++) {
-            points[i] = X[i].slice();
-        }
-        for (let i = 0; i < y.length; ++i) {
-            points[i].push(y[i]);
-        }
-        this.kdTree = new KDTree(points, distance);
-    }
-
-    // FK-TODO: DRY with getKNearestNeighbors()
-    predict(x) {
-        const nearestPoints = this.kdTree.nearest(x, this.k);
-        const classIndex = nearestPoints[0][0].length - 1;
-        const ys = nearestPoints.map(nearestPoint => nearestPoint[0][classIndex]);
-        return getElementWithHighestOccurence(ys);
-    }
-
-    // FK-FIXME: This is buggy, see tests.xml, "getKNearestNeighbors, k=3"
-    getKNearestNeighbors(x) {
-        const nearestPoints = this.kdTree.nearest(x, this.k);
-        const classIndex = nearestPoints[0][0].length - 1;
-        const ys = nearestPoints.map(nearestPoint => nearestPoint[0][classIndex]);
-        return nearestPoints.map(
-            ([row, distance]) =>
-                ({
-                    x: row.slice(0, classIndex),
-                    y: row[classIndex],
-                    distance: Math.sqrt(distance)
-                }));
-    }
-}
-
 class KNN {
 
     constructor(k) {
@@ -76,11 +27,11 @@ class KNN {
 
         return k_nearest_neighbors.map(
             ({ index, distance }) =>
-                ({
-                    x: this.X[index],
-                    y: this.y[index],
-                    distance: Math.sqrt(distance)
-                }));
+            ({
+                x: this.X[index],
+                y: this.y[index],
+                distance: Math.sqrt(distance)
+            }));
     }
 }
 
