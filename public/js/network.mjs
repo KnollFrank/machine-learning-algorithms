@@ -1,6 +1,6 @@
 'use strict';
 
-class NetworkBuilder {
+export class NetworkBuilder {
 
     constructor(attributeNames, nodeContentFactory) {
         this.attributeNames = attributeNames;
@@ -112,13 +112,13 @@ const options = {
     }
 };
 
-function displayNetwork(container, data) {
+export function displayNetwork(container, data) {
     destroyNetwork();
     network = new vis.Network(container, data, options);
 }
 
 // see https://stackoverflow.com/questions/38768598/vis-js-setoptions-to-change-color-on-network-node and http://jsfiddle.net/9knw26nc/1/
-function highlightNodes(allNodes, nodes) {
+export function highlightNodes(allNodes, nodes) {
     resetAllNodeOptionsToDefault(allNodes);
     _highlightNodes(allNodes, nodes);
 }
@@ -160,7 +160,7 @@ function setNodeBorderWidth(node, width) {
     node.borderWidth = width;
 }
 
-function highlightEdges(allEdges, edges) {
+export function highlightEdges(allEdges, edges) {
     resetAllEdgeOptionsToDefault(allEdges);
     _highlightEdges(allEdges, edges);
 }

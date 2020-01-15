@@ -8,6 +8,7 @@ import { createKnnProgressElements, setKnnProgress_workerId, setKnnProgress_prog
 import { ClassifierType } from './classifierType.mjs';
 import { displayDatasetAsTable } from './datasetTable.mjs';
 import { SubmitEventListenerHolder, EventListenerHolder } from './eventListenerHolders.mjs';
+import { NetworkBuilder, displayNetwork } from './network.mjs'
 
 'use strict';
 
@@ -565,7 +566,7 @@ function onClassifierBuilt(datasetDescription, classifier, classifierType) {
             onDecisionTreeChanged(datasetDescription, classifier);
             break;
         case ClassifierType.KNN:
-            displayDataInputSectionAndTestdataSectionOnClick(classifier, ClassifierType.KNN, datasetDescription, network);
+            displayDataInputSectionAndTestdataSectionOnClick(classifier, ClassifierType.KNN, datasetDescription);
             break;
     }
 }

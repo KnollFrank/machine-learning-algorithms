@@ -4,6 +4,7 @@ import { getCenterOfMass } from './imageAlgos.mjs';
 import { createInputElement } from './inputTemplate.mjs';
 import { displayDigitDataset } from './displayDigitDataset.mjs';
 import { ClassifierType } from './classifierType.mjs';
+import { highlightNodes, highlightEdges } from './network.mjs';
 
 'use strict';
 
