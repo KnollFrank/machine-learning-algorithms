@@ -2,6 +2,6 @@
 
 let idCounter = 0;
 
-function newId() {
+function newIdOld() {
     return ++idCounter;
 }

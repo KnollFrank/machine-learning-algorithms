@@ -58,7 +58,7 @@ class DecisionTreeBuilder {
 
     // Select the best split point for a dataset
     get_split(dataset, k) {
-        const nodeId = newId();
+        const nodeId = newIdOld();
         const chunks = splitItemsIntoChunks({
             numItems: getNumberOfAttributes(dataset),
             maxNumChunks: this.splitterWorkers.length
@@ -196,7 +196,7 @@ class DecisionTreeBuilder {
     to_terminal(group) {
         const outcomes = group.map(getClassValFromRow);
         return this._emitOnNodeAdded({
-            id: newId(),
+            id: newIdOld(),
             value: getElementWithHighestOccurence(outcomes),
             samples: group.length,
             score: 0

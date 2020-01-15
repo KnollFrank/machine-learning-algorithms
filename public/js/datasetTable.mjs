@@ -1,3 +1,5 @@
+import { newId } from './idGenerator.mjs';
+
 export function displayDatasetAsTable({ tableContainer, attributeNames, dataset, createdRow, onRowClicked }) {
     const table = createTableElement();
     tableContainer.empty();
