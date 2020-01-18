@@ -3,7 +3,6 @@
 importScripts('../jsHelper.js');
 importScripts('KNN.js');
 importScripts('knnWorker.js');
-importScripts('knnWorkerSync.js');
 
 const knnWorker = new KnnWorker();
 

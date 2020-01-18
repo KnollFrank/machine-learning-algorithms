@@ -4,20 +4,10 @@ importScripts('../idGenerator.js');
 importScripts('../jsHelper.js');
 importScripts('datasetHelper.js');
 importScripts('splitter.js');
+importScripts('splitterWorker.js');
 
-onmessage = e => postMessage({ type: 'result', value: get_split_for_chunk(e.data) });
-
-function get_split_for_chunk({ chunk, nodeId, dataset }) {
-    return new Splitter({
-        onNodeAdded: node => {},
-        onEdgeAdded: (fromNode, toNode) => {},
-        onStartSplit: nodeId => {},
-        onInnerSplit: ({ nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }) => {
-            postMessage({
-                type: 'inner-split',
-                value: { nodeId, startSplitIndex, actualSplitIndex, endSplitIndex, numberOfEntriesInDataset }
-            });
-        },
-        onEndSplit: nodeId => {}
-    }).get_split_for_chunk(chunk, nodeId, dataset);
-}
+onmessage = e => {
+    const splitterWorker = new SplitterWorker();
+    splitterWorker.postMessage = data => postMessage(data);
+    splitterWorker.onmessage(e.data);
+};
