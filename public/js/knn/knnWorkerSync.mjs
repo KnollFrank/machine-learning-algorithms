@@ -1,6 +1,6 @@
 'use strict';
 
-class KnnWorkerSync {
+export class KnnWorkerSync {
 
     constructor() {
         this.knnWorker = new KnnWorker();
