@@ -2,8 +2,8 @@
 
 importScripts('../idGenerator.js');
 importScripts('../jsHelper.js');
+importScripts('datasetHelper.js');
 importScripts('splitter.js');
-importScripts('decisionTree.js');
 
 onmessage = e => postMessage({ type: 'result', value: get_split_for_chunk(e.data) });
 
