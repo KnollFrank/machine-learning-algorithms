@@ -1,6 +1,6 @@
 'use strict';
 
-class KnnWorker {
+class KnnWorkerSync {
 
     knn;
     onmessage;
