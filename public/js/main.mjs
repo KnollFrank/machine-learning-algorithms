@@ -10,6 +10,7 @@ import { displayDatasetAsTable } from './datasetTable.mjs';
 import { SubmitEventListenerHolder, EventListenerHolder } from './eventListenerHolders.mjs';
 import { NetworkBuilder, displayNetwork } from './network.mjs'
 import { DecisionTreeBuilder } from './decisionTree/decisionTreeBuilder.mjs';
+import { print_tree } from './decisionTree/decisionTreePrinter.mjs';
 
 'use strict';
 

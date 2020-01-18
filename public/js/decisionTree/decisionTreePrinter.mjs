@@ -1,7 +1,7 @@
 'use strict';
 
 // Print a decision tree
-function print_tree(node, attributeNames) {
+export function print_tree(node, attributeNames) {
     const nodeContentFactory = new SimpleNodeContentFactory();
 
     function _print_tree(node, depth) {
