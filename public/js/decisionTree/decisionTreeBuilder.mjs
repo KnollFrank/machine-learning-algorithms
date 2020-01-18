@@ -14,7 +14,7 @@ const dummyTreeListener = {
     onEndSplit: nodeId => {}
 };
 
-class DecisionTreeBuilder {
+export class DecisionTreeBuilder {
 
     constructor(max_depth, min_size, splitterWorkers, treeListener = dummyTreeListener) {
         this.max_depth = max_depth;
@@ -177,19 +177,6 @@ class DecisionTreeBuilder {
         });
     }
 }
-
-// Calculate accuracy percentage
-function accuracy_percentage(actual, predicted) {
-    let correct = 0;
-    for (let i = 0; i < actual.length; i++) {
-        if (actual[i] == predicted[i]) {
-            correct++;
-        }
-    }
-    return actual.length != 0 ? correct / actual.length * 100.0 : 0;
-}
-
-const actualClassVals = fold => fold.map(getClassValFromRow);
 
 function prune(node) {
     let pruneDescr = {

@@ -9,6 +9,7 @@ import { ClassifierType } from './classifierType.mjs';
 import { displayDatasetAsTable } from './datasetTable.mjs';
 import { SubmitEventListenerHolder, EventListenerHolder } from './eventListenerHolders.mjs';
 import { NetworkBuilder, displayNetwork } from './network.mjs'
+import { DecisionTreeBuilder } from './decisionTree/decisionTreeBuilder.mjs';
 
 'use strict';
 
@@ -712,6 +713,19 @@ function computeAccuracy(rowsClassifier, datasetDescription, dataset, receiveAcc
                 actualClassVals(dataset),
                 getPredictions(kNearestNeighborssWithPredictions)))
     );
+}
+
+const actualClassVals = fold => fold.map(getClassValFromRow);
+
+// Calculate accuracy percentage
+function accuracy_percentage(actual, predicted) {
+    let correct = 0;
+    for (let i = 0; i < actual.length; i++) {
+        if (actual[i] == predicted[i]) {
+            correct++;
+        }
+    }
+    return actual.length != 0 ? correct / actual.length * 100.0 : 0;
 }
 
 function getPredictions(kNearestNeighborssWithPredictions) {
