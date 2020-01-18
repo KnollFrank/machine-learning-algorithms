@@ -178,14 +178,6 @@ class DecisionTreeBuilder {
     }
 }
 
-function isInnerNode(node) {
-    return 'left' in node || 'right' in node;
-}
-
-function isTerminalNode(node) {
-    return !isInnerNode(node);
-}
-
 // Calculate accuracy percentage
 function accuracy_percentage(actual, predicted) {
     let correct = 0;
@@ -195,37 +187,6 @@ function accuracy_percentage(actual, predicted) {
         }
     }
     return actual.length != 0 ? correct / actual.length * 100.0 : 0;
-}
-
-// Make a prediction with a decision tree
-function predict(node, row) {
-    if (!node) {
-        return {
-            value: null,
-            nodes: []
-        };
-    }
-
-    if (isTerminalNode(node)) {
-        return {
-            value: node.value,
-            nodes: [node]
-        };
-    }
-
-    const splitCondition =
-        isNumber(node.value) ?
-        Number(row[node.index]) < Number(node.value) :
-        row[node.index] == node.value;
-
-    let {
-        value,
-        nodes
-    } = predict(splitCondition ? node.left : node.right, row);
-    return {
-        value: value,
-        nodes: [node].concat(nodes)
-    };
 }
 
 const actualClassVals = fold => fold.map(getClassValFromRow);
