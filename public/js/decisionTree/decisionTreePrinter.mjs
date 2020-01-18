@@ -1,3 +1,5 @@
+import { SimpleNodeContentFactory } from './nodeContentFactories.mjs';
+
 'use strict';
 
 // Print a decision tree

@@ -11,6 +11,7 @@ import { SubmitEventListenerHolder, EventListenerHolder } from './eventListenerH
 import { NetworkBuilder, displayNetwork } from './network.mjs'
 import { DecisionTreeBuilder } from './decisionTree/decisionTreeBuilder.mjs';
 import { print_tree } from './decisionTree/decisionTreePrinter.mjs';
+import { SimpleNodeContentFactory } from './decisionTree/nodeContentFactories.mjs';
 
 'use strict';
 

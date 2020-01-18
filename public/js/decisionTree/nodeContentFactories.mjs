@@ -1,6 +1,6 @@
 'use strict';
 
-class EnhancedNodeContentFactory {
+export class EnhancedNodeContentFactory {
 
     getInnerNodeContent(node, attributeNames) {
         return `${getTestNodeText(node, attributeNames)}
@@ -15,7 +15,7 @@ ${getAnzahlNodeText(node)}`;
     }
 }
 
-class SimpleNodeContentFactory {
+export class SimpleNodeContentFactory {
 
     getInnerNodeContent(node, attributeNames) {
         return getTestNodeConditionText(node, attributeNames);
