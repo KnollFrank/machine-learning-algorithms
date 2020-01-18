@@ -1,6 +1,6 @@
 'use strict';
 
-function splitItemsIntoChunks({
+export function splitItemsIntoChunks({
     numItems,
     maxNumChunks
 }) {

@@ -1,4 +1,5 @@
 import { isTerminalNode } from './decisionTree.mjs';
+import { splitItemsIntoChunks } from '../itemsIntoChunksSplitter.mjs';
 
 'use strict';
 

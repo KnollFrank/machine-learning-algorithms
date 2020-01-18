@@ -15,6 +15,7 @@ import { SimpleNodeContentFactory } from './decisionTree/nodeContentFactories.mj
 import { predict } from './decisionTree/decisionTree.mjs';
 import { knnWorkers } from './knn/knnWorkers.mjs';
 import { splitterWorkers } from './decisionTree/splitterWorkers.mjs';
+import { splitItemsIntoChunks } from './itemsIntoChunksSplitter.mjs';
 
 'use strict';
 
