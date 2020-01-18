@@ -40,3 +40,7 @@ function getElementWithHighestOccurence(array) {
 
     return maxEl;
 }
+
+function getMinOfArray(es, getMinElement) {
+    return es.reduce(getMinElement);
+}

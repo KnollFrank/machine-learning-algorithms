@@ -2,10 +2,6 @@
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
 
-function getMinOfArray(es, getMinElement) {
-    return es.reduce(getMinElement);
-}
-
 function splitItemsIntoChunks({
     numItems,
     maxNumChunks
