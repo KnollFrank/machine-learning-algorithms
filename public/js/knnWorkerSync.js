@@ -2,15 +2,30 @@
 
 class KnnWorkerSync {
 
-    knn;
-    onmessage;
-
-    postMessage(message) {
-        this._onmessage({ data: message });
+    constructor() {
+        this.knnWorker = new KnnWorker();
     }
 
-    _onmessage(e) {
-        const { type, params } = e.data;
+    postMessage(message) {
+        this.knnWorker.onmessage(message);
+    }
+
+    set onmessage(postMessage) {
+        this.knnWorker.postMessage = message => postMessage({ data: message });
+    }
+
+    get onmessage() {
+        return this.knnWorker.postMessage;
+    }
+}
+
+class KnnWorker {
+
+    knn;
+    postMessage;
+
+    onmessage(message) {
+        const { type, params } = message;
         switch (type) {
             case 'fit':
                 {
@@ -23,19 +38,15 @@ class KnnWorkerSync {
                 {
                     const X = params.X
                     const kNearestNeighborss = X.map((x, index) => {
-                        this._postMessage({
+                        this.postMessage({
                             type: 'progress',
                             value: { actualIndexZeroBased: index, endIndexZeroBasedExclusive: X.length }
                         });
                         return this.knn.getKNearestNeighbors(x);
                     });
-                    this._postMessage({ type: 'result', value: kNearestNeighborss });
+                    this.postMessage({ type: 'result', value: kNearestNeighborss });
                     break;
                 }
         }
-    }
-
-    _postMessage(message) {
-        this.onmessage({ data: message });
     }
 }

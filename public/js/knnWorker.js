@@ -4,9 +4,9 @@ importScripts('jsHelper.js');
 importScripts('KNN.js');
 importScripts('knnWorkerSync.js');
 
-const knnWorkerSync = new KnnWorkerSync();
+const knnWorker = new KnnWorker();
 
 onmessage = e => {
-    knnWorkerSync.onmessage = e => postMessage(e.data);
-    knnWorkerSync.postMessage(e.data);
+    knnWorker.postMessage = data => postMessage(data);
+    knnWorker.onmessage(e.data);
 }
