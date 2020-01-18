@@ -5,8 +5,7 @@ class KnnWorker {
     knn;
     postMessage;
 
-    onmessage(message) {
-        const { type, params } = message;
+    onmessage({ type, params }) {
         switch (type) {
             case 'fit':
                 {
