@@ -14,6 +14,7 @@ import { print_tree } from './decisionTree/decisionTreePrinter.mjs';
 import { SimpleNodeContentFactory } from './decisionTree/nodeContentFactories.mjs';
 import { predict } from './decisionTree/decisionTree.mjs';
 import { knnWorkers } from './knn/knnWorkers.mjs';
+import { splitterWorkers } from './decisionTree/splitterWorkers.mjs';
 
 'use strict';
 
