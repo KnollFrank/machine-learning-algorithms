@@ -1,6 +1,6 @@
 'use strict';
 
-const knnWorkers = [];
+export const knnWorkers = [];
 
 for (let i = 0; i < window.navigator.hardwareConcurrency; i++) {
     knnWorkers.push(createKnnWorker({ async: true }));
