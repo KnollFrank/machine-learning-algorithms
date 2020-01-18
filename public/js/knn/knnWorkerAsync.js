@@ -1,6 +1,6 @@
 'use strict';
 
-importScripts('jsHelper.js');
+importScripts('../jsHelper.js');
 importScripts('KNN.js');
 importScripts('knnWorker.js');
 importScripts('knnWorkerSync.js');

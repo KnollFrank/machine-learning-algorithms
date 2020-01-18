@@ -1,4 +1,4 @@
-import { getHtml } from './htmlHelper.mjs';
+import { getHtml } from './../htmlHelper.mjs';
 
 'use strict';
 

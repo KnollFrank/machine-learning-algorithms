@@ -4,7 +4,7 @@ import { displayTextDataInput, highlightPredictionInNetwork, displayCanvasDataIn
 import { displayDigitTrainDataset, displayDigitTestDataset, displayDigitDataset } from './displayDigitDataset.mjs';
 import { getInputValueById } from './htmlHelper.mjs';
 import { createProgressElements, setProgress_numberOfEntriesInDataset, setProgress_workerId, setProgress_progress, setProgress_startAttribute, setProgress_endAttribute } from './progress.mjs';
-import { createKnnProgressElements, setKnnProgress_workerId, setKnnProgress_progress } from './knnProgress.mjs';
+import { createKnnProgressElements, setKnnProgress_workerId, setKnnProgress_progress } from './knn/knnProgress.mjs';
 import { ClassifierType } from './classifierType.mjs';
 import { displayDatasetAsTable } from './datasetTable.mjs';
 import { SubmitEventListenerHolder, EventListenerHolder } from './eventListenerHolders.mjs';

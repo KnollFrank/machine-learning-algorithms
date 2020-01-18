@@ -7,5 +7,5 @@ for (let i = 0; i < window.navigator.hardwareConcurrency; i++) {
 }
 
 function createKnnWorker({ async }) {
-    return async ? new Worker('js/knnWorkerAsync.js') : new KnnWorkerSync();
+    return async ? new Worker('js/knn/knnWorkerAsync.js') : new KnnWorkerSync();
 }
