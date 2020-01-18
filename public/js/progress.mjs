@@ -1,5 +1,4 @@
  import { getHtml } from './htmlHelper.mjs';
- import { getArrayIndexOfPoint } from './digit.mjs';
 
  'use strict';
 
