@@ -1,7 +1,7 @@
 'use strict';
 
 // Make a prediction with a decision tree
-function predict(node, row) {
+export function predict(node, row) {
     if (!node) {
         return {
             value: null,
@@ -31,10 +31,10 @@ function predict(node, row) {
     };
 }
 
-function isInnerNode(node) {
+export function isInnerNode(node) {
     return 'left' in node || 'right' in node;
 }
 
-function isTerminalNode(node) {
+export function isTerminalNode(node) {
     return !isInnerNode(node);
 }

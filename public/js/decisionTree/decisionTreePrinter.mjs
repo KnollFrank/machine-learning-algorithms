@@ -1,4 +1,5 @@
 import { SimpleNodeContentFactory } from './nodeContentFactories.mjs';
+import { isInnerNode } from './decisionTree.mjs';
 
 'use strict';
 

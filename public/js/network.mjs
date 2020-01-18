@@ -1,3 +1,5 @@
+import { isInnerNode } from './decisionTree/decisionTree.mjs';
+
 'use strict';
 
 export class NetworkBuilder {

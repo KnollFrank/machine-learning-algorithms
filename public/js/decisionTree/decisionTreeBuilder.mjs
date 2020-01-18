@@ -1,3 +1,5 @@
+import { isTerminalNode } from './decisionTree.mjs';
+
 'use strict';
 
 // adapted from https://machinelearningmastery.com/implement-decision-tree-algorithm-scratch-python/
