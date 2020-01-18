@@ -1,7 +1,7 @@
 'use strict';
 
-importScripts('idGenerator.js');
-importScripts('jsHelper.js');
+importScripts('../idGenerator.js');
+importScripts('../jsHelper.js');
 importScripts('decisionTree.js');
 
 onmessage = e => postMessage({ type: 'result', value: get_split_for_chunk(e.data) });
