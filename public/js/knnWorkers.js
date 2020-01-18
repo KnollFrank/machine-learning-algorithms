@@ -3,5 +3,9 @@
 const knnWorkers = [];
 
 for (let i = 0; i < window.navigator.hardwareConcurrency; i++) {
-    knnWorkers.push(new Worker('js/knnWorker.js'));
+    knnWorkers.push(createKnnWorker({ async: true }));
+}
+
+function createKnnWorker({ async }) {
+    return async ? new Worker('js/knnWorker.js') : new KnnWorker();
 }

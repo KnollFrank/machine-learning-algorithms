@@ -387,13 +387,6 @@ function asJsStartAndEndIndexes({
 }
 
 function getKNearestNeighbors(knnWorker, knnWorkerIndex, X, receivePredictions) {
-    knnWorker.postMessage({
-        type: 'getKNearestNeighbors',
-        params: {
-            X: X
-        }
-    });
-
     knnWorker.onmessage = event => {
         const { type, value } = event.data;
         switch (type) {
@@ -412,6 +405,13 @@ function getKNearestNeighbors(knnWorker, knnWorkerIndex, X, receivePredictions) 
                 }
         }
     };
+
+    knnWorker.postMessage({
+        type: 'getKNearestNeighbors',
+        params: {
+            X: X
+        }
+    });
 }
 
 function displayKnnProgress(workerIndex, actualIndexZeroBased, endIndexZeroBasedExclusive) {
