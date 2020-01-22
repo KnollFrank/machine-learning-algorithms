@@ -11,7 +11,7 @@ import { SubmitEventListenerHolder, EventListenerHolder } from './eventListenerH
 import { NetworkBuilder, displayNetwork } from './network.mjs'
 import { DecisionTreeBuilder } from './decisionTree/decisionTreeBuilder.mjs';
 import { print_tree } from './decisionTree/decisionTreePrinter.mjs';
-import { SimpleNodeContentFactory } from './decisionTree/nodeContentFactories.mjs';
+import { SimpleNodeContentFactory, EnhancedNodeContentFactory } from './decisionTree/nodeContentFactories.mjs';
 import { predict } from './decisionTree/decisionTree.mjs';
 import { knnWorkers } from './knn/knnWorkers.mjs';
 import { splitterWorkers } from './decisionTree/splitterWorkers.mjs';
