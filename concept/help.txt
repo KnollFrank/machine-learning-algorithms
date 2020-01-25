@@ -77,5 +77,3 @@ FK-FIXME:
 - Beim Umschalten des Switchers "erweiterte Ansicht" verschwinden fälschlicherweise die angezeigten Testdaten
 
 https://blog.developershive.com/how-to-import-csv-file-in-angular-7-no-library-needed/
-
-https://angular.io/guide/web-worker
