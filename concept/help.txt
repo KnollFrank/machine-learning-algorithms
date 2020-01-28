@@ -56,6 +56,9 @@ mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 96%
 
 mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 81%
 
+mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 4: Accuracy: 95,3%
+mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 
+
 FK-TODO:
 - k-d tree:
   "As a general rule, if the dimensionality is k, the number of points in the data, N, should be N ≫ 2 ^ k."
