@@ -54,7 +54,7 @@ mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 4: Accuracy: 94%
 mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 97%
 mnist_test_10000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 96%
 
-mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 
+mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 1: Accuracy: 97.13%
 mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 2: Accuracy: 97.48%
 mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 4: Accuracy: 95.3%
 mnist_train_60000.csv, k = 3, kernelWidthAndHeight = 7: Accuracy: 82.35%
