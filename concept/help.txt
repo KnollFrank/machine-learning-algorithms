@@ -81,3 +81,5 @@ FK-FIXME:
 
 https://blog.developershive.com/how-to-import-csv-file-in-angular-7-no-library-needed/
 frankknoll@frankknoll-XPS-13-9370:~/web/machine-learning-algorithms/angular$ ng generate web-worker app
+
+https://material.angular.io/components/paginator/overview
