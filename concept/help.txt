@@ -83,4 +83,5 @@ https://blog.developershive.com/how-to-import-csv-file-in-angular-7-no-library-n
 frankknoll@frankknoll-XPS-13-9370:~/web/machine-learning-algorithms/angular$ ng generate web-worker app
 
 ng add @angular/material
+https://material.angular.io/
 https://material.angular.io/components/paginator/overview
