@@ -85,3 +85,4 @@ frankknoll@frankknoll-XPS-13-9370:~/web/machine-learning-algorithms/angular$ ng 
 ng add @angular/material
 https://material.angular.io/
 https://material.angular.io/components/paginator/overview
+https://medium.com/faun/host-angular-app-for-free-8a443d324cda
