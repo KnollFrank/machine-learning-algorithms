@@ -86,3 +86,6 @@ ng add @angular/material
 https://material.angular.io/
 https://material.angular.io/components/paginator/overview
 https://medium.com/faun/host-angular-app-for-free-8a443d324cda
+
+ng build --prod --base-href https://knollfrank.github.io/machine-learning-algorithms
+angular-cli-ghpages -d dist/angular/ --no-silent
