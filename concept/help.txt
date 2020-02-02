@@ -91,6 +91,8 @@ https://www.npmjs.com/package/angular-cli-ghpages
 ng add angular-cli-ghpages
 ng build --prod --base-href=/machine-learning-algorithms/
 angular-cli-ghpages -d dist/angular/ --no-silent
+
+diesen Befehl ausführen für regelmäßiges Deployen zu github pages:
 ng deploy --base-href=/machine-learning-algorithms/
 
 https://knollfrank.github.io/machine-learning-algorithms/
