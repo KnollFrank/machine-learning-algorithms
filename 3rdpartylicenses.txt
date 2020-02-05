@@ -99,6 +99,8 @@ THE SOFTWARE.
 
 @angular/material/select
 
+@angular/material/slider
+
 @angular/material/stepper
 
 @angular/material/tooltip
