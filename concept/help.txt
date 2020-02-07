@@ -96,3 +96,12 @@ diesen Befehl ausführen für regelmäßiges Deployen zu github pages:
 ng deploy --base-href=/machine-learning-algorithms/
 
 https://knollfrank.github.io/machine-learning-algorithms/plain-js/public/index.html
+
+Fk-TODO:
+- aus csv-file eine selection-box machen:
+  <select id="csv-file">
+   <option value="titanic_data.csv" selected>Titanic</option>
+   <option value="data_banknote_authentication.csv">Banknote Authentication</option>
+  </select>
+  Den ausgewählten Datensatz vom Server herunterladen und damit fortfahren.
+- in github-Pages oder Firebase oder Heroku veröffentlichen.
