@@ -31,8 +31,14 @@
             <form id="datasetForm">
                 <div class="dataInputFields">
                     <div>
-                        <label for="csv-file">CSV-Datei:</label>
-                        <input type="file" id="csv-file" name="files" />
+                        <select id="csv-file" name="files">
+                            <option value="no selection" selected>Datensatz auswählen ...</option>
+                            <option value="titanic_data.csv">Titanic</option>
+                            <option value="data_banknote_authentication.csv">Banknote Authentication</option>
+                            <option value="Loan payments data.csv">Loan payments</option>
+                            <option value="processed.cleveland.csv">Cleveland</option>
+                            <option value="mnist_test_10000.csv">MNIST</option>
+                        </select>
                     </div>
                     <div id="kernelWidthAndHeight-inputFields">
                         <label for="kernelWidthAndHeight">Ziffernbreite und -höhe verkleinern um den Faktor:</label>
@@ -48,7 +54,8 @@
             </form>
             <section id="section-traindata">
                 <h3>1.1 Trainingsdaten</h3>
-                <p>Die ersten <span class="maxDigits2Display"></span> von <span class="totalNumberOfDigits"></span> Trainingsdaten sind:</p>
+                <p>Die ersten <span class="maxDigits2Display"></span> von <span class="totalNumberOfDigits"></span>
+                    Trainingsdaten sind:</p>
                 <div id="container-digits-train"></div>
                 <div id="container-trainingDataSet"></div>
             </section>
@@ -159,7 +166,8 @@
             </div>
             <div id="testdata-panel">
                 <section id="section-digits-test">
-                    <p>Die ersten <span class="maxDigits2Display"></span> von <span class="totalNumberOfDigits"></span> Testdaten sind:</p>
+                    <p>Die ersten <span class="maxDigits2Display"></span> von <span class="totalNumberOfDigits"></span>
+                        Testdaten sind:</p>
                     <div id="container-digits-test"></div>
                 </section>
                 <div id="container-testDataSet"></div>

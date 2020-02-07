@@ -1,21 +1,71 @@
-import { Cache } from './cache.mjs';
-import { TimedExecutor } from './timedExecutor.mjs'
-import { displayTextDataInput, highlightPredictionInNetwork, displayCanvasDataInput } from './dataInput.mjs';
-import { displayDigitTrainDataset, displayDigitTestDataset, displayDigitDataset } from './displayDigitDataset.mjs';
-import { getInputValueById } from './htmlHelper.mjs';
-import { createProgressElements, setProgress_numberOfEntriesInDataset, setProgress_workerId, setProgress_progress, setProgress_startAttribute, setProgress_endAttribute } from './progress.mjs';
-import { createKnnProgressElements, setKnnProgress_workerId, setKnnProgress_progress } from './knn/knnProgress.mjs';
-import { ClassifierType } from './classifierType.mjs';
-import { displayDatasetAsTable } from './datasetTable.mjs';
-import { SubmitEventListenerHolder, EventListenerHolder } from './eventListenerHolders.mjs';
-import { NetworkBuilder, displayNetwork } from './network.mjs'
-import { DecisionTreeBuilder } from './decisionTree/decisionTreeBuilder.mjs';
-import { print_tree } from './decisionTree/decisionTreePrinter.mjs';
-import { SimpleNodeContentFactory, EnhancedNodeContentFactory } from './decisionTree/nodeContentFactories.mjs';
-import { predict } from './decisionTree/decisionTree.mjs';
-import { knnWorkers } from './knn/knnWorkers.mjs';
-import { splitterWorkers } from './decisionTree/splitterWorkers.mjs';
-import { splitItemsIntoChunks } from './itemsIntoChunksSplitter.mjs';
+import {
+    Cache
+} from './cache.mjs';
+import {
+    TimedExecutor
+} from './timedExecutor.mjs'
+import {
+    displayTextDataInput,
+    highlightPredictionInNetwork,
+    displayCanvasDataInput
+} from './dataInput.mjs';
+import {
+    displayDigitTrainDataset,
+    displayDigitTestDataset,
+    displayDigitDataset
+} from './displayDigitDataset.mjs';
+import {
+    getInputValueById
+} from './htmlHelper.mjs';
+import {
+    createProgressElements,
+    setProgress_numberOfEntriesInDataset,
+    setProgress_workerId,
+    setProgress_progress,
+    setProgress_startAttribute,
+    setProgress_endAttribute
+} from './progress.mjs';
+import {
+    createKnnProgressElements,
+    setKnnProgress_workerId,
+    setKnnProgress_progress
+} from './knn/knnProgress.mjs';
+import {
+    ClassifierType
+} from './classifierType.mjs';
+import {
+    displayDatasetAsTable
+} from './datasetTable.mjs';
+import {
+    SubmitEventListenerHolder,
+    EventListenerHolder
+} from './eventListenerHolders.mjs';
+import {
+    NetworkBuilder,
+    displayNetwork
+} from './network.mjs'
+import {
+    DecisionTreeBuilder
+} from './decisionTree/decisionTreeBuilder.mjs';
+import {
+    print_tree
+} from './decisionTree/decisionTreePrinter.mjs';
+import {
+    SimpleNodeContentFactory,
+    EnhancedNodeContentFactory
+} from './decisionTree/nodeContentFactories.mjs';
+import {
+    predict
+} from './decisionTree/decisionTree.mjs';
+import {
+    knnWorkers
+} from './knn/knnWorkers.mjs';
+import {
+    splitterWorkers
+} from './decisionTree/splitterWorkers.mjs';
+import {
+    splitItemsIntoChunks
+} from './itemsIntoChunksSplitter.mjs';
 
 'use strict';
 
@@ -46,16 +96,18 @@ document.addEventListener('DOMContentLoaded', () => {
     setH1(classifierType);
     $('#datasetForm input[type=submit], #kernelWidthAndHeight-inputFields, #section-traindata, #section-decision-tree, #section-KNN, #section-data-input, #section-testdata').fadeOut();
     let dataFile;
-    document.querySelector('#csv-file').addEventListener('change', evt => {
-        dataFile = evt.target.files[0];
-        onCsvFileSelected(dataFile, classifierType);
-    });
+    document.querySelector('#csv-file').addEventListener(
+        'change',
+        evt => {
+            dataFile = evt.target.value;
+            onCsvFileSelected(dataFile, classifierType);
+        });
 
     submitEventListenerHolder4datasetForm.setEventListener(() => onSubmitDatasetForm(dataFile, classifierType));
 });
 
 function onCsvFileSelected(dataFile, classifierType) {
-    if (isFileDigitDataset(dataFile.name)) {
+    if (isFileDigitDataset(dataFile)) {
         $('#datasetForm input[type=submit], #kernelWidthAndHeight-inputFields').fadeIn();
     } else {
         $('#datasetForm input[type=submit], #kernelWidthAndHeight-inputFields').fadeOut();
@@ -64,17 +116,18 @@ function onCsvFileSelected(dataFile, classifierType) {
 }
 
 function onSubmitDatasetForm(dataFile, classifierType) {
-    Papa.parse(dataFile, {
+    Papa.parse('data/' + dataFile, {
         download: true,
         header: false,
-        complete: function(results) {
-            let datasetDescription = getDatasetDescription(dataFile.name, results.data);
+        complete: function (results) {
+            let datasetDescription = getDatasetDescription(dataFile, results.data);
             if (datasetDescription.isDigitDataset()) {
                 datasetDescription = transform(datasetDescription, getSelectedKernelWidthAndHeight());
             }
 
             onDatasetChanged(datasetDescription, classifierType);
-        }
+        },
+        error: error => console.log('readCSVFile error:', error)
     });
 }
 
@@ -114,7 +167,7 @@ function getDatasetDescription(fileName, dataset) {
             all: attributeNames
         },
         splittedDataset: train_test_split(dataset, 0.8),
-        isDigitDataset: function() {
+        isDigitDataset: function () {
             return isFileDigitDataset(this.fileName);
         }
     };
@@ -363,7 +416,10 @@ const createKnnClassifier =
                     i,
                     getSlice(rows, chunk),
                     kNearestNeighborssWithPredictions => {
-                        chunksOfPredictions.push({ chunk, kNearestNeighborssWithPredictions });
+                        chunksOfPredictions.push({
+                            chunk,
+                            kNearestNeighborssWithPredictions
+                        });
                         if (chunksOfPredictions.length == chunks.length) {
                             receivePredictionsForRows(combineChunksOfPredictions(chunksOfPredictions));
                         }
@@ -395,21 +451,25 @@ function asJsStartAndEndIndexes({
 
 function getKNearestNeighbors(knnWorker, knnWorkerIndex, X, receivePredictions) {
     knnWorker.onmessage = event => {
-        const { type, value } = event.data;
+        const {
+            type,
+            value
+        } = event.data;
         switch (type) {
-            case 'result':
-                {
-                    const kNearestNeighborss = value;
-                    const kNearestNeighborssWithPredictions = kNearestNeighborss.map(addPrediction);
-                    receivePredictions(kNearestNeighborssWithPredictions);
-                    break;
-                }
-            case 'progress':
-                {
-                    const { actualIndexZeroBased, endIndexZeroBasedExclusive } = value;
-                    displayKnnProgress(knnWorkerIndex, actualIndexZeroBased, endIndexZeroBasedExclusive);
-                    break;
-                }
+            case 'result': {
+                const kNearestNeighborss = value;
+                const kNearestNeighborssWithPredictions = kNearestNeighborss.map(addPrediction);
+                receivePredictions(kNearestNeighborssWithPredictions);
+                break;
+            }
+            case 'progress': {
+                const {
+                    actualIndexZeroBased,
+                    endIndexZeroBasedExclusive
+                } = value;
+                displayKnnProgress(knnWorkerIndex, actualIndexZeroBased, endIndexZeroBasedExclusive);
+                break;
+            }
         }
     };
 
@@ -619,7 +679,9 @@ function getRowsClassifier(classifierType, classifier) {
     switch (classifierType) {
         case ClassifierType.DECISION_TREE:
             return (rows, receivePredictionsForRows) => {
-                const predictions = rows.map(row => cache.get(row, () => ({ prediction: predict(classifier, row).value })));
+                const predictions = rows.map(row => cache.get(row, () => ({
+                    prediction: predict(classifier, row).value
+                })));
                 receivePredictionsForRows(predictions);
             };
         case ClassifierType.KNN:
@@ -735,7 +797,9 @@ function accuracy_percentage(actual, predicted) {
 }
 
 function getPredictions(kNearestNeighborssWithPredictions) {
-    return kNearestNeighborssWithPredictions.map(({ prediction }) => prediction);
+    return kNearestNeighborssWithPredictions.map(({
+        prediction
+    }) => prediction);
 }
 
 function displayTestingTableWithPredictions(rowsClassifier, classifierType, network, tree, datasetDescription) {
@@ -853,4 +917,6 @@ function createTreeListener(onmessage) {
     }
 }
 
-export { train_test_split };
+export {
+    train_test_split
+};
