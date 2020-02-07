@@ -100,7 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
         'change',
         evt => {
             dataFile = evt.target.value;
-            onCsvFileSelected(dataFile, classifierType);
+            if (dataFile !== 'no selection') {
+                onCsvFileSelected(dataFile, classifierType);
+            }
         });
 
     submitEventListenerHolder4datasetForm.setEventListener(() => onSubmitDatasetForm(dataFile, classifierType));
